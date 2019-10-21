@@ -16,41 +16,21 @@ app.get('/lenovo', async (req, res) => {
       console.log('exec error: ' + error);
       return;
     }
-    console.log('stdout: ' + stdout);
-    res.end(stdout);
+    console.log('block hash: ' + stdout);
+    COMMAND = 'bitcoin-cli getblock ' + stdout;
+    // getblock contents exe
+    exec(COMMAND, function(error, stdout, stderr){
+      if(error !== null){
+        console.log('exec error: ' + error);
+        return;
+      }
+      //console.log('block contents: ' + stdout);
+      let obj = JSON.parse(stdout);
+      console.log('size : ' + obj.size);
+      res.end('size : ' + obj.size);
+
+    }); 
   });
-});
-
-app.get('/block_header', async (req, res) => {
-  const { result, error } = await client.request('blockchain.block.header',[2,0]);
-  if(error) throw error;
-  console.log(result);
-  res.json(result);
-  //console.log(error);
-});
-
-app.get('/estimate_fee', async (req, res) => {
-  const { result, error } = await client.request('blockchain.estimatefee',[2]);
-  if(error) throw error;
-  console.log(result);
-  res.json(result);
-  //console.log(error);
-});
-
-app.get('/block_headers', async (req, res) => {
-  const { result, error } = await client.request('blockchain.block.headers',[0,1,2]);
-  if(error) throw error;
-  console.log(result);
-  res.json(result);
-  //console.log(error);
-});
-
-app.get('/transaction_get', async (req, res) => {
-  const { result, error } = await client.request('blockchain.transaction.get',[2,2]);
-  if(error) throw error;
-  console.log(result);
-  res.json(result);
-  //console.log(error);
 });
 
 
@@ -60,13 +40,14 @@ app.get('/block_list', (req, res) => {
     let count = 25;
     let start_height = height - count;
     let displayList = "";
+    let sizeList = "";
+   
     client.request('blockchain.block.headers',[start_height,count,0],function(error, result){
-      // extract by 160 and assign to array
       let output = result.result.hex.match(/.{160}/g);
       for( let i=0; i<count; i++){
-        displayList += (height-i) + " : " + output[i] + "\n";
+        displayList += (height-i) + " : " + output[i] + " : "  + "\n";
       }
-      //console.log(displayList);
+      console.log(displayList);
       //res.end(displayList);
     });
   });
