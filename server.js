@@ -3,42 +3,54 @@
 const jayson   =  require('jayson/promise');
 const express  =  require('express')
 const app      =  express()
+const exec     =  require('child_process').exec;
 
 const client = jayson.client.tcp({
   port : 60401
 });
 
+app.get('/lenovo', async (req, res) => {
+  let COMMAND = 'bitcoin-cli getblockhash 277';
+  exec(COMMAND, function(error, stdout, stderr){
+    if(error !== null){
+      console.log('exec error: ' + error);
+      return;
+    }
+    console.log('stdout: ' + stdout);
+    res.end(stdout);
+  });
+});
 
 app.get('/block_header', async (req, res) => {
   const { result, error } = await client.request('blockchain.block.header',[2,0]);
   if(error) throw error;
   console.log(result);
-  //console.log(error);
   res.json(result);
+  //console.log(error);
 });
 
 app.get('/estimate_fee', async (req, res) => {
   const { result, error } = await client.request('blockchain.estimatefee',[2]);
   if(error) throw error;
   console.log(result);
-  //console.log(error);
   res.json(result);
+  //console.log(error);
 });
 
 app.get('/block_headers', async (req, res) => {
   const { result, error } = await client.request('blockchain.block.headers',[0,1,2]);
   if(error) throw error;
   console.log(result);
-  //console.log(error);
   res.json(result);
+  //console.log(error);
 });
 
 app.get('/transaction_get', async (req, res) => {
   const { result, error } = await client.request('blockchain.transaction.get',[2,2]);
   if(error) throw error;
   console.log(result);
-  //console.log(error);
   res.json(result);
+  //console.log(error);
 });
 
 
@@ -49,16 +61,15 @@ app.get('/block_list', (req, res) => {
     let start_height = height - count;
     let displayList = "";
     client.request('blockchain.block.headers',[start_height,count,0],function(error, result){
+      // extract by 160 and assign to array
       let output = result.result.hex.match(/.{160}/g);
       for( let i=0; i<count; i++){
         displayList += (height-i) + " : " + output[i] + "\n";
       }
-      console.log(displayList);
-      res.end(displayList);
+      //console.log(displayList);
+      //res.end(displayList);
     });
-
   });
 });
 
-
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.listen(3000, () => console.log('Listening on port 3000!'))
