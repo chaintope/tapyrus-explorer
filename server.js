@@ -41,21 +41,22 @@ app.get('/transaction_get', async (req, res) => {
   res.json(result);
 });
 
-//app.get('/test', async (req, res) => {
-//  const { result, error } = await client.request('blockchain.headers.subscribe',[],null);
-//  if(error) throw error;
-//  console.log(result);
-//  console.log(error);
-//  res.json(result);
-//});
 
-app.get('/test', (req, res) => {
-  //client.request('blockchain.headers.subscribe',[],null,function(result, error){
+app.get('/block_list', (req, res) => {
   client.request('blockchain.headers.subscribe',[],function(error, result){
-    //if(error) throw error;
-    console.log(result.result);
-    //console.log(error);
-    res.json(result.result);
+    let height = result.result.height;
+    let count = 25;
+    let start_height = height - count;
+    let displayList = "";
+    client.request('blockchain.block.headers',[start_height,count,0],function(error, result){
+      let output = result.result.hex.match(/.{160}/g);
+      for( let i=0; i<count; i++){
+        displayList += (height-i) + " : " + output[i] + "\n";
+      }
+      console.log(displayList);
+      res.end(displayList);
+    });
+
   });
 });
 
