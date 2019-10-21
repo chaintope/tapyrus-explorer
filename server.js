@@ -53,9 +53,9 @@ app.get('/test', (req, res) => {
   //client.request('blockchain.headers.subscribe',[],null,function(result, error){
   client.request('blockchain.headers.subscribe',[],function(error, result){
     //if(error) throw error;
-    console.log(result);
-    console.log(error);
-    res.json(result);
+    console.log(result.result);
+    //console.log(error);
+    res.json(result.result);
   });
 });
 
