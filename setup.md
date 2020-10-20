@@ -39,7 +39,7 @@ npm install
 npm run setup
 ```
 
-To start backend, from `/backend`, run:
+To start server, from `/backend`, run:
 ```bash
 npm start
 ```
@@ -48,6 +48,8 @@ To update cache manually, from `/backend`, run:
 ```bash
 npm run setup
 ```
+
+During development, for fast response on frontend, it is advised to update cache manually before starting the server.
 
 To test backend, first update cache and then run tests from `/backend` :
 ```bash

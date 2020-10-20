@@ -10,6 +10,8 @@ import { TransactionsPage } from './transactions.page';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedPipeModule } from '../modules/sharePipe.module';
 
+import { TransactionsModalPage } from '../transactions-modal/transactions-modal.page';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -19,6 +21,7 @@ import { SharedPipeModule } from '../modules/sharePipe.module';
     SharedPipeModule,
     NgxPaginationModule
   ],
-  declarations: [TransactionsPage]
+  declarations: [TransactionsPage, TransactionsModalPage],
+  entryComponents: [TransactionsModalPage]
 })
 export class TransactionsPageModule {}

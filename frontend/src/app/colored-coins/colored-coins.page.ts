@@ -60,9 +60,8 @@ export class ColoredCoinsPage implements OnInit {
     this.pages = Math.ceil(this.txCount / this.perPage);
   }
 
-  goToTransaction(txid: string) {
-    console.log("test, goToTransaction", txid)
-    this.navCtrl.navigateForward(`/transactions/${txid}`);
+  goToCoin(coinId: string) {
+    this.navCtrl.navigateForward(`/colored-coin/${coinId}`);
   }
 
   onSearch() {

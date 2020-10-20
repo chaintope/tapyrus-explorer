@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
 
+import { ModalController } from '@ionic/angular';
+
+import { TransactionsModalPage } from '../transactions-modal/transactions-modal.page';
+
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.page.html',
@@ -14,8 +18,13 @@ export class TransactionsPage implements OnInit {
   transactions: any = [];
   searchValue: string;
   txCount = 0;
+  coins = [{id : 'c396dfd97de19a09479dfceabee57c3f83c99c167683468443c2327da86432efdc' , amount : 11},
+  { id : 'c2c99c167683468443c2327da86432efdc96dfd97de19a09479dfceabee57c3f83' , amount : 13.22},
+  { id : 'c1e19a09479dfceabee57c3f83c99c167683468443c2327da86432efdc96dfd97d' , amount : 41.73},
+  { id : 'TPC' , amount : 50}];
 
-  constructor(private httpClient: HttpClient, private navCtrl: NavController) {}
+
+  constructor(private httpClient: HttpClient, private navCtrl: NavController,  private modalCtrl: ModalController ) {}
 
   ngOnInit() {
     this.getTransactionLists();
@@ -37,6 +46,7 @@ export class TransactionsPage implements OnInit {
           this.transactions = resultData.results || [];
           this.txCount = resultData.txCount;
           this.calculatePagination();
+          console.log('trans', this.transactions);
         },
         (err) => {
           console.log(err);
@@ -76,5 +86,16 @@ export class TransactionsPage implements OnInit {
           console.log(err);
         }
       );
+  }
+
+  async goToTransactionModal() {
+    const modal = await this.modalCtrl.create({
+      component: TransactionsModalPage,
+      componentProps: {
+        coins: this.coins
+      },
+      cssClass: 'raw-data-modal'
+    });
+    return await modal.present();
   }
 }

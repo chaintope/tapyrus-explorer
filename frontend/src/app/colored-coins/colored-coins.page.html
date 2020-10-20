@@ -24,7 +24,7 @@
         <ion-col size="3">Total Issued</ion-col>
       </ion-row>
       <ion-row class="table-border-bottom" *ngFor="let txn of transactions | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: txCount }">
-        <ion-col size="6" class="font-14 link-color" (click)="goToTransaction(txn.txid)">{{ txn.txid }}</ion-col>
+        <ion-col size="6" class="font-14 link-color" (click)="goToCoin(txn.txid)">{{ txn.txid }}</ion-col>
         <ion-col size="3" class="font-14 text-color">{{"NFT"}}</ion-col>
         <ion-col  size="3" class="font-14 text-color">{{ txn.amount}}</ion-col>
       </ion-row>
