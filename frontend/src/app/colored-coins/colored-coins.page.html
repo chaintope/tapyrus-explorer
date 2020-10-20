@@ -1,0 +1,50 @@
+<ion-content class="pb-footer">
+  <div class="ion-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-col offset-md="2" offset-sm="2" size-md="6" size-sm="8">
+          <ion-input class="bg-white" [(ngModel)]="searchValue" placeholder="Search txid"></ion-input>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button color="primary" (click)="onSearch()">
+            <ion-icon name="search-outline"></ion-icon>
+          </ion-button>
+
+          <ion-button color="light" class="display-none-max-md">
+            <img src="../assets/images/tapyrus-logo.png" height="30" width="30">
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid class="ion-padding" id="table">
+      <ion-row id="table-header">
+        <ion-col size="6">Color ID</ion-col>
+        <ion-col size="3">Type</ion-col>
+        <ion-col size="3">Total Issued</ion-col>
+      </ion-row>
+      <ion-row class="table-border-bottom" *ngFor="let txn of transactions | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: txCount }">
+        <ion-col size="6" class="font-14 link-color" (click)="goToTransaction(txn.txid)">{{ txn.txid }}</ion-col>
+        <ion-col size="3" class="font-14 text-color">{{"NFT"}}</ion-col>
+        <ion-col  size="3" class="font-14 text-color">{{ txn.amount}}</ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col style="margin-top:16px;">
+        Show
+        <select [(ngModel)]="perPage" (change)=onPerPageChange()>
+          <option value=25 selected>25</option>
+          <option value=50>50</option>
+          <option value=75>75</option>
+          <option value=100>100</option>
+        </select>
+        Records
+      </ion-col>
+      <ion-col class="ion-text-right">
+        <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
