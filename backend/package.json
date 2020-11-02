@@ -7,7 +7,7 @@
     "setup": "node setup/setup.js",
     "test": "mocha test/actions",
     "start": "nodemon server.js",
-    "pretest": "eslint actions/",
+    "pretest": "eslint actions/ libs/",
     "prettier": "prettier --write .",
     "prettier-ci": "prettier --check ."
   },
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "bitcoin-core": "^3.0.0",
+    "bitcoinjs-lib": "^5.2.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "flat-cache": "^2.0.1",
