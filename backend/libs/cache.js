@@ -56,6 +56,8 @@ const createCache = async () => {
                       .then(response => {
                         const vinResponses = [response];
                         for (let vout of vinResponses[0].vout) {
+                          if (!vout.scriptPubKey.addresses) break;
+
                           for (let address of vout.scriptPubKey.addresses) {
                             //flag to represent the availability of this address in the vout of original Transaction
                             let isPresent = false;
