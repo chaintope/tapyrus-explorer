@@ -126,12 +126,12 @@ const createCache = async () => {
                 reject(error);
               });
           }
+
+          cache.setKey('bestBlockHeight', cacheBestBlockHeight);
+          cache.setKey('transactionCount', count);
+          cache.save(true /* noPrune */);
           cacheBestBlockHeight++;
         }
-
-        cache.setKey('bestBlockHeight', bestBlockHeight);
-        cache.setKey('transactionCount', count);
-        cache.save(true /* noPrune */);
 
         logger.info('Updated cache till block height -> ', bestBlockHeight);
         logger.info('New transaction count -> ', count);
