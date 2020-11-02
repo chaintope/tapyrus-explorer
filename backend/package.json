@@ -16,7 +16,6 @@
   "license": "ISC",
   "dependencies": {
     "bitcoin-core": "^3.0.0",
-    "bitcoinjs-lib": "^5.2.0",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "flat-cache": "^2.0.1",
@@ -25,6 +24,7 @@
     "log4js": "^6.3.0",
     "sinon": "^9.2.0",
     "socket.io": "^2.3.0",
+    "tapyrusjs-lib": "git+https://github.com/chaintope/tapyrusjs-lib.git",
     "ws": "^7.1.2",
     "wss": "^3.3.4"
   },

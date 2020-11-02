@@ -1,7 +1,7 @@
 const config = require('./config');
 const jayson = require('jayson/promise');
 const client = jayson.client.tcp(config.electrs);
-const bitcoin = require('bitcoinjs-lib');
+const tapyrus = require('tapyrusjs-lib');
 const crypto = require('crypto');
 
 const request = (methodName, params) => {
@@ -35,7 +35,7 @@ const methods = {
 };
 
 const convertToScriptHash = address => {
-  const p2pkh = bitcoin.payments.p2pkh({ address });
+  const p2pkh = tapyrus.payments.p2pkh({ address });
   const buf = Buffer.from(p2pkh.output, 'hex');
   const sha256 = crypto.createHash('sha256');
 

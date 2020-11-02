@@ -11,10 +11,10 @@ jobs:
       - name: Setup
         run: |
           cd frontend
-          npm install
+          npm ci
           npm run lint
           npm run prettier-ci
           cd ../backend
-          npm install
+          npm ci
           npm run prettier-ci
           npm run pretest
