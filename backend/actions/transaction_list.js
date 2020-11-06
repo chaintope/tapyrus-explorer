@@ -14,30 +14,28 @@ app.use((req, res, next) => {
 });
 
 async function getMemTx() {
-  const result = await tapyrusd.getRawMempool();
-  const list = result.map(tx => electrs.blockchain.transaction.get(tx, true));
+  const txids = await tapyrusd.getRawMempool();
+  const txs = await Promise.all(
+    txids.map(txid => electrs.blockchain.transaction.get(txid, true))
+  );
 
-  const memTxArray = await Promise.all(list);
-
-  const memEntryArray = memTxArray.map(trans => {
-    const response = tapyrusd.command([
-      {
-        method: 'getmempoolentry',
-        parameters: {
-          txid: trans.txid
+  const txsWithTime = txs
+    .map(async tx => {
+      const txDetail = await tapyrusd.command([
+        {
+          method: 'getmempoolentry',
+          parameters: {
+            txid: tx.txid
+          }
         }
-      }
-    ]);
-    return response;
-  });
+      ]);
+      tx.time = txDetail[0].time;
 
-  const entryPromiseArray = await Promise.all(memEntryArray);
-  const finalArray = memTxArray.map((trans, idx) => {
-    trans.time = entryPromiseArray[idx][0].time;
-    return trans;
-  });
+      return tx;
+    })
+    .sort((a, b) => b.time - a.time);
 
-  return finalArray.sort((a, b) => b.time - a.time);
+  return txsWithTime;
 }
 
 //Return a List of transactions

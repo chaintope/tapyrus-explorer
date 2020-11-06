@@ -2,4 +2,4 @@
 
 npm run setup
 
-exec sh -c "$*"
+exec bash -c "$*"

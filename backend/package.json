@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bitcoin-core": "^3.0.0",
+    "bitcoin-core": "git+https://github.com/Takeshi-Y/bitcoin-core.git",
     "compression": "^1.7.4",
     "express": "^4.17.1",
     "flat-cache": "^2.0.1",
