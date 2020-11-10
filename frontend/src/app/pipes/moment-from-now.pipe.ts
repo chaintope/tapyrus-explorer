@@ -11,8 +11,8 @@ export class MomentFromNowPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {
     // * 1000 for secondsSinceEpoch
     return moment(
-      new Date(value * 1000).toLocaleString(),
-      'DD/MM/YYYY, HH:mm:ss'
+      new Date(value * 1000).toISOString(),
+      moment.ISO_8601
     ).fromNow();
   }
 }
