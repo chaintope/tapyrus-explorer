@@ -6,6 +6,7 @@
           size="large"
           name="chevron-back-circle-outline"
           id="arrow-icon"
+          class="cursor-pointer"
           (click)="goToTransactions()"
         ></ion-icon>
         <p id="block-header-text">Transaction Details</p>
@@ -13,6 +14,7 @@
           color="primary"
           size="small"
           id="raw-data-btn"
+          class="cursor-pointer"
           (click)="goToTransactionRawData()"
           >Raw Data</ion-button
         >
@@ -74,7 +76,7 @@
                     >
                       <ion-col
                         size="8"
-                        class="ion-no-margin text-primary"
+                        class="ion-no-margin text-primary cursor-pointer"
                         (click)="goToAddress(add)"
                         >{{ add }}</ion-col
                       >
@@ -113,7 +115,7 @@
                 >
                   <ion-col
                     size="8"
-                    class="text-primary"
+                    class="text-primary cursor-pointer"
                     (click)="goToAddress(add)"
                     >{{ add }}</ion-col
                   >

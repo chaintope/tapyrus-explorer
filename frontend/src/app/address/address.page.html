@@ -66,7 +66,10 @@
         class="text-color"
         *ngFor="let tx of transactions | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: txCount }"
       >
-        <ion-col size="3" (click)="goToTransaction(tx.txid)" class="link-color"
+        <ion-col
+          size="3"
+          (click)="goToTransaction(tx.txid)"
+          class="link-color cursor-pointer"
           >{{ tx.txid.substring(0,30) + "..." }}</ion-col
         >
         <ion-col size="1">{{ tx.blockheight }}</ion-col>
@@ -79,7 +82,7 @@
                   size="9"
                   *ngIf="tx.inputs[i] !== '' "
                   (click)="goToAddressPage(tx.inputs[i])"
-                  class="link-color"
+                  class="link-color cursor-pointer"
                   >{{ tx.inputs[i].substring(0,18) + "..." }}</ion-col
                 >
                 <ion-col size="9" *ngIf="tx.inputs[i] === '' "
@@ -95,7 +98,7 @@
                 <ion-col
                   size="9"
                   (click)="goToAddressPage(output)"
-                  class="link-color"
+                  class="link-color cursor-pointer"
                   >{{ output.substring(0,18) + "..." }}</ion-col
                 >
                 <ion-col size="2">
