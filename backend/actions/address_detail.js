@@ -1,6 +1,4 @@
 const app = require('../app.js');
-const { createCache, loadCache } = require('../libs/cache');
-const tapyrusd = require('../libs/tapyrusd').client;
 const electrs = require('../libs/electrs');
 const logger = require('../libs/logger');
 
@@ -28,21 +26,13 @@ app.get('/address/:address', async (req, res) => {
   }
 
   try {
-    await createCache();
-    const cache = loadCache();
-
-    const bestBlockHeight = await tapyrusd.getBlockCount();
-    if (cache.getKey(`bestBlockHeight`) !== bestBlockHeight) {
-      throw new Error("Cache's best Block Height is not updated");
-    }
-
     const scriptHash = electrs.convertToScriptHash(urlAddress);
     const balances = await electrs.blockchain.scripthash.get_balance(
       scriptHash
     );
     const balance = (balances && balances[0] && balances[0].confirmed) || 0;
 
-    const addressTxsCount = cache.getKey(`${urlAddress}_count`);
+    const addressTxsCount = 0;
 
     let startFromTxs = addressTxsCount - perPage * page + 1;
     if (startFromTxs < 0) {
@@ -52,46 +42,14 @@ app.get('/address/:address', async (req, res) => {
     }
 
     const transactions = [];
-    for (let i = startFromTxs; i < startFromTxs + perPage; i++) {
-      const txid = cache.getKey(`${urlAddress}_${i}`);
-      const tx = await electrs.blockchain.transaction.get(txid, true);
+    const receivedTapyrus = balance;
 
-      const block = await tapyrusd.getBlockByHash(tx.blockhash);
-
-      const inputAddresses = [];
-      tx.vin.forEach(async vin => {
-        if (!vin.txid) {
-          inputAddresses.push('');
-          return;
-        }
-
-        const inputTx = await electrs.blockchain.transaction.get(
-          vin.txid,
-          true
-        );
-        inputTx.vout.forEach(vout => {
-          vout.scriptPubKey.addresses.forEach(address => {
-            inputAddresses.push(address);
-          });
-        });
-      });
-
-      transactions.push(
-        Object.assign({}, tx, {
-          blockheight: block.height,
-          inputs: inputAddresses
-        })
-      );
-
-      if (transactions.length == perPage) {
-        res.json([
-          balance,
-          transactions.sort((tx1, tx2) => tx2.time - tx1.time),
-          cache.getKey(`${urlAddress}_received`),
-          addressTxsCount + 1
-        ]);
-      }
-    }
+    res.json([
+      balance,
+      transactions.sort((tx1, tx2) => tx2.time - tx1.time),
+      receivedTapyrus,
+      0
+    ]);
   } catch (error) {
     logger.error(
       `Error retrieving information for addresss - ${urlAddress}. Error Message - ${error.message}`

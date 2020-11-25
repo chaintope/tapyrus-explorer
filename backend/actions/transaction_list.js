@@ -1,5 +1,4 @@
 const app = require('../app.js');
-const { createCache, loadCache } = require('../libs/cache');
 const tapyrusd = require('../libs/tapyrusd').client;
 const electrs = require('../libs/electrs');
 const logger = require('../libs/logger');
@@ -19,23 +18,22 @@ async function getMemTx() {
     txids.map(txid => electrs.blockchain.transaction.get(txid, true))
   );
 
-  const txsWithTime = txs
-    .map(async tx => {
-      const txDetail = await tapyrusd.command([
-        {
-          method: 'getmempoolentry',
-          parameters: {
-            txid: tx.txid
-          }
+  const txsWithTime = [];
+  for (let tx of txs) {
+    const txDetail = await tapyrusd.command([
+      {
+        method: 'getmempoolentry',
+        parameters: {
+          txid: tx.txid
         }
-      ]);
-      tx.time = txDetail[0].time;
+      }
+    ]);
+    tx.time = txDetail[0].time;
 
-      return tx;
-    })
-    .sort((a, b) => b.time - a.time);
+    txsWithTime.push(tx);
+  }
 
-  return txsWithTime;
+  return txsWithTime.sort((a, b) => b.time - a.time);
 }
 
 //Return a List of transactions
@@ -47,12 +45,6 @@ app.get('/transactions', async (req, res) => {
     const chainTxStats = await tapyrusd.getChainTxStats();
     const txCount = chainTxStats.txcount;
     const bestBlockHeight = await tapyrusd.getBlockCount();
-
-    await createCache();
-    const cache = loadCache();
-    if (cache.getKey(`bestBlockHeight`) !== bestBlockHeight) {
-      throw new Error("Cache's best Block Height is not updated");
-    }
 
     let count = 0,
       transList = [];
@@ -76,30 +68,29 @@ app.get('/transactions', async (req, res) => {
       }
     }
 
-    const transactionCount = txCount;
-    let startingTrans = transactionCount - perPage * page;
+    let startingTrans = bestBlockHeight - perPage * page;
 
     if (startingTrans < 0) {
       //if last page's remainder should use different value of startingTrans and perPage
       startingTrans = 0;
-      perPage = transactionCount % perPage;
+      perPage = bestBlockHeight % perPage;
     }
 
-    for (let i = startingTrans + perPage - 1; i >= startingTrans; i--) {
+    for (let i = startingTrans + perPage; i > startingTrans; i--) {
       let amount = 0;
-      const trans = await electrs.blockchain.transaction.get(
-        cache.getKey(i),
-        true
-      );
 
-      trans.vout.forEach(vout => {
-        amount += vout.value;
-      });
-      trans.amount = amount;
-      transList.push(trans);
-      count++;
-      if (count == perPage) {
-        break;
+      const blockHash = await tapyrusd.getBlockHash(i);
+      const block = await tapyrusd.getBlock(blockHash);
+      const txs = Array.from(block.tx);
+
+      for (let txid of txs) {
+        const trans = await electrs.blockchain.transaction.get(txid, true);
+
+        trans.vout.forEach(vout => {
+          amount += vout.value;
+        });
+        trans.amount = amount;
+        transList.push(trans);
       }
     }
 
