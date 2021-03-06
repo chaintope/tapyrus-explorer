@@ -83,10 +83,21 @@ ion-content {
   color: #aaaaaa;
 }
 
+.table-border-bottom {
+  border-bottom: 1px solid #f6f6f6;
+  padding: 10px 10px;
+}
+
 .pt-10 {
   padding-top: 10px;
 }
 
 .text-wrap {
   word-break: break-all;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

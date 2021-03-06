@@ -55,12 +55,13 @@ export class BackendService {
 
   getAddressInfo(
     address: string,
-    page: number,
-    perPage: number
+    lastSeenTxid?: string,
   ): Observable<any> {
     return this.http.get(`${this.backendUrl}/address/${address}`, {
       params: new HttpParams({
-        fromObject: { page: page.toString(), perPage: perPage.toString() }
+        fromObject: {
+          lastSeenTxid: (lastSeenTxid || "").toString()
+        }
       })
     });
   }
