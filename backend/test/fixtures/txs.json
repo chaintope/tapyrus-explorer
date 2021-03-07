@@ -101,8 +101,10 @@
         "block_hash": "72f9266b1f1b0b20b4ac7bec1ae9ce7848c4916a95e74d7f7d6f72082e378ef9",
         "block_time": 1613215313
       }
-    }],
-    "txs_next": [{
+    }
+  ],
+  "txs_next": [
+    {
       "txid": "db9b2baa8382a2c35f7041fd7599218eb65fa9136ff7c454849231a491e44bf5",
       "version": 1,
       "locktime": 0,

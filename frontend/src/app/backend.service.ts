@@ -53,10 +53,7 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/tx/${txId}/rawData`);
   }
 
-  getAddressInfo(
-    address: string,
-    lastSeenTxid?: string,
-  ): Observable<any> {
+  getAddressInfo(address: string, lastSeenTxid?: string): Observable<any> {
     return this.http.get(`${this.backendUrl}/address/${address}`, {
       params: new HttpParams({
         fromObject: {

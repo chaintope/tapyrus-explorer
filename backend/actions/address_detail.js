@@ -43,12 +43,12 @@ app.get('/address/:address', async (req, res) => {
     }
 
     res.json({
-        balances,
-        tx: {
-          txs,
-          last_seen_txid: (txs[txs.length - 1] || {}).txid
-        }
-      });
+      balances,
+      tx: {
+        txs,
+        last_seen_txid: (txs[txs.length - 1] || {}).txid
+      }
+    });
   } catch (error) {
     logger.error(
       `Error retrieving information for addresss - ${address}. Error Message - ${error.message}`

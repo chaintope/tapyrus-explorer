@@ -60,7 +60,7 @@ describe('GET /address', () => {
         .catch(done);
     });
   });
-  
+
   describe('with lastSeenTxid', () => {
     beforeEach(() => {
       sinon
@@ -71,7 +71,7 @@ describe('GET /address', () => {
         )
         .resolves(fixtures.txs_next);
     });
-    it ('should return balances and txs', done => {
+    it('should return balances and txs', done => {
       supertest(app)
         .get('/address/12FmjcAHuen1gptnZoSZ7MLWmNhZny6GmP')
         .query({

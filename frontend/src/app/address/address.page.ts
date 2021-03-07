@@ -82,10 +82,12 @@ export class AddressPage implements OnInit {
           this.sent = data['balances'][0]['sent'] || 0;
           this.balanced = data['balances'][0]['balanced'] || 0;
           this.txCount = data['balances'][0]['count'] || 0;
-          data['tx']['txs'].filter((tx) => !this.txids.has(tx.txid)).forEach((tx) => {
-            this.txids.add(tx.txid);
-            this.transactions.push(tx);
-          });
+          data['tx']['txs']
+            .filter(tx => !this.txids.has(tx.txid))
+            .forEach(tx => {
+              this.txids.add(tx.txid);
+              this.transactions.push(tx);
+            });
           this.lastSeenTxid = data['tx']['last_seen_txid'];
         },
         err => {

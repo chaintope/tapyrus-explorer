@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 
 const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}`;
 const address = {
-  stats: async (address) => {
+  stats: async address => {
     const url = `${baseUrl}/address/${address}`;
     const response = await fetch(url);
     if (response.ok) {
@@ -19,15 +19,15 @@ const address = {
     } else {
       url = `${baseUrl}/address/${address}/txs`;
     }
-    const response = await fetch(url)
+    const response = await fetch(url);
     if (response.ok) {
-      return response.json()
+      return response.json();
     } else {
       throw new Error(`failed to fetch API ${url}`);
     }
   }
-}
+};
 
 module.exports = {
-  address,
+  address
 };
