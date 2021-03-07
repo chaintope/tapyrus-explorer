@@ -60,7 +60,7 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/address/${address}`, {
       params: new HttpParams({
         fromObject: {
-          lastSeenTxid: (lastSeenTxid || "").toString()
+          lastSeenTxid: (lastSeenTxid || '').toString()
         }
       })
     });

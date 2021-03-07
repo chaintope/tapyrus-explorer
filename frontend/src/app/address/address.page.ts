@@ -94,8 +94,8 @@ export class AddressPage implements OnInit {
       );
   }
 
-  as_tpc(value?: number): string {
-    const value_as_big = new Big(value || 0);
-    return value_as_big.div(100_000_000).toFixed(8);
+  asTpc(value?: number): string {
+    const valueAsBig = new Big(value || 0);
+    return valueAsBig.div(100_000_000).toFixed(8);
   }
 }
