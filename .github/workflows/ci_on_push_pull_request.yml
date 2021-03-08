@@ -6,11 +6,17 @@ jobs:
   ci:
     container: node:latest
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
     steps:
       - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Setup
         run: |
-          npm install -g npm
           cd frontend
           npm ci
           npm run lint
