@@ -3,14 +3,18 @@ services:
   backend:
     build: ./backend
     environment:
+      ENV: prod
       TAPYRUSD_RPC_HOST: tapyrusd
       TAPYRUSD_RPC_PORT: 2377
       TAPYRUSD_RPC_USER: rpcuser
       TAPYRUSD_RPC_PASSWORD: rpcpassword
-      ELECTRS_RPC_HOST: electrs
+      ELECTRS_RPC_HOST: esplora
       ELECTRS_RPC_PORT: 50001
+      ELECTRS_REST_SCHEMA: http
+      ELECTRS_REST_HOST: esplora
+      ELECTRS_REST_PORT: 3001
     depends_on:
-      - electrs
+      - esplora
       - tapyrusd
     ports:
       - '3001:3001'
@@ -39,18 +43,42 @@ services:
       - ./tapyrus_testnet.conf:/etc/tapyrus/tapyrus.conf
     ports:
       - '2377:2377'
-  electrs:
-    image: tapyrus/electrs-tapyrus:latest
+  esplora:
+    image: tapyrus/esplora-tapyrus:latest
     user: root
     volumes:
       - electrs:/var/lib/electrs
       - tapyrus:/var/lib/tapyrus:ro
-      - ./config.toml:/etc/electrs/config.toml:ro
     ports:
       - '50001:50001'
     depends_on:
       - tapyrusd
-    command: electrs -vvvv --timestamp --conf /etc/electrs/config.toml --db-dir /var/lib/electrs --daemon-rpc-addr tapyrusd:2377 --daemon-dir /var/lib/tapyrus/prod-1939510133 --network-id 1939510133  --electrum-rpc-addr 0.0.0.0:50001 --txid-limit 0
+    command:
+      [
+        'electrs',
+        '-vvvv',
+        '--timestamp',
+        '--db-dir',
+        '/var/lib/electrs',
+        '--daemon-rpc-addr',
+        'tapyrusd:2377',
+        '--daemon-dir',
+        '/var/lib/tapyrus/prod-1939510133',
+        '--network-id',
+        '1939510133',
+        '--network',
+        'prod',
+        '--electrum-rpc-addr',
+        '0.0.0.0:50001',
+        '--http-addr',
+        '0.0.0.0:3001',
+        '--cookie',
+        'rpcuser:rpcpassword',
+        '--electrum-txs-limit',
+        '1000000',
+        '--utxos-limit',
+        '1000000'
+      ]
 volumes:
   tapyrus:
   electrs:
