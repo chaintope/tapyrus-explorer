@@ -1,3 +1,4 @@
+const tapyrus = require('tapyrusjs-lib');
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
@@ -16,7 +17,9 @@ app.get('/address/:address', async (req, res) => {
   const lastSeenTxid = req.query.lastSeenTxid;
   const address = req.params.address;
 
-  if (!/^[0-9a-zA-Z]{26,35}$/.test(address)) {
+  try {
+    tapyrus.address.fromBase58Check(address);
+  } catch (e) {
     logger.error(`Invalid address - /address/${address}`);
     res.status(400).send('Bad request');
     return;
