@@ -9,6 +9,7 @@
             <ion-icon
               name="copy-outline"
               (click)="copyAddress()"
+              class="cursor-pointer"
               color="primary"
               style="margin: 16px 2px"
               id="copy-icon"
@@ -16,7 +17,7 @@
           </div>
           <div id="block-hash-bg" class="col-5">
             <strong id="block-hash-text">
-              <strong>Balance:</strong> {{ balanced || 0}} TPC</strong
+              <strong>Balance:</strong> {{ asTpc(balanced)}} TPC</strong
             >
           </div>
         </ion-col>
@@ -30,16 +31,18 @@
       <ion-item-divider class="mt-0 pt-0"></ion-item-divider>
       <ion-grid class="font-14 text-color">
         <ion-row>
-          <ion-col size="4" class="font-w500">Total Received:</ion-col>
-          <ion-col size="8">{{ received }}</ion-col>
+          <ion-col size="3" class="font-w500">Total Received:</ion-col>
+          <ion-col size="3" class="ion-text-right"
+            >{{ asTpc(received) }}</ion-col
+          >
         </ion-row>
         <ion-row>
-          <ion-col size="4" class="font-w500">Total Sent:</ion-col>
-          <ion-col size="8">{{ sent }}</ion-col>
+          <ion-col size="3" class="font-w500">Total Sent:</ion-col>
+          <ion-col size="3" class="ion-text-right">{{ asTpc(sent) }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col size="4" class="font-w500">No. Transactions:</ion-col>
-          <ion-col size="8">{{ txCount }}</ion-col>
+          <ion-col size="3" class="font-w500">No. Transactions:</ion-col>
+          <ion-col size="3" class="ion-text-right">{{ txCount }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>
@@ -51,62 +54,70 @@
         </ion-col>
       </ion-row>
       <ion-row class="table-header">
-        <ion-col size="3" class="pt-10">TXID</ion-col>
+        <ion-col size="2" class="pt-10">TXID</ion-col>
         <ion-col size="1" class="pt-10">BLOCK</ion-col>
         <ion-col size="1" class="pt-10">AGE</ion-col>
-        <ion-col size="7">
+        <ion-col size="4">
           <ion-row>
-            <ion-col size="5">FROM</ion-col>
-            <ion-col size="5">TO</ion-col>
-            <ion-col size="2">VALUE(TPC)</ion-col>
+            <ion-col size="8">FROM</ion-col>
+            <ion-col size="4">VALUE(TPC)</ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="4">
+          <ion-row>
+            <ion-col size="8">TO</ion-col>
+            <ion-col size="4">VALUE(TPC)</ion-col>
           </ion-row>
         </ion-col>
       </ion-row>
       <ion-row
-        class="text-color"
-        *ngFor="let tx of transactions | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: txCount }"
+        class="text-color table-border-bottom"
+        *ngFor="let tx of transactions"
       >
         <ion-col
-          size="3"
+          size="2"
           (click)="goToTransaction(tx.txid)"
-          class="link-color cursor-pointer"
-          >{{ tx.txid.substring(0,30) + "..." }}</ion-col
+          class="link-color cursor-pointer ellipsis"
+          >{{ tx.txid }}</ion-col
         >
-        <ion-col size="1">{{ tx.blockheight }}</ion-col>
-        <ion-col size="1">{{ tx.time | momentFromNow }}</ion-col>
-        <ion-col size="7">
-          <ion-row *ngFor="let output of tx.outputs; let i=index">
-            <ion-col size="5">
-              <ion-row>
-                <ion-col
-                  size="9"
-                  *ngIf="tx.inputs[i] !== '' "
-                  (click)="goToAddressPage(tx.inputs[i])"
-                  class="link-color cursor-pointer"
-                  >{{ tx.inputs[i].substring(0,18) + "..." }}</ion-col
-                >
-                <ion-col size="9" *ngIf="tx.inputs[i] === '' "
-                  >{{ tx.inputs[i]}}</ion-col
-                >
-                <ion-col size="2" *ngIf="tx.inputs[i] !== '' ">
-                  <ion-badge color="primary">IN</ion-badge>
-                </ion-col>
-              </ion-row>
+        <ion-col size="1">{{ tx.status.block_height }}</ion-col>
+        <ion-col size="1">{{ tx.status.block_time | momentFromNow }}</ion-col>
+        <ion-col size="4">
+          <ion-row *ngFor="let input of tx.vin">
+            <ion-col
+              size="6"
+              (click)="!input.prevout?.scriptpubkey_address || goToAddressPage(input.prevout?.scriptpubkey_address)"
+              [ngClass]="{'link-color cursor-pointer ellipsis': input.prevout?.scriptpubkey_address}"
+              >{{ input.prevout?.scriptpubkey_address }}</ion-col
+            >
+            <ion-col size="2">
+              <ion-badge *ngIf="!input.is_coinbase" color="primary"
+                >IN</ion-badge
+              >
+              <ion-badge *ngIf="input.is_coinbase" color="warning"
+                >COINBASE</ion-badge
+              >
             </ion-col>
-            <ion-col size="5">
-              <ion-row>
-                <ion-col
-                  size="9"
-                  (click)="goToAddressPage(output)"
-                  class="link-color cursor-pointer"
-                  >{{ output.substring(0,18) + "..." }}</ion-col
-                >
-                <ion-col size="2">
-                  <ion-badge color="danger">OUT</ion-badge>
-                </ion-col>
-              </ion-row>
+            <ion-col size="4" class="ion-text-right"
+              >{{ input.is_coinbase ? "" : asTpc(input.prevout?.value)
+              }}</ion-col
+            >
+          </ion-row>
+        </ion-col>
+        <ion-col size="4">
+          <ion-row *ngFor="let output of tx.vout">
+            <ion-col
+              size="6"
+              (click)="!output.scriptpubkey_address || goToAddressPage(output.scriptpubkey_address)"
+              [ngClass]="{'link-color cursor-pointer ellipsis': output.scriptpubkey_address}"
+              >{{ output.scriptpubkey_address }}</ion-col
+            >
+            <ion-col size="2">
+              <ion-badge color="danger">OUT</ion-badge>
             </ion-col>
-            <ion-col size="2">{{tx.amounts[i]}}</ion-col>
+            <ion-col size="4" class="ion-text-right"
+              >{{ asTpc(output.value) }}</ion-col
+            >
           </ion-row>
         </ion-col>
       </ion-row>
@@ -114,10 +125,14 @@
   </div>
   <ion-grid>
     <ion-row>
-      <ion-col class="ion-text-right">
-        <pagination-controls
-          (pageChange)="onPageChange($event)"
-        ></pagination-controls>
+      <ion-col class="ion-text-center">
+        <ion-button
+          color="primary"
+          id="next"
+          class="cursor-pointer"
+          (click)="onNextPage()"
+          >Load More</ion-button
+        >
       </ion-col>
     </ion-row>
   </ion-grid>

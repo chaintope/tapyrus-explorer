@@ -1,6 +1,7 @@
+const tapyrus = require('tapyrusjs-lib');
 const app = require('../app.js');
-const electrs = require('../libs/electrs');
 const logger = require('../libs/logger');
+const rest = require('../libs/rest');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -12,47 +13,48 @@ app.use((req, res, next) => {
 });
 
 app.get('/address/:address', async (req, res) => {
-  let perPage = Number(req.query.perPage);
-  const page = Number(req.query.page);
+  // TODO: This API only supports returning 25 records for one request.
+  const lastSeenTxid = req.query.lastSeenTxid;
+  const address = req.params.address;
 
-  const regex = new RegExp(/^[0-9a-zA-Z]{26,35}$/);
-  const urlAddress = req.params.address;
+  try {
+    tapyrus.address.fromBase58Check(address);
+  } catch (e) {
+    logger.error(`Invalid address - /address/${address}`);
+    res.status(400).send('Bad request');
+    return;
+  }
 
-  if (!regex.test(urlAddress)) {
-    logger.error(`Regex Test didn't pass for URL - /address/${urlAddress}`);
-
+  if (lastSeenTxid && !/^[0-9a-fA-F]{64}/.test(lastSeenTxid)) {
+    logger.error(`Invalid lastSeenTxid(${lastSeenTxid}) - /address/${address}`);
     res.status(400).send('Bad request');
     return;
   }
 
   try {
-    const scriptHash = electrs.convertToScriptHash(urlAddress);
-    const balances = await electrs.blockchain.scripthash.get_balance(
-      scriptHash
-    );
-    const balance = (balances && balances[0] && balances[0].confirmed) || 0;
-
-    const addressTxsCount = 0;
-
-    let startFromTxs = addressTxsCount - perPage * page + 1;
-    if (startFromTxs < 0) {
-      //if last page's remainder should use different value of startFromBlock and perPage
-      startFromTxs = 0;
-      perPage = (addressTxsCount + 1) % perPage;
+    const stats = await rest.address.stats(address);
+    let txs = await rest.address.txs(address, lastSeenTxid);
+    txs = txs.sort((tx1, tx2) => tx2.time - tx1.time);
+    let balances = [];
+    for (let [, scriptStats] of Object.entries(stats.chain_stats)) {
+      balances.push({
+        count: scriptStats.tx_count,
+        received: scriptStats.funded_txo_sum,
+        sent: scriptStats.spent_txo_sum,
+        balanced: scriptStats.funded_txo_sum - scriptStats.spent_txo_sum
+      });
     }
 
-    const transactions = [];
-    const receivedTapyrus = balance;
-
-    res.json([
-      balance,
-      transactions.sort((tx1, tx2) => tx2.time - tx1.time),
-      receivedTapyrus,
-      0
-    ]);
+    res.json({
+      balances,
+      tx: {
+        txs,
+        last_seen_txid: (txs[txs.length - 1] || {}).txid
+      }
+    });
   } catch (error) {
     logger.error(
-      `Error retrieving information for addresss - ${urlAddress}. Error Message - ${error.message}`
+      `Error retrieving information for addresss - ${address}. Error Message - ${error.message}`
     );
   }
 });

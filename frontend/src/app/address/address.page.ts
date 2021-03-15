@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
 
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
+import { Big } from 'big.js';
 
 @Component({
   selector: 'app-address',
@@ -19,20 +19,17 @@ export class AddressPage implements OnInit {
   balanced: number;
   received: number;
   sent: number;
-  txidsCount = 0;
-  result: any;
   transactions = [];
-  unspentDatas = [];
-  outputs = [];
+  txids = new Set();
   copied = false;
   perPage = AppConst.PER_PAGE_COUNT;
   page = 1; // default start with page 1
   pages = 1; // number of pages
   txCount = 0;
+  lastSeenTxid?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private httpClient: HttpClient,
     private navCtrl: NavController,
     private backendService: BackendService
   ) {}
@@ -47,8 +44,8 @@ export class AddressPage implements OnInit {
     this.navCtrl.navigateForward(`/tx/${txid}`);
   }
 
-  goToAddressPage(hash: string) {
-    this.navCtrl.navigateForward(`/addresses/${hash}`);
+  goToAddressPage(address: string) {
+    this.navCtrl.navigateForward(`/addresses/${address}`);
   }
 
   copyAddress() {
@@ -72,53 +69,26 @@ export class AddressPage implements OnInit {
     document.body.removeChild(textArea);
   }
 
-  onPageChange(pageNumber: number) {
-    this.page = pageNumber;
+  onNextPage() {
     this.getAddressInfo();
-  }
-
-  calculatePagination() {
-    this.pages = Math.ceil(this.txCount / this.perPage);
   }
 
   getAddressInfo() {
     this.backendService
-      .getAddressInfo(this.address, this.page, this.perPage)
+      .getAddressInfo(this.address, this.lastSeenTxid)
       .subscribe(
         data => {
-          this.received = data[2];
-          this.balanced = data[0] / 100000000;
-          this.sent = this.received - this.balanced;
-          this.result = data[1];
-          this.txCount = data[3];
-
-          if (this.result) {
-            this.txidsCount = this.result.length;
-
-            this.result.map(transaction => {
-              const outputs = [],
-                amounts = [];
-              for (const vout of transaction['vout']) {
-                for (const address of vout.scriptPubKey.addresses) {
-                  outputs.push(address);
-                }
-                amounts.push(vout.value);
-              }
-              transaction['outputs'] = outputs;
-              transaction['amounts'] = amounts;
-              console.log(transaction);
-              return transaction;
+          this.received = data['balances'][0]['received'] || 0;
+          this.sent = data['balances'][0]['sent'] || 0;
+          this.balanced = data['balances'][0]['balanced'] || 0;
+          this.txCount = data['balances'][0]['count'] || 0;
+          data['tx']['txs']
+            .filter(tx => !this.txids.has(tx.txid))
+            .forEach(tx => {
+              this.txids.add(tx.txid);
+              this.transactions.push(tx);
             });
-
-            this.transactions = this.result;
-            // this.getTransactionsInfo(this.result);
-          }
-          /*if (this.unspentDatas) {
-          this.calculateBalanceAndTotal();
-        } else {
-          this.balanced = 0;
-        }*/
-          this.calculatePagination();
+          this.lastSeenTxid = data['tx']['last_seen_txid'];
         },
         err => {
           console.log(err);
@@ -126,41 +96,8 @@ export class AddressPage implements OnInit {
       );
   }
 
-  getTransactionsInfo(txids = []) {
-    this.transactions = [];
-    for (const txid of txids) {
-      this.backendService.getTransaction(txid.tx_hash).subscribe(
-        data => {
-          this.backendService.getBlock(data['blockhash']).subscribe(
-            block => {
-              data['blockheight'] = block['height'];
-              this.transactions.push(data);
-              if (txid === txids[txids.length - 1]) {
-                this.transactions = this.transactions.sort(
-                  (transaction1, transaction2) =>
-                    transaction2.time - transaction1.time
-                );
-              }
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    }
-  }
-
-  calculateBalanceAndTotal() {
-    let amount = 0;
-    for (const unspend of this.unspentDatas) {
-      amount += unspend.amount;
-    }
-
-    this.balanced = amount;
-    this.sent = this.received - this.balanced;
+  asTpc(value?: number): string {
+    const valueAsBig = new Big(value || 0);
+    return valueAsBig.div(100_000_000).toFixed(8);
   }
 }
