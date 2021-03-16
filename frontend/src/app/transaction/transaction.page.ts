@@ -33,8 +33,7 @@ export class TransactionPage implements OnInit {
     this.backendService.getTransaction(this.txid).subscribe(
       data => {
         this.transaction = data || {};
-        this.calculateTxSize();
-        this.calculateVoutTotalAndFee();
+        this.calculateTotal();
       },
       err => {
         console.log(err);
@@ -42,32 +41,8 @@ export class TransactionPage implements OnInit {
     );
   }
 
-  calculateTxSize() {
-    const vin = this.transaction.vin.length;
-    const vout = this.transaction.vout.length;
-    this.transaction.size = 148 * vin + 34 * vout + 10;
-  }
-
-  async calculateVoutTotalAndFee() {
-    let voutValue = 0;
-    let vinValue = 0;
-    for (const vout of this.transaction.vout) {
-      if (vout.value) {
-        voutValue += vout.value;
-      }
-    }
-    for (const vin of this.transaction.vin) {
-      if (vin && vin.vout) {
-        for (const vout of vin.vout) {
-          if (vout && vout.value) {
-            vinValue += vout.value;
-          }
-        }
-      }
-    }
-    this.transaction.totalVout = voutValue;
-    this.transaction.totalVin = vinValue;
-    this.transaction.totalFee = vinValue - voutValue;
+  calculateTotal() {
+    this.transaction.totalVout = this.transaction.vout.reduce((sum, output) => sum + output.value, 0);
   }
 
   goToTransactions() {

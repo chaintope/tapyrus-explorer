@@ -1,6 +1,7 @@
 const app = require('../app.js');
-const electrs = require('../libs/electrs');
 const logger = require('../libs/logger');
+const rest = require('../libs/rest');
+const util = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -12,76 +13,71 @@ app.use((req, res, next) => {
 });
 
 app.get('/tx/:txid', async (req, res) => {
-  const regex = new RegExp(/^[0-9a-fA-F]{64}$/);
-  const urlTxid = req.params.txid;
+  const txid = req.params.txid;
 
-  if (!regex.test(urlTxid)) {
-    res.status(400).send(`Invalid txid: ${urlTxid}`);
+  if (!util.isHash(txid)) {
+    console.error(`Invalid txid(${txid}) -- /tx/${txid}`)
+    res.status(400).send("Bad request");
     return;
   }
 
   try {
-    const tx = await electrs.blockchain.transaction.get(urlTxid, true);
-    if (tx === undefined) {
-      res.status(404).send('Tx not found.');
-    } else {
-      tx.vinRaw = tx.vin.map(async vin => {
-        if (!vin.txid) return {};
-        return await electrs.blockchain.transaction.get(vin.txid, true);
-      });
-      res.json(tx);
+    const tx = await rest.transaction.get(txid);
+    if (!tx) {
+      res.status(404).send("Tx not found");
+      return;
     }
+    const height = await rest.block.tip.height();
+    tx['status']['confirmations'] = height - tx['status']['block_height'] + 1;
+    res.json(tx);
   } catch (error) {
     logger.error(
-      `Error retrieving information for transaction - ${urlTxid}. Error Message - ${error.message}`
+      `Error retrieving information for transaction - ${txid}. Error Message - ${error.message}`
     );
   }
 });
 
 app.get('/tx/:txid/rawData', async (req, res) => {
-  const regex = new RegExp(/^[0-9a-fA-F]{64}$/);
-  const urlTxid = req.params.txid;
+  const txid = req.params.txid;
 
-  if (!regex.test(urlTxid)) {
-    logger.error(`Regex Test didn't pass for URL - /tx/${urlTxid}/rawData`);
-    res.status(400).send(`Invalid txid: ${urlTxid}`);
+  if (!util.isHash(txid)) {
+    console.error(`Invalid txid(${txid}) -- /tx/${txid}/rawData`)
+    res.status(400).send("Bad request");
     return;
   }
 
   try {
-    const tx = await electrs.blockchain.transaction.get(urlTxid, false);
-    if (tx === undefined) {
-      res.status(404).send('Tx not found.');
-    } else {
-      res.json(tx);
+    const tx = await rest.transaction.raw(txid);
+    if (!tx) {
+      res.status(404).send("Tx not found");
+      return;
     }
+    res.json({ hex: tx });
   } catch (error) {
     logger.error(
-      `Error retrieving rawdata for transaction - ${urlTxid}. Error Message - ${error.message}`
+      `Error retrieving rawdata for transaction - ${txid}. Error Message - ${error.message}`
     );
   }
 });
 
 app.get('/tx/:txid/get', async (req, res) => {
-  const urlTxid = req.params.txid;
-  const regex = new RegExp(/^[0-9a-fA-F]{64}$/);
-
-  if (!regex.test(urlTxid)) {
-    logger.error(`Regex Test didn't pass for URL - /tx/${urlTxid}/get`);
-    res.status(400).send(`Invalid txid: ${urlTxid}`);
+  const txid = req.params.txid;
+  if (!util.isHash(txid)) {
+    console.error(`Invalid txid(${txid}) -- /tx/${txid}/get`)
+    res.status(400).send("Bad request");
     return;
   }
 
   try {
-    const tx = await electrs.blockchain.transaction.get(urlTxid, true);
-    if (tx === undefined) {
-      res.status(404).send('Tx not found.');
-    } else {
-      res.json(tx);
+    const tx = await rest.transaction.get(txid);
+    if (!tx) {
+      res.status(404).send("Tx not found");
+      return;
     }
+    res.json(tx);
   } catch (error) {
     logger.error(
-      `Error calling the method gettransaction for transaction - ${urlTxid}. Error Message - ${error.message}`
+      `Error calling the method gettransaction for transaction - ${txid}. Error Message - ${error.message}`
     );
   }
 });

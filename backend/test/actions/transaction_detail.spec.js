@@ -2,7 +2,7 @@ const supertest = require('supertest');
 const assert = require('assert');
 const app = require('../../server');
 require('../../actions/transaction_detail');
-const electrs = require('../../libs/electrs');
+const rest = require('../../libs/rest');
 const sinon = require('sinon');
 
 function isEmpty(obj) {
@@ -12,69 +12,69 @@ function isEmpty(obj) {
   return true;
 }
 
-describe('GET /tx/:txid with sinon.stub', function () {
+describe('GET /tx/:txid', () => {
   beforeEach(() => {
     sinon
-      .stub(electrs.blockchain.transaction, 'get')
+      .stub(rest.transaction, 'get')
       .withArgs(
-        'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
-        true
+        'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8'
       )
       .resolves({
         txid:
           'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
         hash:
           'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531',
-        features: 1,
         size: 90,
-        vsize: 90,
         weight: 360,
         locktime: 0,
-        vin: [{ coinbase: '08f2770101', sequence: 9672954294 }],
-        vout: [
-          {
-            value: 50,
-            n: 0,
-            scriptPubKey: {
-              asm:
-                'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG',
-              hex: 'ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a',
-              reqSigs: 1,
-              type: 'pubkeyhash',
-              addresses: ['1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA']
-            }
+        vin: [
+          { 
+            coinbase: '08f2770101',
+            sequence: 9672954294,
+            prevout: null,
+            scriptsig: "0308f2770101",
+            scriptsig_asm: "OP_PUSHBYTES_3 08f277 OP_PUSHBYTES_1 01"
           }
         ],
-        hex:
-          '01000000010000000000000000000000000000000000000000000000000000000000000000e37700000502e3770101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000',
-        blockhash:
-          '69b5964caf1e85883dfe60ddf4ace9e301e7b21a923f8fc82f47b0deae366a2b',
-        confirmations: 28,
-        time: 1599509432,
-        blocktime: 1599509432
+        vout: [
+          {
+            value: 5_000_000_000,
+            scriptpubkey: "76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac",
+            scriptpubkey_address: "1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA",
+            scriptpubkey_asm: "OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG",
+            scriptpubkey_type: "p2pkh"
+          }
+        ],
+        status: {
+          block_hash: "69b5964caf1e85883dfe60ddf4ace9e301e7b21a923f8fc82f47b0deae366a2b",
+          block_height: 82737,
+          block_time: 1599509432,
+          confirmed: true
+        }
       })
       .withArgs(
-        'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c3',
-        true
+        'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c3'
       )
       .resolves(undefined);
+
+      sinon
+      .stub(rest.block.tip, 'height')
+      .resolves(82737);
   });
 
   afterEach(() => {
     sinon.restore();
   });
 
-  context('existing tx', function () {
-    it('should return transaction information', function (done) {
+  context('existing tx', () => {
+    it('should return transaction information', (done) => {
       supertest(app)
         .get(
           '/tx/a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8'
         )
         .expect(200)
         .expect('Content-Type', /json/)
-        .end(function (err, res) {
-          if (err) done(err);
-
+        .then((res) => {
           const transaction = res.body;
           assert.strictEqual(
             transaction.txid,
@@ -84,72 +84,59 @@ describe('GET /tx/:txid with sinon.stub', function () {
             transaction.hash,
             'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531'
           );
-          assert.strictEqual(transaction.features, 1);
           assert.strictEqual(transaction.size, 90);
-          assert.strictEqual(transaction.vsize, 90);
           assert.strictEqual(transaction.weight, 360);
           assert.strictEqual(transaction.locktime, 0);
           assert.strictEqual(
-            transaction.hex,
-            '01000000010000000000000000000000000000000000000000000000000000000000000000e37700000502e3770101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000'
-          );
-          assert.strictEqual(
-            transaction.blockhash,
+            transaction.status.block_hash,
             '69b5964caf1e85883dfe60ddf4ace9e301e7b21a923f8fc82f47b0deae366a2b'
           );
-          assert.strictEqual(transaction.time, 1599509432);
-          assert.strictEqual(transaction.blocktime, 1599509432);
+          assert.strictEqual(transaction.status.block_time, 1599509432);
 
           assert.strictEqual(transaction.vin[0].coinbase, '08f2770101');
           assert.strictEqual(transaction.vin[0].sequence, 9672954294);
 
-          assert.strictEqual(transaction.vout[0].value, 50);
-          assert.strictEqual(transaction.vout[0].n, 0);
+          assert.strictEqual(transaction.vout[0].value, 5_000_000_000);
           assert.strictEqual(
-            transaction.vout[0].scriptPubKey.asm,
+            transaction.vout[0].scriptpubkey_asm,
             'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG'
           );
           assert.strictEqual(
-            transaction.vout[0].scriptPubKey.hex,
-            'ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a'
-          );
-          assert.strictEqual(transaction.vout[0].scriptPubKey.reqSigs, 1);
-          assert.strictEqual(
-            transaction.vout[0].scriptPubKey.type,
-            'pubkeyhash'
+            transaction.vout[0].scriptpubkey,
+            '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac'
           );
           assert.strictEqual(
-            transaction.vout[0].scriptPubKey.addresses[0],
+            transaction.vout[0].scriptpubkey_type,
+            'p2pkh'
+          );
+          assert.strictEqual(
+            transaction.vout[0].scriptpubkey_address,
             '1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA'
           );
 
-          assert.strictEqual(transaction.vinRaw.length, 1);
-          assert.strictEqual(isEmpty(transaction.vinRaw[0]), true);
-
           done();
-        });
+        }).catch(done);
     });
   });
 
-  context('unknown tx', function () {
-    it('should return 404 response.', function (done) {
+  context('unknown tx', () => {
+    it('should return 404 response.', (done) => {
       supertest(app)
         .get(
           '/tx/a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c3'
         )
         .expect(404)
-        .expect('Content-Type', /json/)
-        .end(function (err, res) {
+        .then((res) => {
           done();
-        });
+        }).catch(done);
     });
   });
 });
 
-describe('GET /tx/:txid/rawData with sinon.stub', function () {
+describe('GET /tx/:txid/rawData', () => {
   beforeEach(() => {
     sinon
-      .stub(electrs.blockchain.transaction, 'get')
+      .stub(rest.transaction, 'raw')
       .withArgs(
         'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8'
       )
@@ -162,70 +149,67 @@ describe('GET /tx/:txid/rawData with sinon.stub', function () {
     sinon.restore();
   });
 
-  it('/tx/:txid/rawData', function (done) {
+  it('/tx/:txid/rawData', (done) => {
     supertest(app)
       .get(
         '/tx/a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8/rawData'
       )
       .expect(200)
       .expect('Content-Type', /json/)
-      .end(function (err, res) {
-        if (err) done(err);
-
-        const rawTransaction = res.body;
+      .then((res) => {
+        const rawTransaction = res.body.hex;
         assert.strictEqual(
           rawTransaction,
           '01000000010000000000000000000000000000000000000000000000000000000000000000c57700000502c5770101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000'
         );
         done();
-      });
+      }).catch(done);
   });
 
-  afterEach(function () {
+  afterEach(() => {
     sinon.restore();
   });
 });
 
-describe('GET /tx/:txid/get with sinon.stub', function () {
+describe('GET /tx/:txid/get', ()  => {
   beforeEach(() => {
     sinon
-      .stub(electrs.blockchain.transaction, 'get')
+      .stub(rest.transaction, 'get')
       .withArgs(
-        'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
-        true
+        'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8'
       )
       .resolves({
         txid:
           'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
         hash:
           'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531',
-        features: 1,
         size: 90,
-        vsize: 90,
         weight: 360,
         locktime: 0,
-        vin: [{ coinbase: '08f2770101', sequence: 9672954294 }],
-        vout: [
-          {
-            value: 50,
-            n: 0,
-            scriptPubKey: {
-              asm:
-                'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG',
-              hex: 'ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a',
-              reqSigs: 1,
-              type: 'pubkeyhash',
-              addresses: ['1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA']
-            }
+        vin: [
+          { 
+            coinbase: '08f2770101',
+            sequence: 9672954294,
+            prevout: null,
+            scriptsig: "0308f2770101",
+            scriptsig_asm: "OP_PUSHBYTES_3 08f277 OP_PUSHBYTES_1 01"
           }
         ],
-        hex:
-          '01000000010000000000000000000000000000000000000000000000000000000000000000e37700000502e3770101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000',
-        blockhash:
-          '69b5964caf1e85883dfe60ddf4ace9e301e7b21a923f8fc82f47b0deae366a2b',
-        confirmations: 28,
-        time: 1599509432,
-        blocktime: 1599509432
+        vout: [
+          {
+            value: 500_000_000,
+            scriptpubkey: "76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac",
+            scriptpubkey_address: "1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA",
+            scriptpubkey_asm: "OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG",
+            scriptpubkey_type: "p2pkh"
+          }
+        ],
+        status: {
+          block_hash: "69b5964caf1e85883dfe60ddf4ace9e301e7b21a923f8fc82f47b0deae366a2b",
+          block_height: 82737,
+          block_time: 1599509432,
+          confirmed: true
+        }
       });
   });
 
@@ -233,15 +217,14 @@ describe('GET /tx/:txid/get with sinon.stub', function () {
     sinon.restore();
   });
 
-  it('/tx/:txid/get', function (done) {
+  it('/tx/:txid/get', (done) => {
     supertest(app)
       .get(
         '/tx/a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8/get'
       )
       .expect(200)
       .expect('Content-Type', /json/)
-      .end(function (err, res) {
-        if (err) return done(err);
+      .then((res) => {
 
         const getTransaction = res.body;
 
@@ -253,46 +236,37 @@ describe('GET /tx/:txid/get with sinon.stub', function () {
           getTransaction.hash,
           'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531'
         );
-        assert.strictEqual(getTransaction.features, 1);
         assert.strictEqual(getTransaction.size, 90);
-        assert.strictEqual(getTransaction.vsize, 90);
         assert.strictEqual(getTransaction.weight, 360);
         assert.strictEqual(getTransaction.locktime, 0);
         assert.strictEqual(
-          getTransaction.hex,
-          '01000000010000000000000000000000000000000000000000000000000000000000000000e37700000502e3770101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000'
-        );
-        assert.strictEqual(
-          getTransaction.blockhash,
+          getTransaction.status.block_hash,
           '69b5964caf1e85883dfe60ddf4ace9e301e7b21a923f8fc82f47b0deae366a2b'
         );
-        assert.strictEqual(getTransaction.time, 1599509432);
-        assert.strictEqual(getTransaction.blocktime, 1599509432);
+        assert.strictEqual(getTransaction.status.block_time, 1599509432);
 
         assert.strictEqual(getTransaction.vin[0].coinbase, '08f2770101');
         assert.strictEqual(getTransaction.vin[0].sequence, 9672954294);
 
-        assert.strictEqual(getTransaction.vout[0].value, 50);
-        assert.strictEqual(getTransaction.vout[0].n, 0);
+        assert.strictEqual(getTransaction.vout[0].value, 500_000_000);
         assert.strictEqual(
-          getTransaction.vout[0].scriptPubKey.asm,
+          getTransaction.vout[0].scriptpubkey_asm,
           'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG'
         );
         assert.strictEqual(
-          getTransaction.vout[0].scriptPubKey.hex,
-          'ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a'
-        );
-        assert.strictEqual(getTransaction.vout[0].scriptPubKey.reqSigs, 1);
-        assert.strictEqual(
-          getTransaction.vout[0].scriptPubKey.type,
-          'pubkeyhash'
+          getTransaction.vout[0].scriptpubkey,
+          '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac'
         );
         assert.strictEqual(
-          getTransaction.vout[0].scriptPubKey.addresses[0],
+          getTransaction.vout[0].scriptpubkey_type,
+          'p2pkh'
+        );
+        assert.strictEqual(
+          getTransaction.vout[0].scriptpubkey_address,
           '1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA'
         );
 
         done();
-      });
+      }).catch(done);
   });
 });

@@ -28,6 +28,46 @@ const address = {
   }
 };
 
+const transaction = {
+  get: async (txid) => {
+    const url = `${baseUrl}/tx/${txid}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
+  raw: async (txid) => {
+    const url = `${baseUrl}/tx/${txid}/hex`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.text();
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  }
+}
+
+const block = {
+  tip: {
+    height: async () => {
+      const url = `${baseUrl}/blocks/tip/height`;
+      const response = await fetch(url);
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`failed to fetch API ${url}`);
+      }
+    }
+  }
+}
 module.exports = {
-  address
+  address,
+  transaction,
+  block
 };

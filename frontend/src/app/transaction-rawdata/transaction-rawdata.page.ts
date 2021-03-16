@@ -30,8 +30,8 @@ export class TransactionRawdataPage implements OnInit {
   getTxRawData() {
     this.backendService.getRawTransaction(this.txid).subscribe(
       data => {
-        const result: any = data || '';
-        this.txRawData = result;
+        const result: any = data || { hex: '' };
+        this.txRawData = result['hex'];
       },
       err => {
         console.log(err);
