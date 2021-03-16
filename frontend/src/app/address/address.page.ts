@@ -4,7 +4,6 @@ import { NavController } from '@ionic/angular';
 
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
-import { Big } from 'big.js';
 
 @Component({
   selector: 'app-address',
@@ -94,10 +93,5 @@ export class AddressPage implements OnInit {
           console.log(err);
         }
       );
-  }
-
-  asTpc(value?: number): string {
-    const valueAsBig = new Big(value || 0);
-    return valueAsBig.div(100_000_000).toFixed(8);
   }
 }

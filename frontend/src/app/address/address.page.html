@@ -17,7 +17,7 @@
           </div>
           <div id="block-hash-bg" class="col-5">
             <strong id="block-hash-text">
-              <strong>Balance:</strong> {{ asTpc(balanced)}} TPC</strong
+              <strong>Balance:</strong> {{ balanced | asTpc}} TPC</strong
             >
           </div>
         </ion-col>
@@ -33,12 +33,12 @@
         <ion-row>
           <ion-col size="3" class="font-w500">Total Received:</ion-col>
           <ion-col size="3" class="ion-text-right"
-            >{{ asTpc(received) }}</ion-col
+            >{{ received | asTpc }}</ion-col
           >
         </ion-row>
         <ion-row>
           <ion-col size="3" class="font-w500">Total Sent:</ion-col>
-          <ion-col size="3" class="ion-text-right">{{ asTpc(sent) }}</ion-col>
+          <ion-col size="3" class="ion-text-right">{{ sent | asTpc  }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col size="3" class="font-w500">No. Transactions:</ion-col>
@@ -98,10 +98,8 @@
                 >COINBASE</ion-badge
               >
             </ion-col>
-            <ion-col size="4" class="ion-text-right"
-              >{{ input.is_coinbase ? "" : asTpc(input.prevout?.value)
-              }}</ion-col
-            >
+            <ion-col size="4" class="ion-text-right" *ngIf="input.is_coinbase"></ion-col>
+            <ion-col size="4" class="ion-text-right" *ngIf="!input.is_coinbase">{{ input.prevout?.value | asTpc}}</ion-col>
           </ion-row>
         </ion-col>
         <ion-col size="4">
@@ -116,7 +114,7 @@
               <ion-badge color="danger">OUT</ion-badge>
             </ion-col>
             <ion-col size="4" class="ion-text-right"
-              >{{ asTpc(output.value) }}</ion-col
+              >{{ output.value | asTpc }}</ion-col
             >
           </ion-row>
         </ion-col>
