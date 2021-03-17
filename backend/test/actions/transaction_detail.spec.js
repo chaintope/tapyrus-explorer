@@ -5,13 +5,6 @@ require('../../actions/transaction_detail');
 const rest = require('../../libs/rest');
 const sinon = require('sinon');
 
-function isEmpty(obj) {
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
-  return true;
-}
-
 describe('GET /tx/:txid', () => {
   beforeEach(() => {
     sinon
@@ -38,7 +31,7 @@ describe('GET /tx/:txid', () => {
         ],
         vout: [
           {
-            value: 5_000_000_000,
+            value: 5000000000,
             scriptpubkey:
               '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac',
             scriptpubkey_address: '1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA',
@@ -97,7 +90,7 @@ describe('GET /tx/:txid', () => {
           assert.strictEqual(transaction.vin[0].coinbase, '08f2770101');
           assert.strictEqual(transaction.vin[0].sequence, 9672954294);
 
-          assert.strictEqual(transaction.vout[0].value, 5_000_000_000);
+          assert.strictEqual(transaction.vout[0].value, 5000000000);
           assert.strictEqual(
             transaction.vout[0].scriptpubkey_asm,
             'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG'
@@ -198,7 +191,7 @@ describe('GET /tx/:txid/get', () => {
         ],
         vout: [
           {
-            value: 500_000_000,
+            value: 5000000000,
             scriptpubkey:
               '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac',
             scriptpubkey_address: '1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA',
@@ -251,7 +244,7 @@ describe('GET /tx/:txid/get', () => {
         assert.strictEqual(getTransaction.vin[0].coinbase, '08f2770101');
         assert.strictEqual(getTransaction.vin[0].sequence, 9672954294);
 
-        assert.strictEqual(getTransaction.vout[0].value, 500_000_000);
+        assert.strictEqual(getTransaction.vout[0].value, 5000000000);
         assert.strictEqual(
           getTransaction.vout[0].scriptpubkey_asm,
           'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG'
