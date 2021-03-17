@@ -29,7 +29,7 @@ const address = {
 };
 
 const transaction = {
-  get: async (txid) => {
+  get: async txid => {
     const url = `${baseUrl}/tx/${txid}`;
     const response = await fetch(url);
     if (response.ok) {
@@ -40,7 +40,7 @@ const transaction = {
       throw new Error(`failed to fetch API ${url}`);
     }
   },
-  raw: async (txid) => {
+  raw: async txid => {
     const url = `${baseUrl}/tx/${txid}/hex`;
     const response = await fetch(url);
     if (response.ok) {
@@ -51,7 +51,7 @@ const transaction = {
       throw new Error(`failed to fetch API ${url}`);
     }
   }
-}
+};
 
 const block = {
   tip: {
@@ -65,7 +65,7 @@ const block = {
       }
     }
   }
-}
+};
 module.exports = {
   address,
   transaction,

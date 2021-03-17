@@ -31,7 +31,9 @@
         </ion-row>
         <ion-row class="table-content">
           <ion-col size="2" class="font-w500">Received Time:</ion-col>
-          <ion-col size="8">{{ transaction.status?.block_time || "N/A" }}</ion-col>
+          <ion-col size="8"
+            >{{ transaction.status?.block_time || "N/A" }}</ion-col
+          >
         </ion-row>
         <ion-row class="table-content">
           <ion-col size="2" class="font-w500">Lock Time:</ion-col>
@@ -39,11 +41,13 @@
         </ion-row>
         <ion-row class="table-content">
           <ion-col size="2" class="font-w500">Verified Time:</ion-col>
-          <ion-col size="8">{{ transaction.status?.block_time || "N/A" }}</ion-col>
+          <ion-col size="8"
+            >{{ transaction.status?.block_time || "N/A" }}</ion-col
+          >
         </ion-row>
         <ion-row class="table-content">
           <ion-col size="2" class="font-w500">Fee:</ion-col>
-          <ion-col size="8">{{ transaction.fee  | asTpc }} TPC</ion-col>
+          <ion-col size="8">{{ transaction.fee | asTpc }} TPC</ion-col>
         </ion-row>
       </ion-grid>
     </div>
@@ -59,8 +63,8 @@
           </ion-col>
           <ion-col size="4" class="ion-text-right">
             <div>
-              Verified: {{ transaction.status?.block_time * 1000 | date: 'MMM dd, yyyy
-              hh:mm:ss' }}
+              Verified: {{ transaction.status?.block_time * 1000 | date: 'MMM
+              dd, yyyy hh:mm:ss' }}
             </div>
           </ion-col>
         </ion-row>
@@ -83,7 +87,8 @@
                     <ion-col
                       size="4"
                       class="ion-no-margin ion-text-right text-gray"
-                      > {{ vin.prevout.value | asTpc }} TPC</ion-col
+                    >
+                      {{ vin.prevout.value | asTpc }} TPC</ion-col
                     >
                   </ion-row>
                 </div>
@@ -114,8 +119,8 @@
                   (click)="goToAddress(vout.scriptpubkey_address)"
                   >{{ vout.scriptpubkey_address }}</ion-col
                 >
-                <ion-col size="4" class="ion-text-right text-gray"
-                  > {{vout.value | asTpc }} TPC</ion-col
+                <ion-col size="4" class="ion-text-right text-gray">
+                  {{vout.value | asTpc }} TPC</ion-col
                 >
               </ion-row>
             </ion-col>
@@ -165,7 +170,16 @@
           <ion-item-divider></ion-item-divider>
 
           <ion-row>
-            <ion-col size="6" offset="0" size-sm="4" offset-sm="4" size-md="3" offset-md="6" size-lg="2" offset-lg="8">
+            <ion-col
+              size="6"
+              offset="0"
+              size-sm="4"
+              offset-sm="4"
+              size-md="3"
+              offset-md="6"
+              size-lg="2"
+              offset-lg="8"
+            >
               <ion-item color="medium">
                 <ion-label class="ion-text-center">
                   {{ transaction.status?.confirmations || 0 }} CONFIRMATIONS

@@ -38,7 +38,7 @@
         </ion-row>
         <ion-row>
           <ion-col size="3" class="font-w500">Total Sent:</ion-col>
-          <ion-col size="3" class="ion-text-right">{{ sent | asTpc  }}</ion-col>
+          <ion-col size="3" class="ion-text-right">{{ sent | asTpc }}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col size="3" class="font-w500">No. Transactions:</ion-col>
@@ -98,8 +98,14 @@
                 >COINBASE</ion-badge
               >
             </ion-col>
-            <ion-col size="4" class="ion-text-right" *ngIf="input.is_coinbase"></ion-col>
-            <ion-col size="4" class="ion-text-right" *ngIf="!input.is_coinbase">{{ input.prevout?.value | asTpc}}</ion-col>
+            <ion-col
+              size="4"
+              class="ion-text-right"
+              *ngIf="input.is_coinbase"
+            ></ion-col>
+            <ion-col size="4" class="ion-text-right" *ngIf="!input.is_coinbase"
+              >{{ input.prevout?.value | asTpc}}</ion-col
+            >
           </ion-row>
         </ion-col>
         <ion-col size="4">

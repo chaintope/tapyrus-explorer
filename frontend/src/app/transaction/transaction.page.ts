@@ -42,7 +42,10 @@ export class TransactionPage implements OnInit {
   }
 
   calculateTotal() {
-    this.transaction.totalVout = this.transaction.vout.reduce((sum, output) => sum + output.value, 0);
+    this.transaction.totalVout = this.transaction.vout.reduce(
+      (sum, output) => sum + output.value,
+      0
+    );
   }
 
   goToTransactions() {

@@ -16,15 +16,15 @@ app.get('/tx/:txid', async (req, res) => {
   const txid = req.params.txid;
 
   if (!util.isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /tx/${txid}`)
-    res.status(400).send("Bad request");
+    console.error(`Invalid txid(${txid}) -- /tx/${txid}`);
+    res.status(400).send('Bad request');
     return;
   }
 
   try {
     const tx = await rest.transaction.get(txid);
     if (!tx) {
-      res.status(404).send("Tx not found");
+      res.status(404).send('Tx not found');
       return;
     }
     const height = await rest.block.tip.height();
@@ -41,15 +41,15 @@ app.get('/tx/:txid/rawData', async (req, res) => {
   const txid = req.params.txid;
 
   if (!util.isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /tx/${txid}/rawData`)
-    res.status(400).send("Bad request");
+    console.error(`Invalid txid(${txid}) -- /tx/${txid}/rawData`);
+    res.status(400).send('Bad request');
     return;
   }
 
   try {
     const tx = await rest.transaction.raw(txid);
     if (!tx) {
-      res.status(404).send("Tx not found");
+      res.status(404).send('Tx not found');
       return;
     }
     res.json({ hex: tx });
@@ -63,15 +63,15 @@ app.get('/tx/:txid/rawData', async (req, res) => {
 app.get('/tx/:txid/get', async (req, res) => {
   const txid = req.params.txid;
   if (!util.isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /tx/${txid}/get`)
-    res.status(400).send("Bad request");
+    console.error(`Invalid txid(${txid}) -- /tx/${txid}/get`);
+    res.status(400).send('Bad request');
     return;
   }
 
   try {
     const tx = await rest.transaction.get(txid);
     if (!tx) {
-      res.status(404).send("Tx not found");
+      res.status(404).send('Tx not found');
       return;
     }
     res.json(tx);
