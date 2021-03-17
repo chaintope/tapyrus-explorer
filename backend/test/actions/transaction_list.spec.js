@@ -2,7 +2,7 @@ const supertest = require('supertest');
 const assert = require('assert');
 const app = require('../../server');
 require('../../actions/transaction_list');
-const electrs = require('../../libs/electrs');
+const rest = require('../../libs/rest');
 const cl = require('../../libs/tapyrusd').client;
 const sinon = require('sinon');
 
@@ -34,41 +34,42 @@ describe('GET /transactions and then call individual transaction using /tx/:txid
       }
     });
     sinon
-      .stub(electrs.blockchain.transaction, 'get')
+      .stub(rest.transaction, 'get')
       .withArgs(
         '67de335bfd0d098ff415b26e30716b54cd54a6e310897980b25c37610344d46f'
       )
       .resolves({
         txid:
           '67de335bfd0d098ff415b26e30716b54cd54a6e310897980b25c37610344d46f',
-        hash:
-          'ec98b82943d3b98fcdf1f3d482c0b142386bf34678c71bbaf67da6a8dd251030',
         vin: [
           {
             txid:
               'eb420c5e67fb1786045f4e5b932b526503c596d3692f44ceba5c2830faaf08dd',
             vout: 0,
-            scriptSig: {
-              asm:
-                '30440220104a368bfb63b90848dde50fd8101c6dc73b77d7930e905ba464385e3bec1c410220299a3a1b83a86527b7e1cadcd89ff44df444115c96c8a191ac3b7551dc3f5732[ALL] 037a65e1076bd67f566ea4c1f542141b9b0004b4479c57eb951671cc89c4758e67',
-              hex:
-                '4730440220104a368bfb63b90848dde50fd8101c6dc73b77d7930e905ba464385e3bec1c410220299a3a1b83a86527b7e1cadcd89ff44df444115c96c8a191ac3b7551dc3f57320121037a65e1076bd67f566ea4c1f542141b9b0004b4479c57eb951671cc89c4758e67'
-            },
-            sequence: 4294967294
+            scriptsig:
+              '4730440220104a368bfb63b90848dde50fd8101c6dc73b77d7930e905ba464385e3bec1c410220299a3a1b83a86527b7e1cadcd89ff44df444115c96c8a191ac3b7551dc3f57320121037a65e1076bd67f566ea4c1f542141b9b0004b4479c57eb951671cc89c4758e67',
+            scriptsig_asm:
+              '30440220104a368bfb63b90848dde50fd8101c6dc73b77d7930e905ba464385e3bec1c410220299a3a1b83a86527b7e1cadcd89ff44df444115c96c8a191ac3b7551dc3f5732[ALL] 037a65e1076bd67f566ea4c1f542141b9b0004b4479c57eb951671cc89c4758e67',
+            sequence: 4294967294,
+            prevout: {
+              value: 400000000,
+              scriptpubkey:
+                '76a914846dbba7c781c8103efca5be3ceead6ba6eba1ea88ac',
+              scriptpubkey_asm:
+                'OP_DUP OP_HASH160 846dbba7c781c8103efca5be3ceead6ba6eba1ea OP_EQUALVERIFY OP_CHECKSIG',
+              scriptpubkey_type: 'p2pkh',
+              scriptpubkey_address: '1D5DehxQTUG7vHq6i3EQE8JnBb6SDcqZkS'
+            }
           }
         ],
         vout: [
           {
-            value: 0.4,
-            n: 0,
-            scriptPubKey: {
-              asm:
-                'OP_DUP OP_HASH160 846dbba7c781c8103efca5be3ceead6ba6eba1ea OP_EQUALVERIFY OP_CHECKSIG',
-              hex: '76a914846dbba7c781c8103efca5be3ceead6ba6eba1ea88ac',
-              reqSigs: 1,
-              type: 'pubkeyhash',
-              addresses: ['1D5DehxQTUG7vHq6i3EQE8JnBb6SDcqZkS']
-            }
+            value: 400000000,
+            scriptpubkey: '76a914846dbba7c781c8103efca5be3ceead6ba6eba1ea88ac',
+            scriptpubkey_asm:
+              'OP_DUP OP_HASH160 846dbba7c781c8103efca5be3ceead6ba6eba1ea OP_EQUALVERIFY OP_CHECKSIG',
+            scriptpubkey_type: 'p2pkh',
+            scriptpubkey_address: '1D5DehxQTUG7vHq6i3EQE8JnBb6SDcqZkS'
           }
         ]
       })
@@ -80,16 +81,12 @@ describe('GET /transactions and then call individual transaction using /tx/:txid
           'eb420c5e67fb1786045f4e5b932b526503c596d3692f44ceba5c2830faaf08dd',
         vout: [
           {
-            value: 0.4,
-            n: 0,
-            scriptPubKey: {
-              asm:
-                'OP_DUP OP_HASH160 846dbba7c781c8103efca5be3ceead6ba6eba1ea OP_EQUALVERIFY OP_CHECKSIG',
-              hex: '76a914846dbba7c781c8103efca5be3ceead6ba6eba1ea88ac',
-              reqSigs: 1,
-              type: 'pubkeyhash',
-              addresses: ['1D5DehxQTUG7vHq6i3EQE8JnBb6SDcqZkS']
-            }
+            value: 400000000,
+            scriptpubkey: '76a914846dbba7c781c8103efca5be3ceead6ba6eba1ea88ac',
+            scriptpubkey_asm:
+              'OP_DUP OP_HASH160 846dbba7c781c8103efca5be3ceead6ba6eba1ea OP_EQUALVERIFY OP_CHECKSIG',
+            scriptpubkey_type: 'p2pkh',
+            scriptpubkey_address: '1D5DehxQTUG7vHq6i3EQE8JnBb6SDcqZkS'
           }
         ]
       });
@@ -116,7 +113,7 @@ describe('GET /transactions and then call individual transaction using /tx/:txid
             '67de335bfd0d098ff415b26e30716b54cd54a6e310897980b25c37610344d46f'
           );
           assert.strictEqual(tx.time, 1607586380);
-          assert.strictEqual(tx.amount, 0.4);
+          assert.strictEqual(tx.amount, 400000000);
           done();
         }
       });

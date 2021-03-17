@@ -10,7 +10,7 @@
             (keyup.enter)="onSearch()"
           ></ion-input>
         </ion-col>
-        <ion-col size="2">
+        <ion-col class="ion-no-padding" size="2">
           <ion-button color="primary" (click)="onSearch()">
             <ion-icon name="search-outline"></ion-icon>
           </ion-button>
@@ -45,13 +45,13 @@
           >{{ txn.time | momentFromNow }}</ion-col
         >
         <ion-col size="2" class="font-14 text-color ion-text-right"
-          >{{ txn.amount}}</ion-col
+          >{{ txn.amount | asTpc }}</ion-col
         >
         <ion-col size="2" class="font-14 text-color ion-text-right"
-          >{{ txn.size}}</ion-col
+          >{{ txn.size }}</ion-col
         >
         <ion-col size="2" class="font-14 text-color ion-text-right"
-          >{{ txn.fee}}</ion-col
+          >{{ txn.fee }}</ion-col
         >
       </ion-row>
     </ion-grid>

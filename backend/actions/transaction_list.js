@@ -1,7 +1,7 @@
 const app = require('../app.js');
 const tapyrusd = require('../libs/tapyrusd').client;
-const electrs = require('../libs/electrs');
 const logger = require('../libs/logger');
+const rest = require('../libs/rest');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -33,19 +33,10 @@ app.get('/transactions', async (req, res) => {
     const memTxList = [];
     for (let i = endTx; i < startTx; i++) {
       const tx = txns[i];
-      const txInfo = await electrs.blockchain.transaction.get(
-        txns[i].txid,
-        true
-      );
-      tx.amount = 0.0;
-      for (let j = 0; j < txInfo.vin.length; j++) {
-        const input = txInfo.vin[j];
-        const prevTx = await electrs.blockchain.transaction.get(
-          input.txid,
-          true
-        );
-        tx.amount += prevTx.vout[input.vout].value;
-      }
+      const txInfo = await rest.transaction.get(txns[i].txid);
+      tx.amount = txInfo.vin.reduce((sum, input) => {
+        return sum + ((input.prevout || {}).value || 0);
+      }, 0);
       memTxList.push(tx);
     }
     res.json({
@@ -56,6 +47,6 @@ app.get('/transactions', async (req, res) => {
     logger.error(
       `Error retrieving ${perPage} transactions for page#${page}. Error Message - ${error.message}`
     );
-    res.status(500).send(`Error Retrieving Blocks`);
+    res.status(500).send('Error Retrieving transactions');
   }
 });
