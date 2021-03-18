@@ -33,8 +33,12 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/block/${blockHash}/raw`);
   }
 
-  getBlockTransactions(blockHash: string): Observable<any> {
-    return this.http.get(`${this.backendUrl}/block/${blockHash}/txns`);
+  getBlockTransactions(blockHash: string, page: number, perPage: number): Observable<any> {
+    return this.http.get(`${this.backendUrl}/block/${blockHash}/txns`, {
+      params: new HttpParams({
+        fromObject: { page: page.toString(), perPage: perPage.toString() }
+      })
+    });
   }
 
   getTransactions(page: number, perPage: number): Observable<any> {

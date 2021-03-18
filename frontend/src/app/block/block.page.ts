@@ -16,6 +16,9 @@ export class BlockPage implements OnInit {
   block: any = {};
   blockTxns: any = {};
   openTxns = false;
+  perPage = 25;
+  page = 1; // default start with page 1
+  pages = 1; // number of pages
 
   txConfirmation: number;
   txTime: any;
@@ -37,6 +40,7 @@ export class BlockPage implements OnInit {
     this.backendService.getBlock(this.blockHash).subscribe(
       data => {
         this.block = data || {};
+        this.calculatePagination();
       },
       err => {
         console.log(err);
@@ -64,13 +68,12 @@ export class BlockPage implements OnInit {
   }
 
   getBlockTxnsInfo() {
-    this.backendService.getBlockTransactions(this.blockHash).subscribe(
+    this.backendService.getBlockTransactions(this.blockHash, this.page, this.perPage).subscribe(
       data => {
         this.blockTxns = data || {};
-        this.txConfirmation = this.blockTxns.confirmations;
         this.txTime = this.blockTxns.time;
         this.openTxns = true;
-        this.calculateVoutTotalAndFee();
+        this.calculateTotal();
       },
       err => {
         console.log(err);
@@ -82,27 +85,13 @@ export class BlockPage implements OnInit {
     this.openTxns = false;
   }
 
-  async calculateVoutTotalAndFee() {
-    await this.blockTxns.tx.forEach(tx => {
-      let voutValue = 0;
-      let vinValue = 0;
-      for (const vout of tx.vout) {
-        if (vout.value) {
-          voutValue += vout.value;
-        }
-      }
-      for (const vin of tx.vinRaw) {
-        if (vin && vin.vout) {
-          for (const vout of vin.vout) {
-            if (vout && vout.value) {
-              vinValue += vout.value;
-            }
-          }
-        }
-      }
-      tx.totalVout = voutValue;
-      tx.totalVin = vinValue;
-      tx.totalFee = vinValue - voutValue;
+  calculatePagination() {
+    this.pages = Math.ceil(this.block.ntx / this.perPage);
+  }
+
+  calculateTotal() {
+    this.blockTxns.forEach( tx => {
+      tx.totalVout = tx.vout.reduce((sum, output) => { return sum + output.value }, 0);
     });
   }
 

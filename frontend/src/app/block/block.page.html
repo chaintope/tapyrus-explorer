@@ -137,7 +137,7 @@
     <div *ngIf="openTxns">
       <div
         class="bg-white ion-padding ion-margin-bottom"
-        *ngFor="let tx of blockTxns.tx;"
+        *ngFor="let tx of blockTxns;"
       >
         <ion-row class="block">
           <ion-col size="8" class="ion-text-left">
@@ -156,38 +156,30 @@
           </ion-col>
           <ion-col size="4" class="ion-text-right">
             <div>
-              Verified: {{ txTime * 1000 | date: 'MMM dd, yyyy hh:mm:ss' }}
+              Verified: {{ tx.status.block_time * 1000 | date: 'MMM dd, yyyy hh:mm:ss' }}
             </div>
           </ion-col>
-          <!-- {{ tx.time }} -->
         </ion-row>
 
         <ion-grid>
           <ion-row class="word-break">
             <ion-col size-xs="12" size-sm="12" size-md="5">
-              <div *ngFor="let vin of tx.vinRaw; let i=index;">
-                <div *ngIf="tx.vin[i].coinbase">
+              <div *ngFor="let input of tx.vin">
+                <div *ngIf="input.is_coinbase">
                   No Inputs (Newly Generated Coins)
                 </div>
-                <div *ngIf="!tx.vin[i].coinbase">
-                  <div *ngFor="let vout of vin.vout" class="mb-5">
-                    <ion-row
-                      *ngFor="let add of vout.scriptPubKey.addresses"
-                      class="vin-vout-input"
-                    >
-                      <ion-col
-                        size="8"
-                        class="ion-no-margin text-primary cursor-pointer"
-                        (click)="goToAddress(add)"
-                        >{{ add }}</ion-col
-                      >
-                      <ion-col
-                        size="4"
-                        class="ion-no-margin ion-text-right text-gray"
-                        >{{ vout.value }} TPC</ion-col
-                      >
-                    </ion-row>
-                  </div>
+                <div *ngIf="!input.is_coinbase">
+                  <ion-col
+                    size="8"
+                    class="ion-no-margin text-primary cursor-pointer"
+                    (click)="goToAddress(input.prevout.scriptpubkey_address)"
+                    >{{ input.prevout.scriptpubkey_address }}</ion-col
+                  >
+                  <ion-col
+                    size="4"
+                    class="ion-no-margin ion-text-right text-gray"
+                    >{{ input.prevout.value | asTpc }} TPC</ion-col
+                  >
                 </div>
               </div>
             </ion-col>
@@ -210,70 +202,42 @@
             </ion-col>
             <ion-col size-xs="12" size-sm="12" size-md="5">
               <div *ngFor="let vout of tx.vout" class="mb-5">
-                <ion-row
-                  class="vin-vout-input"
-                  *ngFor="let add of vout.scriptPubKey.addresses"
+                <ion-col
+                  size="8"
+                  class="text-primary cursor-pointer"
+                  (click)="goToAddress(vout.scriptpubkey_address)"
+                  >{{ vout.scriptpubkey_address }}</ion-col
                 >
-                  <ion-col
-                    size="8"
-                    class="text-primary cursor-pointer"
-                    (click)="goToAddress(add)"
-                    >{{ add }}</ion-col
-                  >
-                  <ion-col size="4" class="ion-text-right text-gray"
-                    >{{ vout.value }} TPC(s)</ion-col
-                  >
-                </ion-row>
+                <ion-col size="4" class="ion-text-right text-gray"
+                  >{{ vout.value | asTpc }} TPC</ion-col
+                >
               </div>
             </ion-col>
           </ion-row>
           <ion-item-divider></ion-item-divider>
 
-          <ion-row class="display-none-max-md">
-            <ion-col size="1">
-              <ion-item color="medium" *ngIf="tx.totalFee > 0">
+          <ion-row>
+            <ion-col
+              size="6"
+              offset="0"
+              size-sm="4"
+              offset-sm="4"
+              size-md="3"
+              offset-md="6"
+              size-lg="2"
+              offset-lg="8"
+            >
+              <ion-item color="medium">
                 <ion-label class="ion-text-center">
-                  FEE: {{ tx.totalFee }} TPC
+                  {{ block.confirmations || 0 }} CONFIRMATIONS
                 </ion-label>
               </ion-item>
             </ion-col>
-            <ion-col size="9"></ion-col>
-            <ion-col size="1">
-              <ion-item color="medium">
+            <ion-col size="6" size-sm="4" size-md="3" size-lg="2">
+              <ion-item color="primary">
                 <ion-label class="ion-text-center">
-                  {{ txConfirmation }} CONFIRMATIONS
+                  {{ tx.totalVout | asTpc }} TPC
                 </ion-label>
-              </ion-item>
-            </ion-col>
-            <ion-col size="1">
-              <ion-item color="primary">
-                <ion-label class="ion-text-center"
-                  >{{ tx.totalVout }} TPC</ion-label
-                >
-              </ion-item>
-            </ion-col>
-          </ion-row>
-
-          <ion-row class="display-none-min-md">
-            <ion-col size="6">
-              <ion-item color="medium">
-                <ion-label class="ion-text-center"
-                  >{{ txConfirmation }} CONFIRMATIONS</ion-label
-                >
-              </ion-item>
-            </ion-col>
-            <ion-col size="6">
-              <ion-item color="primary">
-                <ion-label class="ion-text-center"
-                  >{{ tx.totalVout }} TPC</ion-label
-                >
-              </ion-item>
-            </ion-col>
-            <ion-col size="6">
-              <ion-item color="medium" *ngIf="tx.totalFee > 0">
-                <ion-label class="ion-text-center"
-                  >FEE: {{ tx.totalFee }} TPC</ion-label
-                >
               </ion-item>
             </ion-col>
           </ion-row>

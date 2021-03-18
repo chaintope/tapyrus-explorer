@@ -1,7 +1,8 @@
 const app = require('../app.js');
 const tapyrusd = require('../libs/tapyrusd').client;
-const electrs = require('../libs/electrs');
 const logger = require('../libs/logger');
+const rest = require('../libs/rest');
+const { isHash } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -13,20 +14,20 @@ app.use((req, res, next) => {
 });
 
 app.get('/block/:blockHash', async (req, res) => {
-  const regex = new RegExp(/^[0-9a-fA-F]{64}$/);
-  const urlBlockHash = req.params.blockHash;
+  const blockHash = req.params.blockHash;
 
-  if (!regex.test(urlBlockHash)) {
-    logger.error(`Regex Test didn't pass for URL - /block/${urlBlockHash}`);
+  if (!isHash(blockHash)) {
+    logger.error(`Invaid block hash(${blockHash}) - /block/${blockHash}`);
     res.status(400).send('Invalid block hash.');
     return;
   }
 
   try {
-    const blockInfo = await tapyrusd.getBlock(urlBlockHash);
+    const blockInfo = await tapyrusd.getBlock(blockHash);
 
     res.json({
       blockHash: blockInfo.hash,
+      confirmations: blockInfo.confirmations,
       ntx: blockInfo.nTx,
       height: blockInfo.height,
       timestamp: blockInfo.time,
@@ -43,7 +44,7 @@ app.get('/block/:blockHash', async (req, res) => {
       res.status(404).send('Block not found.');
     } else {
       logger.error(
-        `Error retrieving information for block  - ${urlBlockHash}. Error Message - ${err.message}`
+        `Error retrieving information for block  - ${blockHash}. Error Message - ${err.message}`
       );
     }
   }
@@ -51,56 +52,43 @@ app.get('/block/:blockHash', async (req, res) => {
 
 // bitcoin-cli getblock ${blockHash} 0
 app.get('/block/:blockHash/raw', async (req, res) => {
-  const regex = new RegExp(/^[0-9a-fA-F]{64}$/);
-  const urlBlockHash = req.params.blockHash;
+  const blockHash = req.params.blockHash;
 
-  if (!regex.test(urlBlockHash)) {
-    logger.error(`Regex Test didn't pass for URL - /block/${urlBlockHash}/raw`);
-
+  if (!isHash(blockHash)) {
+    logger.error(`Invaid block hash(${blockHash}) - /block/${blockHash}/raw`);
     res.status(400).send('Bad request');
     return;
   }
 
   try {
-    const blockInfo = await tapyrusd.getBlock(urlBlockHash, 0);
+    const blockInfo = await tapyrusd.getBlock(blockHash, 0);
 
     res.json(blockInfo);
   } catch (error) {
     logger.error(
-      `Error retrieving raw data for block  - ${urlBlockHash}. Error Message - ${error.message}`
+      `Error retrieving raw data for block  - ${blockHash}. Error Message - ${error.message}`
     );
   }
 });
 
-// bitcoin-cli getblock ${blockHash} 2
 app.get('/block/:blockHash/txns', async (req, res) => {
-  const regex = new RegExp(/^[0-9a-fA-F]{64}$/);
-  const urlBlockHash = req.params.blockHash;
+  const blockHash = req.params.blockHash;
+  const perPage = Number(req.query.perPage) || 25;
+  const page = Number(req.query.page) || 1;
 
-  if (!regex.test(urlBlockHash)) {
-    logger.error(
-      `Regex Test didn't pass for URL - /block/${urlBlockHash}/txns`
-    );
-
+  if (!isHash(blockHash)) {
+    logger.error(`Invaid block hash(${blockHash}) - /block/${blockHash}/txns`);
     res.status(400).send('Bad request');
     return;
   }
 
   try {
-    const blockInfo = await tapyrusd.getBlock(urlBlockHash, 2);
-
-    blockInfo.tx.forEach(tx => {
-      tx.vinRaw = tx.vin.map(async vin => {
-        if (!vin.txid) return {};
-
-        return await electrs.blockchain.transaction.get(vin.txid, true);
-      });
-    });
-
-    res.json(blockInfo);
+    const startIndex = (page - 1) * perPage;
+    const txs = await rest.block.txs(blockHash, startIndex);
+    res.json(txs);
   } catch (error) {
     logger.error(
-      `Error retrieving txns for block  - ${urlBlockHash}. Error Message - ${error.message}`
+      `Error retrieving txns for block  - ${blockHash}. Error Message - ${error.message}`
     );
   }
 });
