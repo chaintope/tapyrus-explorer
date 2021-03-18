@@ -32,8 +32,7 @@ describe('GET /tx/:txid', () => {
         vout: [
           {
             value: 5000000000,
-            scriptpubkey:
-              '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac',
+            scriptpubkey: '76a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac',
             scriptpubkey_address: '1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA',
             scriptpubkey_asm:
               'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG',
@@ -97,7 +96,7 @@ describe('GET /tx/:txid', () => {
           );
           assert.strictEqual(
             transaction.vout[0].scriptpubkey,
-            '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac'
+            '76a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac'
           );
           assert.strictEqual(transaction.vout[0].scriptpubkey_type, 'p2pkh');
           assert.strictEqual(
@@ -192,8 +191,7 @@ describe('GET /tx/:txid/get', () => {
         vout: [
           {
             value: 5000000000,
-            scriptpubkey:
-              '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac',
+            scriptpubkey: '76a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac',
             scriptpubkey_address: '1AQ2CtG3jho78SrEzKe3vf6dxcEkJt5nzA',
             scriptpubkey_asm:
               'OP_DUP OP_HASH160 6713b478d99432aac667b7d8e87f9d06edca03bb OP_EQUALVERIFY OP_CHECKSIG',
@@ -251,7 +249,7 @@ describe('GET /tx/:txid/get', () => {
         );
         assert.strictEqual(
           getTransaction.vout[0].scriptpubkey,
-          '76a914ac667b7d8e87f9d06edca03bb88ac76a9146713b478d99432a88ac'
+          '76a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac'
         );
         assert.strictEqual(getTransaction.vout[0].scriptpubkey_type, 'p2pkh');
         assert.strictEqual(
