@@ -137,7 +137,7 @@
     <div *ngIf="openTxns">
       <div
         class="bg-white ion-padding ion-margin-bottom"
-        *ngFor="let tx of blockTxns;"
+        *ngFor="let tx of blockTxns | paginate: { itemsPerPage: perPage, currentPage: page, totalItems: block.ntx +1 }"
       >
         <ion-row class="block">
           <ion-col size="8" class="ion-text-left">
@@ -216,16 +216,24 @@
           </ion-row>
           <ion-item-divider></ion-item-divider>
 
-          <ion-row>
+          <ion-row class="ion-justify-content-end">
+            <ion-col size="6" size-sm="4" size-md="3" size-lg="2" *ngIf="tx.fee > 0">
+              <ion-item color="medium" *ngIf="tx.fee > 0">
+                <ion-label class="ion-text-center">
+                  FEE: {{ tx.fee | asTpc }} TPC
+                </ion-label>
+              </ion-item>
+            </ion-col>
             <ion-col
               size="6"
               offset="0"
               size-sm="4"
-              offset-sm="4"
+              offset-sm="0"
               size-md="3"
-              offset-md="6"
+              offset-md="3"
               size-lg="2"
-              offset-lg="8"
+              offset-lg="6"
+              ion-align-items-end
             >
               <ion-item color="medium">
                 <ion-label class="ion-text-center">
@@ -233,7 +241,7 @@
                 </ion-label>
               </ion-item>
             </ion-col>
-            <ion-col size="6" size-sm="4" size-md="3" size-lg="2">
+            <ion-col size="6" size-sm="4" size-md="3" size-lg="2" ion-align-items-end>
               <ion-item color="primary">
                 <ion-label class="ion-text-center">
                   {{ tx.totalVout | asTpc }} TPC
@@ -243,6 +251,15 @@
           </ion-row>
         </ion-grid>
       </div>
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-right">
+            <pagination-controls
+              (pageChange)="onPageChange($event)"
+            ></pagination-controls>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
   </div>
 </ion-content>

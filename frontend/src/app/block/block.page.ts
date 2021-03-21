@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ModalController, NavController } from '@ionic/angular';
 import { BlockRawdataPage } from '../block-rawdata/block-rawdata.page';
 import { BackendService } from '../backend.service';
+import { AppConst } from '../app.const';
 
 @Component({
   selector: 'app-block',
@@ -16,7 +17,7 @@ export class BlockPage implements OnInit {
   block: any = {};
   blockTxns: any = {};
   openTxns = false;
-  perPage = 25;
+  perPage = AppConst.PER_PAGE_COUNT;
   page = 1; // default start with page 1
   pages = 1; // number of pages
 
@@ -101,5 +102,10 @@ export class BlockPage implements OnInit {
 
   goToTransaction(txid = '') {
     this.navCtrl.navigateForward(`/tx/${txid}`);
+  }
+
+  onPageChange(pageNumber: number) {
+    this.page = pageNumber;
+    this.getBlockTxnsInfo();
   }
 }

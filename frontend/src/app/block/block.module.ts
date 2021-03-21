@@ -9,9 +9,9 @@ import { BlockPageRoutingModule } from './block-routing.module';
 import { BlockPage } from './block.page';
 import { BlockRawdataPage } from '../block-rawdata/block-rawdata.page';
 import { SharedPipeModule } from '../modules/sharePipe.module';
-
+import { NgxPaginationModule } from 'ngx-pagination';
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, BlockPageRoutingModule, SharedPipeModule],
+  imports: [CommonModule, FormsModule, IonicModule, BlockPageRoutingModule, NgxPaginationModule, SharedPipeModule],
   declarations: [BlockPage, BlockRawdataPage],
   entryComponents: [BlockRawdataPage]
 })
