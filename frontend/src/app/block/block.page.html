@@ -156,7 +156,8 @@
           </ion-col>
           <ion-col size="4" class="ion-text-right">
             <div>
-              Verified: {{ tx.status.block_time * 1000 | date: 'MMM dd, yyyy hh:mm:ss' }}
+              Verified: {{ tx.status.block_time * 1000 | date: 'MMM dd, yyyy
+              hh:mm:ss' }}
             </div>
           </ion-col>
         </ion-row>
@@ -217,7 +218,13 @@
           <ion-item-divider></ion-item-divider>
 
           <ion-row class="ion-justify-content-end">
-            <ion-col size="6" size-sm="4" size-md="3" size-lg="2" *ngIf="tx.fee > 0">
+            <ion-col
+              size="6"
+              size-sm="4"
+              size-md="3"
+              size-lg="2"
+              *ngIf="tx.fee > 0"
+            >
               <ion-item color="medium" *ngIf="tx.fee > 0">
                 <ion-label class="ion-text-center">
                   FEE: {{ tx.fee | asTpc }} TPC
@@ -241,7 +248,13 @@
                 </ion-label>
               </ion-item>
             </ion-col>
-            <ion-col size="6" size-sm="4" size-md="3" size-lg="2" ion-align-items-end>
+            <ion-col
+              size="6"
+              size-sm="4"
+              size-md="3"
+              size-lg="2"
+              ion-align-items-end
+            >
               <ion-item color="primary">
                 <ion-label class="ion-text-center">
                   {{ tx.totalVout | asTpc }} TPC

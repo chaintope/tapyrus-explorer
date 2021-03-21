@@ -69,17 +69,19 @@ export class BlockPage implements OnInit {
   }
 
   getBlockTxnsInfo() {
-    this.backendService.getBlockTransactions(this.blockHash, this.page, this.perPage).subscribe(
-      data => {
-        this.blockTxns = data || {};
-        this.txTime = this.blockTxns.time;
-        this.openTxns = true;
-        this.calculateTotal();
-      },
-      err => {
-        console.log(err);
-      }
-    );
+    this.backendService
+      .getBlockTransactions(this.blockHash, this.page, this.perPage)
+      .subscribe(
+        data => {
+          this.blockTxns = data || {};
+          this.txTime = this.blockTxns.time;
+          this.openTxns = true;
+          this.calculateTotal();
+        },
+        err => {
+          console.log(err);
+        }
+      );
   }
 
   closeTxns() {
@@ -91,8 +93,10 @@ export class BlockPage implements OnInit {
   }
 
   calculateTotal() {
-    this.blockTxns.forEach( tx => {
-      tx.totalVout = tx.vout.reduce((sum, output) => { return sum + output.value }, 0);
+    this.blockTxns.forEach(tx => {
+      tx.totalVout = tx.vout.reduce((sum, output) => {
+        return sum + output.value;
+      }, 0);
     });
   }
 
