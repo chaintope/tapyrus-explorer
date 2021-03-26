@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import * as moment from 'moment';
 import { Injectable } from '@angular/core';
 
+
 @Injectable()
 @Pipe({
   name: 'momentFromNow',
@@ -9,6 +10,9 @@ import { Injectable } from '@angular/core';
 })
 export class MomentFromNowPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {
+    if (isNaN(value)) {
+      return "";
+    }
     // * 1000 for secondsSinceEpoch
     return moment(
       new Date(value * 1000).toISOString(),
