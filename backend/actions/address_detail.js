@@ -2,6 +2,7 @@ const tapyrus = require('tapyrusjs-lib');
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
+const { updateAddress } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -35,6 +36,7 @@ app.get('/address/:address', async (req, res) => {
     const stats = await rest.address.stats(address);
     let txs = await rest.address.txs(address, lastSeenTxid);
     txs = txs.sort((tx1, tx2) => tx2.time - tx1.time);
+    txs.forEach(updateAddress);
     let balances = [];
     for (let [, scriptStats] of Object.entries(stats.chain_stats)) {
       balances.push({

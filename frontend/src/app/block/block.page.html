@@ -173,8 +173,8 @@
                   <ion-col
                     size="8"
                     class="ion-no-margin text-primary cursor-pointer"
-                    (click)="goToAddress(input.prevout.scriptpubkey_address)"
-                    >{{ input.prevout.scriptpubkey_address }}</ion-col
+                    (click)="goToAddress(input.prevout.scriptpubkey_uncolored_address)"
+                    >{{ input.prevout.scriptpubkey_uncolored_address }}</ion-col
                   >
                   <ion-col
                     size="4"
@@ -206,8 +206,8 @@
                 <ion-col
                   size="8"
                   class="text-primary cursor-pointer"
-                  (click)="goToAddress(vout.scriptpubkey_address)"
-                  >{{ vout.scriptpubkey_address }}</ion-col
+                  (click)="goToAddress(vout.scriptpubkey_uncolored_address)"
+                  >{{ vout.scriptpubkey_uncolored_address }}</ion-col
                 >
                 <ion-col size="4" class="ion-text-right text-gray"
                   >{{ vout.value | asTpc }} TPC</ion-col

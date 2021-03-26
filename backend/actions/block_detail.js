@@ -2,7 +2,7 @@ const app = require('../app.js');
 const tapyrusd = require('../libs/tapyrusd').client;
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { isHash } = require('../libs/util');
+const { isHash, updateAddress } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -85,6 +85,7 @@ app.get('/block/:blockHash/txns', async (req, res) => {
   try {
     const startIndex = (page - 1) * perPage;
     const txs = await rest.block.txs(blockHash, startIndex);
+    txs.forEach(updateAddress);
     res.json(txs);
   } catch (error) {
     logger.error(

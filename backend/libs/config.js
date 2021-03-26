@@ -1,4 +1,5 @@
 const defaultConfig = {
+  network: process.env.TAPYRUS_NETWORK || 'prod',
   tapyrusd: {
     network: 'mainnet',
     username: process.env.TAPYRUSD_RPC_USER || 'rpcuser',
@@ -18,7 +19,6 @@ const defaultConfig = {
 };
 
 let config = defaultConfig;
-
 try {
   const environment = require('../environments/environment');
   const environmentConfig = require(environment.CONFIG);

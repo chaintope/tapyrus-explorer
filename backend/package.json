@@ -4,7 +4,7 @@
   "description": "The backend of tapyrus-explorer",
   "main": "server.js",
   "scripts": {
-    "test": "mocha test/actions --exit",
+    "test": "mocha test/actions test/libs --exit",
     "start": "nodemon server.js",
     "pretest": "eslint actions/ libs/",
     "prettier": "prettier --write .",

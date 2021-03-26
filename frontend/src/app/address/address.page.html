@@ -86,9 +86,9 @@
           <ion-row *ngFor="let input of tx.vin">
             <ion-col
               size="6"
-              (click)="!input.prevout?.scriptpubkey_address || goToAddressPage(input.prevout?.scriptpubkey_address)"
-              [ngClass]="{'link-color cursor-pointer ellipsis': input.prevout?.scriptpubkey_address}"
-              >{{ input.prevout?.scriptpubkey_address }}</ion-col
+              (click)="!input.prevout?.scriptpubkey_uncolored_address || goToAddressPage(input.prevout?.scriptpubkey_uncolored_address)"
+              [ngClass]="{'link-color cursor-pointer ellipsis': input.prevout?.scriptpubkey_uncolored_address}"
+              >{{ input.prevout?.scriptpubkey_uncolored_address }}</ion-col
             >
             <ion-col size="2">
               <ion-badge *ngIf="!input.is_coinbase" color="primary"
@@ -112,9 +112,9 @@
           <ion-row *ngFor="let output of tx.vout">
             <ion-col
               size="6"
-              (click)="!output.scriptpubkey_address || goToAddressPage(output.scriptpubkey_address)"
-              [ngClass]="{'link-color cursor-pointer ellipsis': output.scriptpubkey_address}"
-              >{{ output.scriptpubkey_address }}</ion-col
+              (click)="!output.scriptpubkey_uncolored_address || goToAddressPage(output.scriptpubkey_uncolored_address)"
+              [ngClass]="{'link-color cursor-pointer ellipsis': output.scriptpubkey_uncolored_address}"
+              >{{ output.scriptpubkey_uncolored_address }}</ion-col
             >
             <ion-col size="2">
               <ion-badge color="danger">OUT</ion-badge>

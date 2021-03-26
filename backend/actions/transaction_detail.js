@@ -1,7 +1,7 @@
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const util = require('../libs/util');
+const { isHash, updateAddress } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 app.get('/tx/:txid', async (req, res) => {
   const txid = req.params.txid;
 
-  if (!util.isHash(txid)) {
+  if (!isHash(txid)) {
     console.error(`Invalid txid(${txid}) -- /tx/${txid}`);
     res.status(400).send('Bad request');
     return;
@@ -27,6 +27,7 @@ app.get('/tx/:txid', async (req, res) => {
       res.status(404).send('Tx not found');
       return;
     }
+    updateAddress(tx);
     const height = await rest.block.tip.height();
     tx['status']['confirmations'] = height - tx['status']['block_height'] + 1;
     res.json(tx);
@@ -40,7 +41,7 @@ app.get('/tx/:txid', async (req, res) => {
 app.get('/tx/:txid/rawData', async (req, res) => {
   const txid = req.params.txid;
 
-  if (!util.isHash(txid)) {
+  if (!isHash(txid)) {
     console.error(`Invalid txid(${txid}) -- /tx/${txid}/rawData`);
     res.status(400).send('Bad request');
     return;
@@ -62,7 +63,7 @@ app.get('/tx/:txid/rawData', async (req, res) => {
 
 app.get('/tx/:txid/get', async (req, res) => {
   const txid = req.params.txid;
-  if (!util.isHash(txid)) {
+  if (!isHash(txid)) {
     console.error(`Invalid txid(${txid}) -- /tx/${txid}/get`);
     res.status(400).send('Bad request');
     return;
