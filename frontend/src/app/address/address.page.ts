@@ -47,6 +47,10 @@ export class AddressPage implements OnInit {
     this.navCtrl.navigateForward(`/addresses/${address}`);
   }
 
+  goToCoin(colorId) {
+    this.navCtrl.navigateForward(`/color/${colorId}`);
+  }
+
   copyAddress() {
     const textArea = document.createElement('textarea');
     textArea.value = this.address;

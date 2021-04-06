@@ -88,8 +88,15 @@
                       size="4"
                       class="ion-no-margin ion-text-right text-gray"
                     >
-                      {{ vin.prevout.value | asTpc }} TPC</ion-col
-                    >
+                      {{ vin.prevout.value | asTpc }}
+                      <span
+                        *ngIf="!!vin.prevout.colorId"
+                        class="link-color cursor-pointer"
+                        (click)="goToCoin(vin.prevout.colorId)"
+                        >COIN
+                      </span>
+                      <span *ngIf="!vin.prevout.colorId">TPC</span>
+                    </ion-col>
                   </ion-row>
                 </div>
               </div>
@@ -120,8 +127,15 @@
                   >{{ vout.scriptpubkey_uncolored_address }}</ion-col
                 >
                 <ion-col size="4" class="ion-text-right text-gray">
-                  {{vout.value | asTpc }} TPC</ion-col
-                >
+                  {{vout.value | asTpc }}
+                  <span
+                    *ngIf="!!vout.colorId"
+                    class="link-color cursor-pointer"
+                    (click)="goToCoin(vout.colorId)"
+                    >COIN
+                  </span>
+                  <span *ngIf="!vout.colorId">TPC</span>
+                </ion-col>
               </ion-row>
             </ion-col>
           </ion-row>

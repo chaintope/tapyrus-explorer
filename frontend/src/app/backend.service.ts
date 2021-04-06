@@ -74,4 +74,8 @@ export class BackendService {
   searchTransaction(query: string): Observable<any> {
     return this.http.get(`${this.backendUrl}/tx/${query}/get`);
   }
+
+  getColor(colorId: string): Observable<any> {
+    return this.http.get(`${this.backendUrl}/color/${colorId}`);
+  }
 }

@@ -5,7 +5,6 @@ import { ModalController, NavController } from '@ionic/angular';
 import { BlockRawdataPage } from '../block-rawdata/block-rawdata.page';
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
-
 @Component({
   selector: 'app-block',
   templateUrl: './block.page.html',
@@ -102,6 +101,10 @@ export class BlockPage implements OnInit {
 
   goToAddress(add = '') {
     this.navCtrl.navigateForward(`/addresses/${add}`);
+  }
+
+  goToCoin(colorId) {
+    this.navCtrl.navigateForward(`/color/${colorId}`);
   }
 
   goToTransaction(txid = '') {

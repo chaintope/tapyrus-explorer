@@ -25,6 +25,11 @@ const routes: Routes = [
       )
   },
   {
+    path: 'color/:colorId',
+    loadChildren: () =>
+      import('./color/color.module').then(m => m.ColorPageModule)
+  },
+  {
     path: 'tx/recent',
     loadChildren: () =>
       import('./transactions/transactions.module').then(

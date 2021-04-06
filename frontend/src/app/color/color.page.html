@@ -1,56 +1,35 @@
 <ion-content class="pb-footer">
   <div class="ion-padding">
     <div class="bg-white ion-padding">
-      <ion-row>
-        <ion-col size="8">
-          <div class="flex">
-            <p id="block-header-text">Address</p>
-            <p class="text-wrap">{{ address }}</p>
-            <ion-icon
-              name="copy-outline"
-              (click)="copyAddress()"
-              class="cursor-pointer"
-              color="primary"
-              style="margin: 16px 2px"
-              id="copy-icon"
-            ></ion-icon>
-          </div>
-          <div id="block-hash-bg" class="col-5">
-            <strong id="block-hash-text">
-              <strong>Balance:</strong> {{ balanced | asTpc}} TPC</strong
-            >
-          </div>
-        </ion-col>
-        <ion-col size="4" class="ion-text-end">
-          <ngx-qrcode
-            [(qrc-value)]="qrcode"
-            qrc-element-type="url"
-          ></ngx-qrcode>
-        </ion-col>
-      </ion-row>
-      <ion-item-divider class="mt-0 pt-0"></ion-item-divider>
-      <ion-grid class="font-14 text-color">
+      <div class="flex">
+        <h2 id="color-header-text" class="ellipsis">
+          Color Identifier: {{ colorId }}
+        </h2>
+      </div>
+      <ion-item-divider></ion-item-divider>
+      <ion-grid class="text-color">
         <ion-row>
-          <ion-col size="3" class="font-w500">Total Received:</ion-col>
-          <ion-col size="3" class="ion-text-right"
-            >{{ received | asTpc }}</ion-col
-          >
+          <ion-col size="2" class="font-w500">Type:</ion-col>
+          <ion-col size="10">{{ tokenType }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col size="3" class="font-w500">Total Sent:</ion-col>
-          <ion-col size="3" class="ion-text-right">{{ sent | asTpc }}</ion-col>
+          <ion-col size="2" class="font-w500">Total Issued:</ion-col>
+          <ion-col size="10">{{ stats.issued_sum }}</ion-col>
         </ion-row>
         <ion-row>
-          <ion-col size="3" class="font-w500">No. Transactions:</ion-col>
-          <ion-col size="3" class="ion-text-right">{{ txCount }}</ion-col>
+          <ion-col size="2" class="font-w500">Total Transferred:</ion-col>
+          <ion-col size="10">{{ stats.transferred_sum }}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="2" class="font-w500">Total Burned:</ion-col>
+          <ion-col size="10">{{ stats.burned_sum }}</ion-col>
         </ion-row>
       </ion-grid>
     </div>
-
     <div class="bg-white ion-padding ion-margin-top">
       <ion-row>
         <ion-col size="12">
-          <p id="block-header-text">Transactions</p>
+          <h3 id="color-header-text">Transactions</h3>
         </ion-col>
       </ion-row>
       <ion-row class="table-header">
@@ -70,10 +49,7 @@
           </ion-row>
         </ion-col>
       </ion-row>
-      <ion-row
-        class="text-color table-border-bottom"
-        *ngFor="let tx of transactions"
-      >
+      <ion-row class="text-color table-border-bottom" *ngFor="let tx of txs">
         <ion-col
           size="2"
           (click)="goToTransaction(tx.txid)"
@@ -104,15 +80,8 @@
               *ngIf="input.is_coinbase"
             ></ion-col>
             <ion-col size="4" class="ion-text-right" *ngIf="!input.is_coinbase"
-              >{{ input.prevout?.value | asTpc}}
-              <span
-                *ngIf="!!input.prevout.colorId"
-                class="link-color cursor-pointer"
-                (click)="goToCoin(input.prevout.colorId)"
-                >COIN
-              </span>
-              <span *ngIf="!input.prevout.colorId">TPC</span>
-            </ion-col>
+              >{{ input.prevout?.value | asTpc}}</ion-col
+            >
           </ion-row>
         </ion-col>
         <ion-col size="4">
@@ -127,31 +96,11 @@
               <ion-badge color="danger">OUT</ion-badge>
             </ion-col>
             <ion-col size="4" class="ion-text-right"
-              >{{ output.value | asTpc }}
-              <span
-                *ngIf="!!output.colorId"
-                class="link-color cursor-pointer"
-                (click)="goToCoin(output.colorId)"
-                >COIN
-              </span>
-              <span *ngIf="!output.colorId">TPC</span>
-            </ion-col>
+              >{{ output.value | asTpc }}</ion-col
+            >
           </ion-row>
         </ion-col>
       </ion-row>
     </div>
   </div>
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-button
-          color="primary"
-          id="next"
-          class="cursor-pointer"
-          (click)="onNextPage()"
-          >Load More</ion-button
-        >
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

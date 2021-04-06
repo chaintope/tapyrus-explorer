@@ -80,8 +80,21 @@ const block = {
     }
   }
 };
+
+const color = {
+  get: async colorId => {
+    const url = `${baseUrl}/color/${colorId}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  }
+};
 module.exports = {
   address,
   transaction,
-  block
+  block,
+  color
 };

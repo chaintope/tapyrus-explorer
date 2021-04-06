@@ -56,6 +56,10 @@ export class TransactionPage implements OnInit {
     this.navCtrl.navigateForward(`/addresses/${add}`);
   }
 
+  goToCoin(colorId) {
+    this.navCtrl.navigateForward(`/color/${colorId}`);
+  }
+
   async goToTransactionRawData() {
     const modal = await this.modalCtrl.create({
       component: TransactionRawdataPage,
