@@ -47,11 +47,11 @@ export class ColorPage implements OnInit {
       data => {
         this.stats = data['stats']['chain_stats'] || {};
         data['tx']['txs']
-            .filter(tx => !this.txids.has(tx.txid))
-            .forEach(tx => {
-              this.txids.add(tx.txid);
-              this.txs.push(tx);
-            });
+          .filter(tx => !this.txids.has(tx.txid))
+          .forEach(tx => {
+            this.txids.add(tx.txid);
+            this.txs.push(tx);
+          });
         this.lastSeenTxid = data['tx']['last_seen_txid'];
       },
       err => {

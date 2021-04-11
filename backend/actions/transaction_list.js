@@ -2,6 +2,7 @@ const app = require('../app.js');
 const tapyrusd = require('../libs/tapyrusd').client;
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
+const { sortTxs } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -18,8 +19,8 @@ app.get('/transactions', async (req, res) => {
   const page = Number(req.query.page);
 
   try {
-    const txns = Object.values(await tapyrusd.getRawMempool(true));
-    txns.sort((a, b) => b.time - a.time);
+    let txns = Object.values(await tapyrusd.getRawMempool(true));
+    txns = sortTxs(txns);
 
     const txCount = txns.length;
     const endIndex = perPage * page - 1;

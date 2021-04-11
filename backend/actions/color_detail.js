@@ -1,7 +1,7 @@
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { isHash, isColorId, updateAddress} = require('../libs/util');
+const { isHash, isColorId, updateAddress, sortTxs } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -31,7 +31,7 @@ app.get('/color/:colorId', async (req, res) => {
 
     const stats = await rest.color.get(colorId);
     let txs = await rest.color.txs(colorId, lastSeenTxid);
-    txs = txs.sort((tx1, tx2) => tx2.time - tx1.time);
+    txs = sortTxs(txs);
     txs.forEach(updateAddress);
 
     res.json({

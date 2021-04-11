@@ -45,9 +45,18 @@ const splitColor = script => {
   }
 };
 
+const UINT_MAX = 2 ** 32 - 1;
+const sortTxs = txs => {
+  return txs.sort(
+    (tx1, tx2) =>
+      (tx2.status.block_time || UINT_MAX) - (tx1.status.block_time || UINT_MAX)
+  );
+};
+
 module.exports = {
   isHash,
   isColorId,
   splitColor,
-  updateAddress
+  updateAddress,
+  sortTxs
 };
