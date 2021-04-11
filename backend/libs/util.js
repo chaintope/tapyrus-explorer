@@ -7,7 +7,7 @@ const isHash = hash => {
 
 const isColorId = colorId => {
   return /^(c1|c2|c3)[0-9a-fA-F]{64}$/.test(colorId);
-}
+};
 // Determine uncolored address for colored coin
 // and upadte fields (scriptpubkey_uncolored_address, color_id)
 const updateAddress = tx => {
@@ -45,9 +45,18 @@ const splitColor = script => {
   }
 };
 
+const UINT_MAX = 2 ** 32 - 1;
+const sortTxs = txs => {
+  return txs.sort(
+    (tx1, tx2) =>
+      (tx2.status.block_time || UINT_MAX) - (tx1.status.block_time || UINT_MAX)
+  );
+};
+
 module.exports = {
   isHash,
   isColorId,
   splitColor,
-  updateAddress
+  updateAddress,
+  sortTxs
 };
