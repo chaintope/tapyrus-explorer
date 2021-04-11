@@ -2,7 +2,7 @@ const tapyrus = require('tapyrusjs-lib');
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { updateAddress } = require('../libs/util');
+const { isHash, updateAddress } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -26,7 +26,7 @@ app.get('/address/:address', async (req, res) => {
     return;
   }
 
-  if (lastSeenTxid && !/^[0-9a-fA-F]{64}/.test(lastSeenTxid)) {
+  if (lastSeenTxid && !isHash(lastSeenTxid)) {
     logger.error(`Invalid lastSeenTxid(${lastSeenTxid}) - /address/${address}`);
     res.status(400).send('Bad request');
     return;
