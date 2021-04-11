@@ -15,11 +15,9 @@ export class ColorPage implements OnInit {
   colorId: string;
   tokenType: string;
   stats: any = {};
+  txids = new Set();
   txs: any = [];
-  openTxns = false;
-  perPage = AppConst.PER_PAGE_COUNT;
-  page = 1; // default start with page 1
-  pages = 1; // number of pages
+  lastSeenTxid?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -45,9 +43,16 @@ export class ColorPage implements OnInit {
   }
 
   getColorInfo() {
-    this.backendService.getColor(this.colorId).subscribe(
+    this.backendService.getColor(this.colorId, this.lastSeenTxid).subscribe(
       data => {
-        this.stats = data['chain_stats'] || {};
+        this.stats = data['stats']['chain_stats'] || {};
+        data['tx']['txs']
+            .filter(tx => !this.txids.has(tx.txid))
+            .forEach(tx => {
+              this.txids.add(tx.txid);
+              this.txs.push(tx);
+            });
+        this.lastSeenTxid = data['tx']['last_seen_txid'];
       },
       err => {
         console.log(err);
@@ -57,5 +62,17 @@ export class ColorPage implements OnInit {
 
   goToCoin(colorId) {
     this.navCtrl.navigateForward(`/color/${colorId}`);
+  }
+
+  goToAddress(add = '') {
+    this.navCtrl.navigateForward(`/addresses/${add}`);
+  }
+
+  goToTransaction(txid = '') {
+    this.navCtrl.navigateForward(`/tx/${txid}`);
+  }
+
+  onNextPage() {
+    this.getColorInfo();
   }
 }

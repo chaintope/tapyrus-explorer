@@ -7,6 +7,31 @@ describe('util', () => {
   beforeEach(() => {
     config.network = 'dev';
   });
+
+  describe('isColorId', () => {
+    it('should return true if it is valid', () => {
+      const reissuable1 = "C1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      assert.strictEqual(util.isColorId(reissuable1), true);
+      const reissuable2 = "c1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      assert.strictEqual(util.isColorId(reissuable2), true);
+      
+      const nonReissuable1 = "C2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      assert.strictEqual(util.isColorId(nonReissuable1), true);
+      const nonReissuable2 = "c2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      assert.strictEqual(util.isColorId(nonReissuable2), true);
+      
+      const nft1 = "C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      assert.strictEqual(util.isColorId(nft1), true);
+      const nft2 = "c3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      assert.strictEqual(util.isColorId(nft2), true);
+    });
+
+    it('should return false if it is invalid', () => {
+      const invalidColorId = "00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      assert.strictEqual(util.isColorId(invalidColorId), false);
+    });
+  });
+
   describe('splitColor', () => {
     it('should return same address for uncolored address', () => {
       const output = '76a914305e993346ffe2480c3e507bd73773eb932790db88ac';

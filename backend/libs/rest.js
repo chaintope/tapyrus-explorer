@@ -90,6 +90,20 @@ const color = {
     } else {
       throw new Error(`failed to fetch API ${url}`);
     }
+  },
+  txs: async (colorId, lastSeenTxid) => {
+    let url;
+    if (lastSeenTxid) {
+      url = `${baseUrl}/color/${colorId}/txs/chain/${lastSeenTxid}`;
+    } else {
+      url = `${baseUrl}/color/${colorId}/txs`;
+    }
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
   }
 };
 module.exports = {
