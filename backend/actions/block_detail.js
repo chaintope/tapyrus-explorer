@@ -16,7 +16,7 @@ app.get('/block/:blockHash', async (req, res) => {
   const blockHash = req.params.blockHash;
 
   if (!isHash(blockHash)) {
-    logger.error(`Invaid block hash(${blockHash}) - /block/${blockHash}`);
+    logger.error(`Invalid block hash(${blockHash}) - /block/${blockHash}`);
     res.status(400).send('Invalid block hash.');
     return;
   }
@@ -55,7 +55,7 @@ app.get('/block/:blockHash/raw', async (req, res) => {
   const blockHash = req.params.blockHash;
 
   if (!isHash(blockHash)) {
-    logger.error(`Invaid block hash(${blockHash}) - /block/${blockHash}/raw`);
+    logger.error(`Invalid block hash(${blockHash}) - /block/${blockHash}/raw`);
     res.status(400).send('Bad request');
     return;
   }
@@ -76,7 +76,7 @@ app.get('/block/:blockHash/txns', async (req, res) => {
   const page = Number(req.query.page) || 1;
 
   if (!isHash(blockHash)) {
-    logger.error(`Invaid block hash(${blockHash}) - /block/${blockHash}/txns`);
+    logger.error(`Invalid block hash(${blockHash}) - /block/${blockHash}/txns`);
     res.status(400).send('Bad request');
     return;
   }
