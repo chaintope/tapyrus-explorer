@@ -2,42 +2,55 @@ const supertest = require('supertest');
 const assert = require('assert');
 const app = require('../../server');
 require('../../actions/block_detail');
-const cl = require('../../libs/tapyrusd').client;
 const rest = require('../../libs/rest');
-const RpcError = require('bitcoin-core/dist/src/errors/rpc-error').default;
 const sinon = require('sinon');
 
 describe('GET /block/:blockHash', function () {
   beforeEach(() => {
     sinon
-      .stub(cl, 'getBlock')
+      .stub(rest.block, 'get')
       .withArgs(
         '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6'
       )
       .resolves({
-        hash:
-          '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6',
-        size: 261,
-        weight: 1044,
+        id: '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6',
         height: 1236,
         features: 1,
-        merkleroot:
-          '39b95731fbae308d85743e2682988038980d7463ea2fc1b21f91860b243892e9',
-        immutablemerkleroot:
-          'd837966bc672b6459385989fdbfc049773f03fd355bb62c9765cdfa51e7a19a4',
         time: 1598253741,
-        proof:
-          '9fd45dcb188a5547a34fe2d181c24fd8f0f68b88d6c8951ec4db921a133dd846fb77d030bdacb1e421c49e23483937ce2c5eb3693baae040ddda8316ea3b6127',
-        nTx: 1,
+        tx_count: 1,
+        size: 261,
+        weight: 1044,
+        merkle_root:
+          '39b95731fbae308d85743e2682988038980d7463ea2fc1b21f91860b243892e9',
+        im_merkle_root:
+          'd837966bc672b6459385989fdbfc049773f03fd355bb62c9765cdfa51e7a19a4',
         previousblockhash:
           '471b4c1fcb6105c9812edde93c6dd760330daa8b3897a9484a24c3ce23683805',
-        nextblockhash:
+        signature:
+          '9fd45dcb188a5547a34fe2d181c24fd8f0f68b88d6c8951ec4db921a133dd846fb77d030bdacb1e421c49e23483937ce2c5eb3693baae040ddda8316ea3b6127',
+        xfield_type: 0,
+        xfield: null
+      })
+      .withArgs(
+        '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420fe'
+      )
+      .resolves(null);
+    sinon
+      .stub(rest.block, 'status')
+      .withArgs(
+        '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6'
+      )
+      .resolves({
+        in_best_chain: true,
+        height: 1236,
+        next_best:
           'e17286ef05705b03f2396f28f06b9afafa4502157285ad1d1ebc08537d27de57'
       })
       .withArgs(
         '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420fe'
       )
-      .throws(new RpcError(-5, 'Block not found'));
+      .resolves(null);
+    sinon.stub(rest.block.tip, 'height').resolves(1236);
   });
 
   afterEach(() => {
@@ -54,7 +67,6 @@ describe('GET /block/:blockHash', function () {
         .expect('Content-Type', /json/)
         .then(res => {
           const body = res.body;
-
           assert.strictEqual(
             body.blockHash,
             '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6'
@@ -109,10 +121,9 @@ describe('GET /block/:blockHash', function () {
 describe('GET /block/:blockHash/raw', function () {
   beforeEach(() => {
     sinon
-      .stub(cl, 'getBlock')
+      .stub(rest.block, 'raw')
       .withArgs(
-        '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6',
-        0
+        '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6'
       )
       .resolves(
         '0100000075adc0f804073eee1c74988e1e1bd83c85f987e34a95fd714813e379a724e85f97d679310470c26fdfaed7167075c7a8a1fa34d9c67be9c45c246281c15ffb231d0ef017e1b2147099d84709bcc0fbe89ef4d579fa8a95192ce89671765ec90459d4455f0040e7f72ce96424573b0d18f707333d02a2bc546491ba197c3af7b52d559eb55765d00a1e99d6ef4175ec4aae134c6b496a87c78d3a41ed77c7c2fd4ba684cd4abd01010000000100000000000000000000000000000000000000000000000000000000000000008a69000005028a690101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000'
@@ -133,7 +144,7 @@ describe('GET /block/:blockHash/raw', function () {
       .then(res => {
         const body = res.body;
         assert.strictEqual(
-          body,
+          body['hex'],
           '0100000075adc0f804073eee1c74988e1e1bd83c85f987e34a95fd714813e379a724e85f97d679310470c26fdfaed7167075c7a8a1fa34d9c67be9c45c246281c15ffb231d0ef017e1b2147099d84709bcc0fbe89ef4d579fa8a95192ce89671765ec90459d4455f0040e7f72ce96424573b0d18f707333d02a2bc546491ba197c3af7b52d559eb55765d00a1e99d6ef4175ec4aae134c6b496a87c78d3a41ed77c7c2fd4ba684cd4abd01010000000100000000000000000000000000000000000000000000000000000000000000008a69000005028a690101ffffffff0100f2052a010000001976a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac00000000'
         );
         done();

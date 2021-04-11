@@ -31,7 +31,7 @@ export class BlockRawdataPage implements OnInit {
     this.backendService.getRawBlock(this.blockHash).subscribe(
       data => {
         const result: any = data || '';
-        this.blockRawData = result;
+        this.blockRawData = result['hex'];
       },
       err => {
         console.log(err);

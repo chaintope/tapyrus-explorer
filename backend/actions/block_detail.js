@@ -1,5 +1,4 @@
 const app = require('../app.js');
-const tapyrusd = require('../libs/tapyrusd').client;
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
 const { isHash, updateAddress } = require('../libs/util');
@@ -23,30 +22,31 @@ app.get('/block/:blockHash', async (req, res) => {
   }
 
   try {
-    const blockInfo = await tapyrusd.getBlock(blockHash);
-
+    const block = await rest.block.get(blockHash);
+    const status = await rest.block.status(blockHash);
+    if (!block || !status) {
+      res.status(404).send('Block not found.');
+      return;
+    }
+    const tip = await rest.block.tip.height();
     res.json({
-      blockHash: blockInfo.hash,
-      confirmations: blockInfo.confirmations,
-      ntx: blockInfo.nTx,
-      height: blockInfo.height,
-      timestamp: blockInfo.time,
-      proof: blockInfo.proof,
-      sizeBytes: blockInfo.size,
-      version: blockInfo.features,
-      merkleRoot: blockInfo.merkleroot,
-      immutableMerkleRoot: blockInfo.immutablemerkleroot,
-      previousBlock: blockInfo.previousblockhash,
-      nextBlock: blockInfo.nextblockhash
+      blockHash: block.id,
+      confirmations: tip - block.height,
+      ntx: block.tx_count,
+      height: block.height,
+      timestamp: block.time,
+      proof: block.signature,
+      sizeBytes: block.size,
+      version: block.features,
+      merkleRoot: block.merkle_root,
+      immutableMerkleRoot: block.im_merkle_root,
+      previousBlock: block.previousblockhash,
+      nextBlock: status.next_best
     });
   } catch (err) {
-    if (err.code === -5) {
-      res.status(404).send('Block not found.');
-    } else {
-      logger.error(
-        `Error retrieving information for block  - ${blockHash}. Error Message - ${err.message}`
-      );
-    }
+    logger.error(
+      `Error retrieving information for block  - ${blockHash}. Error Message - ${err.message}`
+    );
   }
 });
 
@@ -61,9 +61,8 @@ app.get('/block/:blockHash/raw', async (req, res) => {
   }
 
   try {
-    const blockInfo = await tapyrusd.getBlock(blockHash, 0);
-
-    res.json(blockInfo);
+    const block = await rest.block.raw(blockHash);
+    res.json({ hex: block });
   } catch (error) {
     logger.error(
       `Error retrieving raw data for block  - ${blockHash}. Error Message - ${error.message}`

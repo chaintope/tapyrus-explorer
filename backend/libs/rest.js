@@ -54,6 +54,39 @@ const transaction = {
 };
 
 const block = {
+  get: async blockHash => {
+    const url = `${baseUrl}/block/${blockHash}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
+  raw: async blockHash => {
+    const url = `${baseUrl}/block/${blockHash}/header`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.text();
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
+  status: async blockHash => {
+    const url = `${baseUrl}/block/${blockHash}/status`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
   tip: {
     height: async () => {
       const url = `${baseUrl}/blocks/tip/height`;
