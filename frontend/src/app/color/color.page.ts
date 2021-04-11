@@ -33,7 +33,7 @@ export class ColorPage implements OnInit {
       this.tokenType = 'Reissuable';
     } else if (this.colorId.startsWith('c2')) {
       this.tokenType = 'Non Reissuable';
-    } else if (this.colorId.startsWith('c2')) {
+    } else if (this.colorId.startsWith('c3')) {
       this.tokenType = 'NFT';
     } else {
       this.tokenType = 'Unknown';
