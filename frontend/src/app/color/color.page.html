@@ -62,7 +62,7 @@
           <ion-row *ngFor="let input of tx.vin">
             <ion-col
               size="6"
-              (click)="!input.prevout?.scriptpubkey_uncolored_address || goToAddressPage(input.prevout?.scriptpubkey_uncolored_address)"
+              (click)="!input.prevout?.scriptpubkey_uncolored_address || goToAddress(input.prevout?.scriptpubkey_uncolored_address)"
               [ngClass]="{'link-color cursor-pointer ellipsis': input.prevout?.scriptpubkey_uncolored_address}"
               >{{ input.prevout?.scriptpubkey_uncolored_address }}</ion-col
             >
@@ -80,15 +80,22 @@
               *ngIf="input.is_coinbase"
             ></ion-col>
             <ion-col size="4" class="ion-text-right" *ngIf="!input.is_coinbase"
-              >{{ input.prevout?.value | asTpc}}</ion-col
-            >
+              >{{ input.prevout?.value | asTpc}}
+              <span
+                *ngIf="!!input.prevout.colorId"
+                class="link-color cursor-pointer"
+                (click)="goToCoin(input.prevout.colorId)"
+                >COIN
+              </span>
+              <span *ngIf="!input.prevout.colorId">TPC</span>
+            </ion-col>
           </ion-row>
         </ion-col>
         <ion-col size="4">
           <ion-row *ngFor="let output of tx.vout">
             <ion-col
               size="6"
-              (click)="!output.scriptpubkey_uncolored_address || goToAddressPage(output.scriptpubkey_uncolored_address)"
+              (click)="!output.scriptpubkey_uncolored_address || goToAddress(output.scriptpubkey_uncolored_address)"
               [ngClass]="{'link-color cursor-pointer ellipsis': output.scriptpubkey_uncolored_address}"
               >{{ output.scriptpubkey_uncolored_address }}</ion-col
             >
@@ -96,11 +103,31 @@
               <ion-badge color="danger">OUT</ion-badge>
             </ion-col>
             <ion-col size="4" class="ion-text-right"
-              >{{ output.value | asTpc }}</ion-col
-            >
+              >{{ output.value | asTpc }}
+              <span
+                *ngIf="!!output.colorId"
+                class="link-color cursor-pointer"
+                (click)="goToCoin(output.colorId)"
+                >COIN
+              </span>
+              <span *ngIf="!output.colorId">TPC</span>
+            </ion-col>
           </ion-row>
         </ion-col>
       </ion-row>
     </div>
   </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button
+          color="primary"
+          id="next"
+          class="cursor-pointer"
+          (click)="onNextPage()"
+          >Load More</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

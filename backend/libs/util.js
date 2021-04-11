@@ -5,6 +5,9 @@ const isHash = hash => {
   return /^[0-9a-fA-F]{64}$/.test(hash);
 };
 
+const isColorId = colorId => {
+  return /^(c1|c2|c3)[0-9a-fA-F]{64}$/.test(colorId);
+}
 // Determine uncolored address for colored coin
 // and upadte fields (scriptpubkey_uncolored_address, color_id)
 const updateAddress = tx => {
@@ -44,6 +47,7 @@ const splitColor = script => {
 
 module.exports = {
   isHash,
+  isColorId,
   splitColor,
   updateAddress
 };
