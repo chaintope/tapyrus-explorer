@@ -10,24 +10,31 @@ describe('util', () => {
 
   describe('isColorId', () => {
     it('should return true if it is valid', () => {
-      const reissuable1 = "C1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      const reissuable1 =
+        'C1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
       assert.strictEqual(util.isColorId(reissuable1), true);
-      const reissuable2 = "c1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const reissuable2 =
+        'c1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       assert.strictEqual(util.isColorId(reissuable2), true);
-      
-      const nonReissuable1 = "C2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+      const nonReissuable1 =
+        'C2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
       assert.strictEqual(util.isColorId(nonReissuable1), true);
-      const nonReissuable2 = "c2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const nonReissuable2 =
+        'c2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       assert.strictEqual(util.isColorId(nonReissuable2), true);
-      
-      const nft1 = "C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+      const nft1 =
+        'C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
       assert.strictEqual(util.isColorId(nft1), true);
-      const nft2 = "c3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const nft2 =
+        'c3ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       assert.strictEqual(util.isColorId(nft2), true);
     });
 
     it('should return false if it is invalid', () => {
-      const invalidColorId = "00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+      const invalidColorId =
+        '00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
       assert.strictEqual(util.isColorId(invalidColorId), false);
     });
   });
