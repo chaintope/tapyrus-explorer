@@ -6,7 +6,7 @@ const isHash = hash => {
 };
 
 const isColorId = colorId => {
-  return /^(c1|c2|c3)[0-9a-fA-F]{64}$/.test(colorId);
+  return /^(c|C)[1-3]{1}[0-9a-fA-F]{64}$/.test(colorId);
 };
 // Determine uncolored address for colored coin
 // and upadte fields (scriptpubkey_uncolored_address, color_id)

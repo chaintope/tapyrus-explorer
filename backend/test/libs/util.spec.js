@@ -7,6 +7,27 @@ describe('util', () => {
   beforeEach(() => {
     config.network = 'dev';
   });
+
+  describe('isColor', () => {
+    it('should return true if it is valid', () => {
+      const reissuable =
+        'C1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      assert.strictEqual(util.isColorId(reissuable), true);
+      const nonReissuable =
+        'C2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      assert.strictEqual(util.isColorId(nonReissuable), true);
+      const nft =
+        'C3FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      assert.strictEqual(util.isColorId(nft), true);
+    });
+
+    it('should return false if it is invalid', () => {
+      const invalidColorId =
+        '00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      assert.strictEqual(util.isColorId(invalidColorId), false);
+    });
+  });
+
   describe('splitColor', () => {
     it('should return same address for uncolored address', () => {
       const output = '76a914305e993346ffe2480c3e507bd73773eb932790db88ac';
