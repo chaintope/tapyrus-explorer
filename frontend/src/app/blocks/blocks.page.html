@@ -36,14 +36,14 @@
         <ion-col
           size="2"
           class="font-14 link-color cursor-pointer"
-          (click)="goToBlock(block.hash)"
+          (click)="goToBlock(block.id)"
           >{{ block.height }}</ion-col
         >
         <ion-col
           size="6"
           class="font-14 link-color cursor-pointer"
-          (click)="goToBlock(block.hash)"
-          >{{ block.hash }}</ion-col
+          (click)="goToBlock(block.id)"
+          >{{ block.id }}</ion-col
         >
         <ion-col size="2" class="font-14 text-color"
           >{{ block.time | momentFromNow }}</ion-col

@@ -65,6 +65,26 @@ const block = {
       throw new Error(`failed to fetch API ${url}`);
     }
   },
+  list: async startIndex => {
+    const url = `${baseUrl}/blocks/${startIndex}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
+  height: async height => {
+    const url = `${baseUrl}/block-height/${height}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.text();
+    } else if (response.status === 404) {
+      return null;
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
   raw: async blockHash => {
     const url = `${baseUrl}/block/${blockHash}/header`;
     const response = await fetch(url);
