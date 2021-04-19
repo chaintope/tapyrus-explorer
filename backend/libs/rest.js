@@ -159,9 +159,31 @@ const color = {
     }
   }
 };
+
+const mempool = {
+  list: async startIndex => {
+    let url;
+    if (startIndex) {
+      url = `${baseUrl}/mempool/txs/${startIndex}`;
+    } else {
+      url = `${baseUrl}/mempool/txs`;
+    }
+    const response = await fetch(url);
+    if (response.ok) {
+      return {
+        count: response.headers.get('X-Total-Results'),
+        txs: await response.json()
+      };
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  }
+};
+
 module.exports = {
   address,
   transaction,
   block,
-  color
+  color,
+  mempool
 };
