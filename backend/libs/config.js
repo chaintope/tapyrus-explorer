@@ -1,12 +1,5 @@
 const defaultConfig = {
   network: process.env.TAPYRUS_NETWORK || 'prod',
-  tapyrusd: {
-    network: 'mainnet',
-    username: process.env.TAPYRUSD_RPC_USER || 'rpcuser',
-    password: process.env.TAPYRUSD_RPC_PASSWORD || 'rpcpassword',
-    host: process.env.TAPYRUSD_RPC_HOST || 'localhost',
-    port: process.env.TAPYRUSD_RPC_PORT || 2377
-  },
   electrs: {
     host: process.env.ELECTRS_RPC_HOST || 'localhost',
     port: process.env.ELECTRS_RPC_PORT || 50001
