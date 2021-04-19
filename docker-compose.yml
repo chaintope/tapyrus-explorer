@@ -4,12 +4,6 @@ services:
     build: ./backend
     environment:
       ENV: prod
-      TAPYRUSD_RPC_HOST: tapyrusd
-      TAPYRUSD_RPC_PORT: 2377
-      TAPYRUSD_RPC_USER: rpcuser
-      TAPYRUSD_RPC_PASSWORD: rpcpassword
-      ELECTRS_RPC_HOST: esplora
-      ELECTRS_RPC_PORT: 50001
       ELECTRS_REST_SCHEMA: http
       ELECTRS_REST_HOST: esplora
       ELECTRS_REST_PORT: 3001

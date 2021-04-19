@@ -16,9 +16,9 @@ Run tapyrusd
 $ sudo ./src/tapyrusd -datadir=/var/lib/tapyrus-testnet -conf=/etc/tapyrus/tapyrus.conf 
 ```
 
-### Electrs Tapyrus
+### Esplora Tapyrus
 
-Current implementation uses electrs-tapyrus. Example of build and run in command line:
+Current implementation uses esplora-tapyrus. Example of build and run in command line:
 
 ```bash
 $ cargo build --release
@@ -41,14 +41,11 @@ these files will only appear in your local. Eg.
 
 ```json
 {
-  "tapyrusd": {
-    "network": "testnet",
-    "username": "user",
-    "password": "pass",
-    "port": 2377
-  },
-  "electrs": {
-    "port": 50001
+  "network": "prod",
+  "rest": {
+    "schema": "http",
+    "host": "localhost",
+    "port": 3000
   }
 }
 ```
