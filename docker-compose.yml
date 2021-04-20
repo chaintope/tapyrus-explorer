@@ -9,7 +9,6 @@ services:
       ELECTRS_REST_PORT: 3001
     depends_on:
       - esplora
-      - tapyrusd
     ports:
       - '3001:3001'
     volumes:

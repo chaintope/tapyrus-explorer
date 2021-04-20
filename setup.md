@@ -30,7 +30,7 @@ $ cargo run --release -- -vvvv --index-batch-size=10 --jsonrpc-import --db-dir .
 
 ### Tapyrus explorer
 
-Consists of backend (calling Tapyrusd & Electrs-Tapyrus to get data) and frontend
+Consists of backend (calling Esplora-Tapyrus to get data) and frontend
 
 To setup dev and prod environment, create files
 
