@@ -26,6 +26,18 @@ describe('util', () => {
         '00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
       assert.strictEqual(util.isColorId(invalidColorId), false);
     });
+
+    it('should return false if it is too short', () => {
+      const tooShortColorId =
+        'C1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      assert.strictEqual(util.isColorId(tooShortColorId), false);
+    });
+
+    it('should return false if it is too long', () => {
+      const tooLongColorId =
+        'C1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+      assert.strictEqual(util.isColorId(tooLongColorId), false);
+    });
   });
 
   describe('splitColor', () => {
