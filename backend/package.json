@@ -23,14 +23,14 @@
     "sinon": "^9.2.2",
     "socket.io": "^2.4.0",
     "tapyrusjs-lib": "git+https://github.com/chaintope/tapyrusjs-lib.git",
-    "ws": "^7.4.1",
+    "ws": "^7.4.6",
     "wss": "^3.3.4"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-strongloop": "^2.1.0",
     "mocha": "^8.2.1",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "supertest": "^4.0.2"
   }
