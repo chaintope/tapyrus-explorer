@@ -23,9 +23,11 @@
         </ion-col>
         <ion-col size="4" class="ion-text-end">
           <ngx-qrcode
-            [(qrc-value)]="qrcode"
-            qrc-element-type="url"
-          ></ngx-qrcode>
+            elementType="url"
+            [value]="qrcode"
+            errorCorrectionLevel="L"
+          >
+          </ngx-qrcode>
         </ion-col>
       </ion-row>
       <ion-item-divider class="mt-0 pt-0"></ion-item-divider>

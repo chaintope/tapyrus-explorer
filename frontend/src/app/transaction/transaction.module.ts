@@ -17,7 +17,7 @@ import { TransactionRawdataPage } from '../transaction-rawdata/transaction-rawda
     SharedPipeModule,
     TransactionPageRoutingModule
   ],
-  declarations: [TransactionPage, TransactionRawdataPage],
+  declarations: [TransactionPage],
   entryComponents: [TransactionRawdataPage]
 })
 export class TransactionPageModule {}

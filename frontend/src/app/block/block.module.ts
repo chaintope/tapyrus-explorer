@@ -19,7 +19,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule,
     SharedPipeModule
   ],
-  declarations: [BlockPage, BlockRawdataPage],
+  declarations: [BlockPage],
   entryComponents: [BlockRawdataPage]
 })
 export class BlockPageModule {}
