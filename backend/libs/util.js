@@ -37,15 +37,15 @@ const splitColor = script => {
       return [
         payment.colorId.toString('hex'),
         tapyrus.address.fromOutputScript(
-            output.slice(1 + COLOR_ID_LENGTH + 1),
-            network
+          output.slice(1 + COLOR_ID_LENGTH + 1),
+          network
         )
       ];
     } else {
       return [null, payment.address];
     }
   } catch (error) {
-    return [null, null]
+    return [null, null];
   }
 };
 
