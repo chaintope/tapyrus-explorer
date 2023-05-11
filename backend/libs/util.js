@@ -31,17 +31,21 @@ const COLOR_ID_LENGTH = 33;
 const splitColor = script => {
   const network = tapyrus.networks[config.network];
   const output = Buffer.from(script, 'hex');
-  const payment = tapyrus.payments.util.fromOutputScript(output, network);
-  if (payment.colorId) {
-    return [
-      payment.colorId.toString('hex'),
-      tapyrus.address.fromOutputScript(
-        output.slice(1 + COLOR_ID_LENGTH + 1),
-        network
-      )
-    ];
-  } else {
-    return [null, payment.address];
+  try {
+    const payment = tapyrus.payments.util.fromOutputScript(output, network);
+    if (payment.colorId) {
+      return [
+        payment.colorId.toString('hex'),
+        tapyrus.address.fromOutputScript(
+            output.slice(1 + COLOR_ID_LENGTH + 1),
+            network
+        )
+      ];
+    } else {
+      return [null, payment.address];
+    }
+  } catch (error) {
+    return [null, null]
   }
 };
 
