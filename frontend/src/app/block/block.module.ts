@@ -10,6 +10,7 @@ import { BlockPage } from './block.page';
 import { BlockRawdataPage } from '../block-rawdata/block-rawdata.page';
 import { SharedPipeModule } from '../modules/sharePipe.module';
 import { NgxPaginationModule } from 'ngx-pagination';
+import {BlockRawdataPageModule} from '../block-rawdata/block-rawdata.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +18,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     IonicModule,
     BlockPageRoutingModule,
     NgxPaginationModule,
-    SharedPipeModule
+    SharedPipeModule,
+    BlockRawdataPageModule
   ],
   declarations: [BlockPage],
   entryComponents: [BlockRawdataPage]
