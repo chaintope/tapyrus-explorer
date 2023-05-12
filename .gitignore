@@ -1,5 +1,7 @@
 node_modules
 configurations
+.env
+tapyrus.conf
 
 ## For Mac Users
 .DS_Store
