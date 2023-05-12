@@ -8,14 +8,18 @@ https://testnet-explorer.tapyrus.dev.chaintope.com/
 
 ### Run on docker!
 
-You just run below command. It will start [Tapyrus Core](https://github.com/chaintope/tapyrus-core),
-[Esplora Tapyrus](https://github.com/chaintope/esplora-tapyrus), application backend and frontend containers.
-In the default setting, the tapyrus core container will connect to `tapyrus testnet` and start to download blocks.
-After all the blocks are downloaded, you can start to use Tapyrus Explorer.
+Using docker-compose, you can easily start [Tapyrus Core](https://github.com/chaintope/tapyrus-core),
+[Esplora Tapyrus](https://github.com/chaintope/esplora-tapyrus) and this explorer.
 
-```
-docker-compose up -d
-```
+First, create an `.env` file and a `tapyrus.conf` file to configure the network on which the Explorer will run.
+To connect to testnet, copy and create `.env.testnet` and `tapyrus_testnet.conf`, like:
+
+    $ cp .env.testnet .env
+    $ cp tapyrus_testnet.conf tapyrus.conf
+
+Once the configuration file is ready, all that remains is to launch the service using docker-compose.
+
+    $ docker-compose up -d
 
 Once the container is up and running, you can access the Explorer at `http://localhost:4200/`.
 
