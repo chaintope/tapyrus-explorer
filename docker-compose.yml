@@ -37,8 +37,7 @@ services:
     entrypoint: >
       sh -c "
         echo ${GENESIS_BLOCK_WITH_SIG} > /var/lib/tapyrus/genesis.${NETWORK_ID} && \
-        tapyrusd -datadir=/var/lib/tapyrus -conf=/etc/tapyrus/tapyrus.conf \
-        -networkid=${NETWORK_ID} -rpcuser=${TAPYRUS_RPC_USER} -rpcpassword=${TAPYRUS_RPC_PASS} -addseeder=${TAPYRUS_SEEDER}
+        tapyrusd -datadir=/var/lib/tapyrus -conf=/etc/tapyrus/tapyrus.conf  -networkid=${NETWORK_ID} -rpcuser=${TAPYRUS_RPC_USER} -rpcpassword=${TAPYRUS_RPC_PASS} -addseeder=${TAPYRUS_SEEDER}
       "
     ports:
       - '2377:2377'
