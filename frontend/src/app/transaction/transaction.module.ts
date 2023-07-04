@@ -8,6 +8,7 @@ import { SharedPipeModule } from '../modules/sharePipe.module';
 import { TransactionPageRoutingModule } from './transaction-routing.module';
 import { TransactionPage } from './transaction.page';
 import { TransactionRawdataPage } from '../transaction-rawdata/transaction-rawdata.page';
+import { TransactionRawdataPageModule } from '../transaction-rawdata/transaction-rawdata.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { TransactionRawdataPage } from '../transaction-rawdata/transaction-rawda
     FormsModule,
     IonicModule,
     SharedPipeModule,
-    TransactionPageRoutingModule
+    TransactionPageRoutingModule,
+    TransactionRawdataPageModule
   ],
   declarations: [TransactionPage],
   entryComponents: [TransactionRawdataPage]
