@@ -1,5 +1,6 @@
 node_modules
 configurations
+.env
 
 ## For Mac Users
 .DS_Store
