@@ -19,7 +19,7 @@ services:
     build: ./frontend
     environment:
       BACKEND_URL: http://localhost:3001
-      PROJECT: Testnet
+      PROJECT: $PROJECT
     depends_on:
       - backend
     ports:
@@ -30,10 +30,15 @@ services:
   tapyrusd:
     image: tapyrus/tapyrusd:latest
     environment:
-      GENESIS_BLOCK_WITH_SIG: 01000000000000000000000000000000000000000000000000000000000000000000000044cc181bd0e95c5b999a13d1fc0d193fa8223af97511ad2098217555a841b3518f18ec2536f0bb9d6d4834fcc712e9563840fe9f089db9e8fe890bffb82165849f52ba5e01210366262690cbdf648132ce0c088962c6361112582364ede120f3780ab73438fc4b402b1ed9996920f57a425f6f9797557c0e73d0c9fbafdebcaa796b136e0946ffa98d928f8130b6a572f83da39530b13784eeb7007465b673aa95091619e7ee208501010000000100000000000000000000000000000000000000000000000000000000000000000000000000ffffffff0100f2052a010000002776a92231415132437447336a686f37385372457a4b6533766636647863456b4a74356e7a4188ac00000000
+      GENESIS_BLOCK_WITH_SIG: $GENESIS_BLOCK_WITH_SIG
     volumes:
       - tapyrus:/var/lib/tapyrus
-      - ./tapyrus_testnet.conf:/etc/tapyrus/tapyrus.conf
+      - ./tapyrus.conf:/etc/tapyrus/tapyrus.conf
+    entrypoint: >
+      sh -c "
+        echo ${GENESIS_BLOCK_WITH_SIG} > /var/lib/tapyrus/genesis.${NETWORK_ID} && \
+        tapyrusd -datadir=/var/lib/tapyrus -conf=/etc/tapyrus/tapyrus.conf  -networkid=${NETWORK_ID} -rpcuser=${TAPYRUS_RPC_USER} -rpcpassword=${TAPYRUS_RPC_PASS} -addseeder=${TAPYRUS_SEEDER}
+      "
     ports:
       - '2377:2377'
   esplora:
@@ -56,9 +61,9 @@ services:
         '--daemon-rpc-addr',
         'tapyrusd:2377',
         '--daemon-dir',
-        '/var/lib/tapyrus/prod-1939510133',
+        '/var/lib/tapyrus/prod-${NETWORK_ID}',
         '--network-id',
-        '1939510133',
+        '${NETWORK_ID}',
         '--network',
         'prod',
         '--electrum-rpc-addr',
@@ -66,7 +71,7 @@ services:
         '--http-addr',
         '0.0.0.0:3001',
         '--cookie',
-        'rpcuser:rpcpassword',
+        '${TAPYRUS_RPC_USER}:${TAPYRUS_RPC_PASS}',
         '--electrum-txs-limit',
         '1000000',
         '--utxos-limit',
