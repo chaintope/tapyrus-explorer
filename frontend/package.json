@@ -4,12 +4,12 @@
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
-    "ng": "NODE_OPTIONS='--openssl-legacy-provider' ng",
-    "start": "NODE_OPTIONS='--openssl-legacy-provider' ng serve",
-    "build": "NODE_OPTIONS='--openssl-legacy-provider' ng build",
-    "test": "NODE_OPTIONS='--openssl-legacy-provider' ng test",
-    "lint": "NODE_OPTIONS='--openssl-legacy-provider' ng lint",
-    "e2e": "NODE_OPTIONS='--openssl-legacy-provider' ng e2e",
+    "ng": "ng",
+    "build": "ng build",
+    "start": "ng serve",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
     "prettier": "prettier --write .",
     "prettier-ci": "prettier --check ."
   },
