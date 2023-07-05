@@ -7,18 +7,16 @@ describe('AddressPage', () => {
   let component: AddressPage;
   let fixture: ComponentFixture<AddressPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [AddressPage],
-        imports: [IonicModule.forRoot()]
-      }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AddressPage],
+      imports: [IonicModule.forRoot()]
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(AddressPage);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(AddressPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
