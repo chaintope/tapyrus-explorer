@@ -38,9 +38,11 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY_FRONTEND: ${{ secrets.AWS_ECR_REPO_NAME_FRONTEND }}
           ECR_REPOSITORY_BACKEND: ${{ secrets.AWS_ECR_REPO_NAME_BACKEND }}
+          ECR_REPOSITORY_FRONTEND_NGINX: ${{ secrets.AWS_ECR_REPO_NAME_FRONTEND_NGINX }}
         run: |
           DOCKER_IMAGE_FRONTEND=tapyrus/explorer-frontend
           DOCKER_IMAGE_BACKEND=tapyrus/explorer-backend
+          DOCKER_IMAGE_FRONTEND_NGINX=tapyrus/explorer-frontend-nginx
           VERSION=noop
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
@@ -52,6 +54,7 @@ jobs:
           fi
           TAGS_FRONTEND="${DOCKER_IMAGE_FRONTEND}:${VERSION},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND}:${VERSION}"
           TAGS_BACKEND="${DOCKER_IMAGE_BACKEND}:${VERSION},${ECR_REGISTRY}/${ECR_REPOSITORY_BACKEND}:${VERSION}"
+          TAGS_FRONTEND_NGINX="${DOCKER_IMAGE_FRONTEND_NGINX}:${VERSION},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND_NGINX}:${VERSION}"
 
           if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
             MINOR=${VERSION%.*}
@@ -60,13 +63,17 @@ jobs:
             TAGS_FRONTEND="$TAGS_FRONTEND,${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND}:${MINOR},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND}:${MAJOR},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND}:latest"
             TAGS_BACKEND="$TAGS_BACKEND,${DOCKER_IMAGE_BACKEND}:${MINOR},${DOCKER_IMAGE_BACKEND}:${MAJOR},${DOCKER_IMAGE_BACKEND}:latest"
             TAGS_BACKEND="$TAGS_BACKEND,${ECR_REGISTRY}/${ECR_REPOSITORY_BACKEND}:${MINOR},${ECR_REGISTRY}/${ECR_REPOSITORY_BACKEND}:${MAJOR},${ECR_REGISTRY}/${ECR_REPOSITORY_BACKEND}:latest"
+            TAGS_FRONTEND_NGINX="$TAGS_FRONTEND_NGINX,${DOCKER_IMAGE_FRONTEND_NGINX}:${MINOR},${DOCKER_IMAGE_FRONTEND_NGINX}:${MAJOR},${DOCKER_IMAGE_FRONTEND_NGINX}:latest"
+            TAGS_FRONTEND_NGINX="$TAGS_FRONTEND_NGINX,${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND_NGINX}:${MINOR},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND_NGINX}:${MAJOR},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND_NGINX}:latest"
           elif [ "${{ github.event_name }}" = "push" ]; then
             TAGS_FRONTEND="$TAGS_FRONTEND,${DOCKER_IMAGE_FRONTEND}:sha-${GITHUB_SHA::8},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND}:sha-${GITHUB_SHA::8}"
             TAGS_BACKEND="$TAGS_BACKEND,${DOCKER_IMAGE_BACKEND}:sha-${GITHUB_SHA::8},${ECR_REGISTRY}/${ECR_REPOSITORY_BACKEND}:sha-${GITHUB_SHA::8}"
+            TAGS_FRONTEND_NGINX="$TAGS_FRONTEND_NGINX,${DOCKER_IMAGE_FRONTEND_NGINX}:sha-${GITHUB_SHA::8},${ECR_REGISTRY}/${ECR_REPOSITORY_FRONTEND_NGINX}:sha-${GITHUB_SHA::8}"
           fi
           echo ::set-output name=version::${VERSION}
           echo ::set-output name=tags-frontend::${TAGS_FRONTEND}
           echo ::set-output name=tags-backend::${TAGS_BACKEND}
+          echo ::set-output name=tags-frontend-nginx::${TAGS_FRONTEND_NGINX}
           echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       -
         name: Set up QEMU
@@ -109,6 +116,26 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           push: true
           tags: ${{ steps.prep.outputs.tags-backend }}
+          labels: |
+            org.opencontainers.image.title=${{ fromJson(steps.repo.outputs.result).name }}
+            org.opencontainers.image.description=${{ fromJson(steps.repo.outputs.result).description }}
+            org.opencontainers.image.url=${{ fromJson(steps.repo.outputs.result).html_url }}
+            org.opencontainers.image.source=${{ fromJson(steps.repo.outputs.result).clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ fromJson(steps.repo.outputs.result).license.spdx_id }}
+      - 
+        name: Build and push nginx image
+        id: docker_build_nginx
+        uses: docker/build-push-action@v2
+        with:
+          context: ./nginx
+          file: ./nginx/Dockerfile
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
+          push: true
+          build-args: VERSION=${{ steps.prep.outputs.version }}
+          tags: ${{ steps.prep.outputs.tags-frontend-nginx }}
           labels: |
             org.opencontainers.image.title=${{ fromJson(steps.repo.outputs.result).name }}
             org.opencontainers.image.description=${{ fromJson(steps.repo.outputs.result).description }}
