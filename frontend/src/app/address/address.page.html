@@ -22,12 +22,7 @@
           </div>
         </ion-col>
         <ion-col size="4" class="ion-text-end">
-          <ngx-qrcode
-            elementType="url"
-            [value]="qrcode"
-            errorCorrectionLevel="L"
-          >
-          </ngx-qrcode>
+          <qrcode [qrdata]="qrcode" [errorCorrectionLevel]="'L'"></qrcode>
         </ion-col>
       </ion-row>
       <ion-item-divider class="mt-0 pt-0"></ion-item-divider>

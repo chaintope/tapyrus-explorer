@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AddressPageRoutingModule } from './address-routing.module';
 
 import { AddressPage } from './address.page';
-import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { QRCodeModule } from 'angularx-qrcode';
 import { SharedPipeModule } from '../modules/sharePipe.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 
@@ -19,7 +19,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AddressPageRoutingModule,
     SharedPipeModule,
     NgxPaginationModule,
-    NgxQRCodeModule
+    QRCodeModule
   ],
   declarations: [AddressPage]
 })
