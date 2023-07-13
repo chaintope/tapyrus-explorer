@@ -19,7 +19,6 @@ import { TransactionRawdataPageModule } from '../transaction-rawdata/transaction
     TransactionPageRoutingModule,
     TransactionRawdataPageModule
   ],
-  declarations: [TransactionPage],
-  entryComponents: [TransactionRawdataPage]
+  declarations: [TransactionPage]
 })
 export class TransactionPageModule {}

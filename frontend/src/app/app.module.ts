@@ -16,7 +16,6 @@ import { ConfigService } from './config.service';
 
 @NgModule({
   declarations: [AppComponent, FooterComponent],
-  entryComponents: [],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),

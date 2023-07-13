@@ -18,7 +18,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgxPaginationModule,
     SharedPipeModule
   ],
-  declarations: [ColorPage],
-  entryComponents: []
+  declarations: [ColorPage]
 })
 export class ColorPageModule {}

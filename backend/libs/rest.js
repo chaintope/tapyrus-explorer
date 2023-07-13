@@ -1,11 +1,24 @@
 const config = require('./config');
 const fetch = require('node-fetch');
 
+const http = require('node:http');
+const https = require('node:https');
+
+const httpAgent = new http.Agent({ keepAlive: true });
+const httpsAgent = new https.Agent({ keepAlive: true });
+const agentSelector = function (_parsedURL) {
+  if (_parsedURL.protocol == 'http:') {
+    return httpAgent;
+  } else {
+    return httpsAgent;
+  }
+};
+
 const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}`;
 const address = {
   stats: async address => {
     const url = `${baseUrl}/address/${address}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else {
@@ -19,7 +32,7 @@ const address = {
     } else {
       url = `${baseUrl}/address/${address}/txs`;
     }
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else {
@@ -31,7 +44,7 @@ const address = {
 const transaction = {
   get: async txid => {
     const url = `${baseUrl}/tx/${txid}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else if (response.status === 404) {
@@ -42,7 +55,7 @@ const transaction = {
   },
   raw: async txid => {
     const url = `${baseUrl}/tx/${txid}/hex`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.text();
     } else if (response.status === 404) {
@@ -56,7 +69,7 @@ const transaction = {
 const block = {
   get: async blockHash => {
     const url = `${baseUrl}/block/${blockHash}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else if (response.status === 404) {
@@ -67,7 +80,7 @@ const block = {
   },
   list: async startIndex => {
     const url = `${baseUrl}/blocks/${startIndex}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else {
@@ -76,7 +89,7 @@ const block = {
   },
   height: async height => {
     const url = `${baseUrl}/block-height/${height}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.text();
     } else if (response.status === 404) {
@@ -87,7 +100,7 @@ const block = {
   },
   raw: async blockHash => {
     const url = `${baseUrl}/block/${blockHash}/header`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.text();
     } else if (response.status === 404) {
@@ -98,7 +111,7 @@ const block = {
   },
   status: async blockHash => {
     const url = `${baseUrl}/block/${blockHash}/status`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else if (response.status === 404) {
@@ -110,7 +123,7 @@ const block = {
   tip: {
     height: async () => {
       const url = `${baseUrl}/blocks/tip/height`;
-      const response = await fetch(url);
+      const response = await fetch(url, { agent: agentSelector });
       if (response.ok) {
         return response.json();
       } else {
@@ -125,7 +138,7 @@ const block = {
     } else {
       url = `${baseUrl}/block/${blockHash}/txs`;
     }
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else {
@@ -137,7 +150,7 @@ const block = {
 const color = {
   get: async colorId => {
     const url = `${baseUrl}/color/${colorId}`;
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else {
@@ -151,7 +164,7 @@ const color = {
     } else {
       url = `${baseUrl}/color/${colorId}/txs`;
     }
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return response.json();
     } else {
@@ -168,7 +181,7 @@ const mempool = {
     } else {
       url = `${baseUrl}/mempool/txs`;
     }
-    const response = await fetch(url);
+    const response = await fetch(url, { agent: agentSelector });
     if (response.ok) {
       return {
         count: response.headers.get('X-Total-Results'),

@@ -21,7 +21,6 @@ import { BlockRawdataPageModule } from '../block-rawdata/block-rawdata.module';
     SharedPipeModule,
     BlockRawdataPageModule
   ],
-  declarations: [BlockPage],
-  entryComponents: [BlockRawdataPage]
+  declarations: [BlockPage]
 })
 export class BlockPageModule {}
