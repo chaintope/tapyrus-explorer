@@ -1,0 +1,107 @@
+<ion-content class="pb-footer">
+  <div class="ion-padding">
+    <h1>Validate Opened Value</h1>
+  </div>
+  <div class="ion-padding ion-margin">
+    <div class="description">
+      It can be verified that the content of the
+      <strong>opened value</strong> matches the commitment recorded in the
+      blockchain. Opened Value is a value given to disclose the content of the
+      commitments included in a tracking transaction. For more information on
+      opened value, please see to the
+      <a
+        href="https://github.com/chaintope/glueby-contract-tracking/blob/main/doc/v2spec.md#54-%E9%96%8B%E7%A4%BA%E5%80%A4"
+        >specification</a
+      >
+    </div>
+  </div>
+  <div class="ion-padding ion-margin-bottom ion-margin-top">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-textarea
+            class="bg-white"
+            label="Opened Value"
+            rows="10"
+            [(ngModel)]="openedValue"
+            placeholder="Opened Value"
+            (keyup.enter)="onValidate()"
+          ></ion-textarea>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <ion-button color="primary" (click)="onValidate()">
+            Validate
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid class="font-14 text-color" *ngIf="payload">
+      <ion-row class="table-content">
+        <ion-col size="2" class="font-w500">Item ID:</ion-col>
+        <ion-col size="8">{{ payload.item_id }}</ion-col>
+      </ion-row>
+      <ion-row class="table-content">
+        <ion-col size="2" class="font-w500">TXID:</ion-col>
+        <ion-col size="8">
+          <div
+            class="link-color cursor-pointer"
+            (click)="goToTransaction(payload.txid)"
+          >
+            {{ payload.txid }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="table-content">
+        <ion-col size="2" class="font-w500">Index:</ion-col>
+        <ion-col size="8">{{ payload.index }}</ion-col>
+      </ion-row>
+      <ion-row class="table-content">
+        <ion-col size="2" class="font-w500">Commitment:</ion-col>
+        <ion-col size="8">{{ payload.commitment }}</ion-col>
+      </ion-row>
+      <ion-row class="table-content">
+        <ion-col size="2" class="font-w500">R:</ion-col>
+        <ion-col size="8">{{ payload.R }}</ion-col>
+      </ion-row>
+      <ion-row class="table-content">
+        <ion-col size="2" class="font-w500">Materials:</ion-col>
+        <ion-col size="8">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="6">Name</ion-col>
+              <ion-col size="2">Quantity</ion-col>
+              <ion-col size="4">Unit</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let material of payload.materials">
+              <ion-col size="6"> {{ material.name }} </ion-col>
+              <ion-col size="2"> {{ material.quantity }} </ion-col>
+              <ion-col size="4"> {{ material.unit }} </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid>
+      <ion-row class="table-content" *ngIf="valid != null">
+        <ion-col size="2" class="font-w500">Valid:</ion-col>
+        <ion-col size="8" class="font-w500">
+          <div *ngIf="!hasError; else invalid">
+            <ion-text color="success">
+              <ion-icon name="checkmark-outline"></ion-icon>
+              Opened value is valid
+            </ion-text>
+          </div>
+          <ng-template #invalid>
+            <ion-text color="danger">
+              <ion-icon name="close-outline"></ion-icon>
+              Opened value is invalid
+            </ion-text>
+            <ion-text color="danger"> ({{errorMsg}}) </ion-text>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

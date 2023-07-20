@@ -70,4 +70,6 @@ export class TransactionPage implements OnInit {
     });
     return await modal.present();
   }
+
+  goToValidation() {}
 }

@@ -53,6 +53,7 @@ describe('AppComponent', () => {
     expect(menuItems.length).toEqual(2);
     expect(menuItems[0].textContent).toContain('Blocks');
     expect(menuItems[1].textContent).toContain('Txns');
+    expect(menuItems[2].textContent).toContain('Tracking Validation');
   });
 
   it('should have urls', async () => {
@@ -66,6 +67,9 @@ describe('AppComponent', () => {
     );
     expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual(
       '/tx/recent'
+    );
+    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual(
+      '/tracking_validation'
     );
   });
 });
