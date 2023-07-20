@@ -44,6 +44,20 @@ const routes: Routes = [
       )
   },
   {
+    path: 'tracking_validation',
+    loadChildren: () =>
+      import('./tracking_validation/tracking_validation.module').then(
+        m => m.TrackingValidationPageModule
+      )
+  },
+  {
+    path: 'tracking_validation/:openedValue',
+    loadChildren: () =>
+      import('./tracking_validation/tracking_validation.module').then(
+        m => m.TrackingValidationPageModule
+      )
+  },
+  {
     path: 'transaction-rawdata',
     loadChildren: () =>
       import('./transaction-rawdata/transaction-rawdata.module').then(

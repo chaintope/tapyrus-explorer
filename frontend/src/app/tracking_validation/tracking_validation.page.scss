@@ -1,0 +1,10 @@
+ion-content {
+  --background: var(
+    --ion-item-background,
+    var(--ion-background-color, #e5e5e5)
+  ) !important;
+}
+
+.description {
+  font-size: 120%;
+}

@@ -15,13 +15,15 @@ export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'Blocks',
-      url: '/blocks',
-      icon: 'mail'
+      url: '/blocks'
     },
     {
       title: 'Txns',
-      url: '/tx/recent',
-      icon: 'paper-plane'
+      url: '/tx/recent'
+    },
+    {
+      title: 'Tracking Validation',
+      url: '/tracking_validation'
     }
   ];
   public menuToggle = false;

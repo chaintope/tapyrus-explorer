@@ -1,0 +1,110 @@
+[
+  {
+    "description": "valid opened value",
+    "encoded": "eyJhbGciOiJFUzI1NksifQ.eyJpdGVtX2lkIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYTAwMDAwMDAwIiwidHhpZCI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJpbmRleCI6MCwiY29tbWl0bWVudCI6IjAzMTRhYWMzOWQ3YzVjMWUzZmIzYjhjODc4MDk4NjQwYjdiMjE0NmExOTU0MWU1OTc5MmY2ZDdjODcyNjZkNjczYSIsIlIiOiIwMzQzOWZlZmNiNDVlZGRlYmFhNzM4YWFlZTJkOTM2MTc4Y2RiOWYxZGY2Yjg1OTcwNjllMDlmZmY2YjI4YjkwN2UiLCJtYXRlcmlhbHMiOlt7Im5hbWUiOiJBIiwicXVhbnRpdHkiOjYwMCwidW5pdCI6ImcifSx7Im5hbWUiOiJCIiwicXVhbnRpdHkiOjIwMCwidW5pdCI6ImcifSx7Im5hbWUiOiJDIiwicXVhbnRpdHkiOjIwMCwidW5pdCI6ImcifV19.qN4H4IIzs1daJcKxqN3BHa4nwTM5OBTKqXewSXVUXMcbHJNYLMoQOoDUrwdTn4pf6hsYzAOgi8459VClUARlzg",
+    "decoded": {
+      "header": {
+        "alg": "ES256K"
+      },
+      "payload": {
+        "item_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000",
+        "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "index": 0,
+        "commitment": "0314aac39d7c5c1e3fb3b8c878098640b7b2146a19541e59792f6d7c87266d673a",
+        "R": "03439fefcb45eddebaa738aaee2d936178cdb9f1df6b8597069e09fff6b28b907e",
+        "materials": [
+          {
+            "name": "A",
+            "quantity": 600,
+            "unit": "g"
+          },
+          {
+            "name": "B",
+            "quantity": 200,
+            "unit": "g"
+          },
+          {
+            "name": "C",
+            "quantity": 200,
+            "unit": "g"
+          }
+        ]
+      },
+      "signature": "qN4H4IIzs1daJcKxqN3BHa4nwTM5OBTKqXewSXVUXMcbHJNYLMoQOoDUrwdTn4pf6hsYzAOgi8459VClUARlzg",
+      "valid": true,
+      "error": ""
+    }
+  },
+  {
+    "description": "invalid opened value(invalid commitment)",
+    "encoded": "eyJhbGciOiJFUzI1NksifQ.eyJpdGVtX2lkIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYTAwMDAwMDAwIiwidHhpZCI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJpbmRleCI6MCwiY29tbWl0bWVudCI6IjAzMTRhYWMzOWQ3YzVjMWUzZmIzYjhjODc4MDk4NjQwYjdiMjE0NmExOTU0MWU1OTc5MmY2ZDdjODcyNjZkNjczYiIsIlIiOiIwMzQzOWZlZmNiNDVlZGRlYmFhNzM4YWFlZTJkOTM2MTc4Y2RiOWYxZGY2Yjg1OTcwNjllMDlmZmY2YjI4YjkwN2UiLCJtYXRlcmlhbHMiOlt7Im5hbWUiOiJBIiwicXVhbnRpdHkiOjYwMCwidW5pdCI6ImcifSx7Im5hbWUiOiJCIiwicXVhbnRpdHkiOjIwMCwidW5pdCI6ImcifSx7Im5hbWUiOiJDIiwicXVhbnRpdHkiOjIwMCwidW5pdCI6ImcifV19.WGx18VSG9iWc2ss792Z0ar8ZV8qVagDYNOI6qKBgEffhvjzanAygmOI14FmCFRI63Qypu4AD0_DMe_oD32lq1g",
+    "decoded": {
+      "header": {
+        "alg": "ES256K"
+      },
+      "payload": {
+        "item_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000",
+        "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "index": 0,
+        "commitment": "0314aac39d7c5c1e3fb3b8c878098640b7b2146a19541e59792f6d7c87266d673b",
+        "R": "03439fefcb45eddebaa738aaee2d936178cdb9f1df6b8597069e09fff6b28b907e",
+        "materials": [
+          {
+            "name": "A",
+            "quantity": 600,
+            "unit": "g"
+          },
+          {
+            "name": "B",
+            "quantity": 200,
+            "unit": "g"
+          },
+          {
+            "name": "C",
+            "quantity": 200,
+            "unit": "g"
+          }
+        ]
+      },
+      "signature": "WGx18VSG9iWc2ss792Z0ar8ZV8qVagDYNOI6qKBgEffhvjzanAygmOI14FmCFRI63Qypu4AD0_DMe_oD32lq1g",
+      "valid": false,
+      "error": "Invalid commitment"
+    }
+  },
+  {
+    "description": "invalid opened value(invalid signature)",
+    "encoded": "eyJhbGciOiJFUzI1NksifQ.eyJpdGVtX2lkIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYTAwMDAwMDAwIiwidHhpZCI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJpbmRleCI6MCwiY29tbWl0bWVudCI6IjAzMTRhYWMzOWQ3YzVjMWUzZmIzYjhjODc4MDk4NjQwYjdiMjE0NmExOTU0MWU1OTc5MmY2ZDdjODcyNjZkNjczYSIsIlIiOiIwMzQzOWZlZmNiNDVlZGRlYmFhNzM4YWFlZTJkOTM2MTc4Y2RiOWYxZGY2Yjg1OTcwNjllMDlmZmY2YjI4YjkwN2UiLCJtYXRlcmlhbHMiOlt7Im5hbWUiOiJBIiwicXVhbnRpdHkiOjYwMCwidW5pdCI6ImcifSx7Im5hbWUiOiJCIiwicXVhbnRpdHkiOjIwMCwidW5pdCI6ImcifSx7Im5hbWUiOiJDIiwicXVhbnRpdHkiOjIwMCwidW5pdCI6ImcifV19.qN4H4IIzs1daJcKxqN3BHa4nwTM5OBTKqXewSXVUXMcbHJNYLMoQOoDUrwdTn4pf6hsYzAOgi8459VClUARlaa",
+    "decoded": {
+      "header": {
+        "alg": "ES256K"
+      },
+      "payload": {
+        "item_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa00000000",
+        "txid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "index": 0,
+        "commitment": "0314aac39d7c5c1e3fb3b8c878098640b7b2146a19541e59792f6d7c87266d673a",
+        "R": "03439fefcb45eddebaa738aaee2d936178cdb9f1df6b8597069e09fff6b28b907e",
+        "materials": [
+          {
+            "name": "A",
+            "quantity": 600,
+            "unit": "g"
+          },
+          {
+            "name": "B",
+            "quantity": 200,
+            "unit": "g"
+          },
+          {
+            "name": "C",
+            "quantity": 200,
+            "unit": "g"
+          }
+        ]
+      },
+      "signature": "qN4H4IIzs1daJcKxqN3BHa4nwTM5OBTKqXewSXVUXMcbHJNYLMoQOoDUrwdTn4pf6hsYzAOgi8459VClUARlaa",
+      "valid": false,
+      "error": "Invalid signature"
+    }
+  }
+]
