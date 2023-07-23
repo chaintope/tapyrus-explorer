@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ModalController, NavController } from '@ionic/angular';
 
 import { TransactionRawdataPage } from '../transaction-rawdata/transaction-rawdata.page';
 import { BackendService } from '../backend.service';
+import { NotFoundComponent } from '../components/errors/not_found.component';
 
 @Component({
   selector: 'app-transaction',
@@ -15,6 +16,10 @@ import { BackendService } from '../backend.service';
 export class TransactionPage implements OnInit {
   txid: string;
   transaction: any = {};
+  hasError: boolean;
+  statusCode: string;
+  statusMsg: string;
+  detailMsg: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -30,6 +35,7 @@ export class TransactionPage implements OnInit {
   }
 
   getTransactionInfo() {
+    this.resetError();
     this.backendService.getTransaction(this.txid).subscribe(
       data => {
         this.transaction = data || {};
@@ -37,8 +43,19 @@ export class TransactionPage implements OnInit {
       },
       err => {
         console.log(err);
+        this.hasError = true;
+        this.statusCode = err.status;
+        this.statusMsg = err.statusText;
+        this.detailMsg = err.error;
       }
     );
+  }
+
+  resetError() {
+    this.hasError = false;
+    this.statusCode = null;
+    this.statusMsg = null;
+    this.detailMsg = null;
   }
 
   calculateTotal() {
