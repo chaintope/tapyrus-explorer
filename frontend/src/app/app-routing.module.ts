@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './components/errors/not_found.component';
 
 const routes: Routes = [
   {
@@ -68,6 +69,15 @@ const routes: Routes = [
     path: 'addresses/:address',
     loadChildren: () =>
       import('./address/address.module').then(m => m.AddressPageModule)
+  },
+  {
+    path: '**',
+    component: NotFoundComponent,
+    data: {
+      statusCode: 404,
+      statusMsg: 'Page Not Found',
+      detailMsg: 'The requested page does not found.'
+    }
   }
 ];
 

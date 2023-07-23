@@ -26,6 +26,10 @@ export class AddressPage implements OnInit {
   pages = 1; // number of pages
   txCount = 0;
   lastSeenTxid?: string;
+  hasError: boolean;
+  statusCode: string;
+  statusMsg: string;
+  detailMsg: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -77,6 +81,7 @@ export class AddressPage implements OnInit {
   }
 
   getAddressInfo() {
+    this.resetError();
     this.backendService
       .getAddressInfo(this.address, this.lastSeenTxid)
       .subscribe(
@@ -95,7 +100,18 @@ export class AddressPage implements OnInit {
         },
         err => {
           console.log(err);
+          this.hasError = true;
+          this.statusCode = err.status;
+          this.statusMsg = err.statusText;
+          this.detailMsg = err.error;
         }
       );
+  }
+
+  resetError() {
+    this.hasError = false;
+    this.statusCode = null;
+    this.statusMsg = null;
+    this.detailMsg = null;
   }
 }
