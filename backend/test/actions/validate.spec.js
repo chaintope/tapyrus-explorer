@@ -88,7 +88,7 @@ describe('GET /api/validate/:opened_value', () => {
       .catch(done);
   });
 
-  it('should return { valid: false } for invalid signature', done => {
+  it('should return { valid: false } for invalid commitment', done => {
     const openedValue = fixtures[2]['encoded'];
     supertest(app)
       .get(`/api/validate/${openedValue}`)
@@ -96,6 +96,19 @@ describe('GET /api/validate/:opened_value', () => {
       .expect('Content-Type', /json/)
       .then(res => {
         assert.deepStrictEqual(res.body, fixtures[2]['decoded']);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return { valid: false } for invalid signature', done => {
+    const openedValue = fixtures[3]['encoded'];
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then(res => {
+        assert.deepStrictEqual(res.body, fixtures[3]['decoded']);
         done();
       })
       .catch(done);

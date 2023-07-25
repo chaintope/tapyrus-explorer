@@ -2,6 +2,7 @@ const app = require('../app.js');
 const logger = require('../libs/logger.js');
 const rest = require('../libs/rest');
 const jsontokens = require('jsontokens');
+const Commitment = require('../libs/commitment');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -12,7 +13,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const isValidCommitment = (script, commitment) => {
+const isValidFormat = (script, commitment) => {
   if (!script || !commitment) {
     return false;
   }
@@ -30,6 +31,13 @@ const isValidCommitment = (script, commitment) => {
   ); //commitment
 };
 
+const isValidCommitment = payload => {
+  return (
+    new Commitment(payload.materials, payload.R).point().toHex(true) ==
+    payload.commitment
+  );
+};
+
 const decode = jws => {
   try {
     return jsontokens.decodeToken(jws);
@@ -39,8 +47,13 @@ const decode = jws => {
 };
 
 const isValid = (openedValue, script, payload) => {
-  const valid = isValidCommitment(script, payload.commitment);
-  if (!valid) {
+  const validFormat = isValidFormat(script, payload.commitment);
+  if (!validFormat) {
+    return [false, 'The commitment does not match in blockchain'];
+  }
+
+  const validCommitment = isValidCommitment(payload);
+  if (!validCommitment) {
     return [false, 'Invalid commitment'];
   }
 
