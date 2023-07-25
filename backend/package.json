@@ -25,7 +25,8 @@
     "tapyrusjs-lib": "^0.5.0",
     "ws": "^7.4.6",
     "wss": "^3.3.4",
-    "jsontokens": "4.0.1"
+    "jsontokens": "4.0.1",
+    "@noble/curves": "1.1.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
