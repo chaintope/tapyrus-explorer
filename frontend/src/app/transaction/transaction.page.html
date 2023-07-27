@@ -205,6 +205,61 @@
         </ion-grid>
       </div>
     </div>
+    <div>
+      <div class="bg-white ion-padding" *ngIf="isTracking">
+        <div class="flex">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-title class="ion-padding"
+                  >Check Tracking Transaction</ion-title
+                >
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-text class="ion-padding"
+                  >This transaction is a tracking transaction. You can check
+                  that the total amount of material used for inputs and for
+                  outputs are balanced.</ion-text
+                >
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="!hasTrackingCheckResult">
+              <ion-col>
+                <ion-button
+                  color="primary"
+                  id="check-balance"
+                  (click)="checkBalance()"
+                  class="cursor-pointer"
+                  >Check balance</ion-button
+                >
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="hasTrackingCheckResult">
+              <ion-col>
+                <ion-text
+                  *ngIf="isTrackingBalanced"
+                  color="success"
+                  class="ion-padding"
+                >
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  The total amount of material is balanced!
+                </ion-text>
+                <ion-text
+                  *ngIf="!isTrackingBalanced"
+                  color="danger"
+                  class="ion-padding"
+                >
+                  <ion-icon name="close-outline"></ion-icon>
+                  The total amount of material is not balanced
+                </ion-text>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="ion-padding" *ngIf="hasError">
     <h1 class="error text-primary">

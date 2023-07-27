@@ -3,6 +3,8 @@ const logger = require('../libs/logger.js');
 const rest = require('../libs/rest');
 const jsontokens = require('jsontokens');
 const Commitment = require('../libs/commitment');
+const { isHash, trackingOutputs, getTrackingPayload } = require('../libs/util');
+const secp256k1 = require('@noble/curves/secp256k1');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -66,6 +68,48 @@ const isValid = (openedValue, script, payload) => {
   }
   return [true, ''];
 };
+
+const getPreviousTrackingPayload = async input => {
+  const txid = input.txid;
+  const index = input.vout;
+  try {
+    const tx = await rest.transaction.get(txid);
+    if (!tx) {
+      return null;
+    }
+    return getTrackingPayload(tx.vout[index - 1], index - 1);
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+const checkBalance = async tx => {
+  const inputs = await Promise.all(
+    tx.vin.map(input => {
+      return getPreviousTrackingPayload(input);
+    })
+  );
+  const inputCommitment = inputs
+    .filter(e => e != null)
+    .reduce((commitment, payloads) => {
+      const point = secp256k1.secp256k1.ProjectivePoint.fromHex(payloads[1]);
+      return commitment.add(point);
+    }, secp256k1.secp256k1.ProjectivePoint.ZERO);
+  const outputs = trackingOutputs(tx);
+  const outputCommitment = outputs
+    .filter(output => {
+      //exclude mint operation
+      return output[3] != '01';
+    })
+    .reduce((commitment, payloads) => {
+      const point = secp256k1.secp256k1.ProjectivePoint.fromHex(payloads[0]);
+      return commitment.add(point);
+    }, secp256k1.secp256k1.ProjectivePoint.ZERO);
+
+  return inputCommitment.toHex(true) == outputCommitment.toHex(true);
+};
+
 //Validate commitment of tracking transaction
 app.get('/api/validate/:openedValue', async (req, res) => {
   try {
@@ -92,5 +136,30 @@ app.get('/api/validate/:openedValue', async (req, res) => {
       `Error validating opened value. Error Message - ${error.message}`
     );
     res.status(500).send('Error validating opened value');
+  }
+});
+
+// Check that the total amount of material used for inputs and for outputs are balanced
+app.get('/api/check_balance/:txid', async (req, res) => {
+  const txid = req.params.txid;
+  if (!isHash(txid)) {
+    console.error(`Invalid txid(${txid}) -- /api/check_balance/${txid}`);
+    res.status(400).send('Bad request');
+    return;
+  }
+
+  try {
+    const tx = await rest.transaction.get(txid);
+    if (!tx) {
+      res.status(404).send(`Tx not found(${txid})`);
+      return;
+    }
+    const balanced = await checkBalance(tx);
+    res.json({ balanced: balanced });
+  } catch (error) {
+    logger.error(
+      `Error calling the method gettransaction for transaction - ${txid}. Error Message - ${error.message}`
+    );
+    res.status(503).send('Service Temporary Unavailabled');
   }
 });
