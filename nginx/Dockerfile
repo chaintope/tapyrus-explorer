@@ -6,3 +6,11 @@ FROM nginx:1.17
 COPY --from=builder /app/www /usr/share/nginx/html
 COPY config.json /usr/share/nginx/html/assets
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY entrypoint.sh /entrypoint.sh
+
+EXPOSE 80
+STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]
