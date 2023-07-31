@@ -35,7 +35,7 @@ app.get('/api/tx/:txid', async (req, res) => {
     logger.error(
       `Error retrieving information for transaction - ${txid}. Error Message - ${error.message}`
     );
-    res.status(503).send('Service Temporary Ununavailable');
+    res.status(503).send('Service Temporary Unavailable');
   }
 });
 
@@ -59,7 +59,7 @@ app.get('/api/tx/:txid/rawData', async (req, res) => {
     logger.error(
       `Error retrieving rawdata for transaction - ${txid}. Error Message - ${error.message}`
     );
-    res.status(503).send('Service Temporary Ununavailable');
+    res.status(503).send('Service Temporary Unavailable');
   }
 });
 
@@ -82,6 +82,6 @@ app.get('/api/tx/:txid/get', async (req, res) => {
     logger.error(
       `Error calling the method gettransaction for transaction - ${txid}. Error Message - ${error.message}`
     );
-    res.status(503).send('Service Temporary Ununavailable');
+    res.status(503).send('Service Temporary Unavailable');
   }
 });
