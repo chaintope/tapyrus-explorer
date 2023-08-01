@@ -4,7 +4,7 @@ const rest = require('../libs/rest');
 const {
   isHash,
   updateAddress,
-  isTrackingTransaction
+  isMaterialTrackingTransaction
 } = require('../libs/util');
 
 app.use((req, res, next) => {
@@ -34,7 +34,7 @@ app.get('/api/tx/:txid', async (req, res) => {
     updateAddress(tx);
     const height = await rest.block.tip.height();
     tx['status']['confirmations'] = height - tx['status']['block_height'] + 1;
-    tx['isTracking'] = isTrackingTransaction(tx);
+    tx['isMaterialTracking'] = isMaterialTrackingTransaction(tx);
     res.json(tx);
   } catch (error) {
     logger.error(

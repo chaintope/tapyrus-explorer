@@ -5,11 +5,11 @@ import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-validation',
-  templateUrl: './tracking_validation.page.html',
+  templateUrl: './material_tracking_validation.page.html',
   providers: [BackendService],
-  styleUrls: ['./tracking_validation.page.scss']
+  styleUrls: ['./material_tracking_validation.page.scss']
 })
-export class TrackingValidationPage implements OnInit {
+export class MaterialTrackingValidationPage implements OnInit {
   openedValue: string;
   alg: string;
   payload: TrackingPayload;

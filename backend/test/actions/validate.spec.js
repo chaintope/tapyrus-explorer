@@ -115,7 +115,7 @@ describe('GET /api/validate/:opened_value', () => {
   });
 });
 
-describe('/api/check_balance/:txid', () => {
+describe('/api/check_material_tracking_balance/:txid', () => {
   beforeEach(() => {
     // https://testnet-explorer.tapyrus.dev.chaintope.com/tx/8b4dea4de1b34f861bbbd47044eda3fac9349c7cab7e23186362e75474d2a788
     sinon
@@ -626,7 +626,7 @@ describe('/api/check_balance/:txid', () => {
     const txid =
       '8b4dea4de1b34f861bbbd47044eda3fac9349c7cab7e23186362e75474d2a788';
     supertest(app)
-      .get(`/api/check_balance/${txid}`)
+      .get(`/api/check_material_tracking_balance/${txid}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then(res => {
@@ -640,7 +640,7 @@ describe('/api/check_balance/:txid', () => {
     const txid =
       'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
     supertest(app)
-      .get(`/api/check_balance/${txid}`)
+      .get(`/api/check_material_tracking_balance/${txid}`)
       .expect(200)
       .expect('Content-Type', /json/)
       .then(res => {
@@ -653,7 +653,7 @@ describe('/api/check_balance/:txid', () => {
   it('should return 400  if invalid txid', done => {
     const txid = 'aa';
     supertest(app)
-      .get(`/api/check_balance/${txid}`)
+      .get(`/api/check_material_tracking_balance/${txid}`)
       .expect(400)
       .expect('Content-Type', /html/)
       .then(res => {
@@ -667,7 +667,7 @@ describe('/api/check_balance/:txid', () => {
     const txid =
       'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc';
     supertest(app)
-      .get(`/api/check_balance/${txid}`)
+      .get(`/api/check_material_tracking_balance/${txid}`)
       .expect(404)
       .expect('Content-Type', /html/)
       .then(res => {

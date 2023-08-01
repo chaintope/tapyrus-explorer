@@ -6,7 +6,7 @@ const Commitment = require('../libs/commitment');
 const {
   isHash,
   trackingOutputs,
-  getTrackingPayload,
+  getMaterialTrackingPayload,
   getCommitment
 } = require('../libs/util');
 const secp256k1 = require('@noble/curves/secp256k1');
@@ -64,7 +64,7 @@ const isValid = (openedValue, script, payload) => {
   return [true, ''];
 };
 
-const getPreviousTrackingPayload = async input => {
+const getPreviousMaterialTrackingPayload = async input => {
   const txid = input.txid;
   const index = input.vout;
   try {
@@ -72,7 +72,7 @@ const getPreviousTrackingPayload = async input => {
     if (!tx) {
       return null;
     }
-    return getTrackingPayload(tx.vout[index - 1], index - 1);
+    return getMaterialTrackingPayload(tx.vout[index - 1], index - 1);
   } catch (err) {
     console.log(err);
     return null;
@@ -82,7 +82,7 @@ const getPreviousTrackingPayload = async input => {
 const checkBalance = async tx => {
   const inputs = await Promise.all(
     tx.vin.map(input => {
-      return getPreviousTrackingPayload(input);
+      return getPreviousMaterialTrackingPayload(input);
     })
   );
   const inputCommitment = inputs
@@ -105,7 +105,7 @@ const checkBalance = async tx => {
   return inputCommitment.toHex(true) == outputCommitment.toHex(true);
 };
 
-//Validate commitment of tracking transaction
+//Validate commitment of material tracking transaction
 app.get('/api/validate/:openedValue', async (req, res) => {
   try {
     const openedValue = req.params.openedValue;
@@ -135,10 +135,12 @@ app.get('/api/validate/:openedValue', async (req, res) => {
 });
 
 // Check that the total amount of material used for inputs and for outputs are balanced
-app.get('/api/check_balance/:txid', async (req, res) => {
+app.get('/api/check_material_tracking_balance/:txid', async (req, res) => {
   const txid = req.params.txid;
   if (!isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /api/check_balance/${txid}`);
+    console.error(
+      `Invalid txid(${txid}) -- /api/check_material_tracking_balance/${txid}`
+    );
     res.status(400).send('Bad request');
     return;
   }

@@ -89,7 +89,9 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/api/validate/${opened_value}`);
   }
 
-  checkTrackingTransaction(txId: string): Observable<any> {
-    return this.http.get(`${this.backendUrl}/api/check_balance/${txId}`);
+  checkMaterialTrackingTransaction(txId: string): Observable<any> {
+    return this.http.get(
+      `${this.backendUrl}/api/check_material_tracking_balance/${txId}`
+    );
   }
 }

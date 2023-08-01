@@ -20,9 +20,9 @@ export class TransactionPage implements OnInit {
   statusCode: string;
   statusMsg: string;
   detailMsg: string;
-  isTracking: boolean;
-  hasTrackingCheckResult: boolean;
-  isTrackingBalanced: boolean;
+  isMaterialTracking: boolean;
+  hasMaterialTrackingCheckResult: boolean;
+  isMaterialTrackingBalanced: boolean;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -43,7 +43,7 @@ export class TransactionPage implements OnInit {
       data => {
         this.transaction = data || {};
         this.calculateTotal();
-        this.isTracking = data.isTracking;
+        this.isMaterialTracking = data.isMaterialTracking;
       },
       err => {
         console.log(err);
@@ -82,11 +82,11 @@ export class TransactionPage implements OnInit {
   }
 
   checkBalance() {
-    this.hasTrackingCheckResult = false;
-    this.backendService.checkTrackingTransaction(this.txid).subscribe(
+    this.hasMaterialTrackingCheckResult = false;
+    this.backendService.checkMaterialTrackingTransaction(this.txid).subscribe(
       data => {
-        this.hasTrackingCheckResult = true;
-        this.isTrackingBalanced = data.balanced;
+        this.hasMaterialTrackingCheckResult = true;
+        this.isMaterialTrackingBalanced = data.balanced;
       },
       err => {
         console.log(err);

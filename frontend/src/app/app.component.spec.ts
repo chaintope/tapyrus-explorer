@@ -70,7 +70,7 @@ describe('AppComponent', () => {
       '/tx/recent'
     );
     expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual(
-      '/tracking_validation'
+      '/material_tracking_validation'
     );
   });
 });

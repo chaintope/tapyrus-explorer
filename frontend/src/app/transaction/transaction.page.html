@@ -206,13 +206,13 @@
       </div>
     </div>
     <div>
-      <div class="bg-white ion-padding" *ngIf="isTracking">
+      <div class="bg-white ion-padding" *ngIf="isMaterialTracking">
         <div class="flex">
           <ion-grid>
             <ion-row>
               <ion-col>
                 <ion-title class="ion-padding"
-                  >Check Tracking Transaction</ion-title
+                  >Check Material Tracking Transaction</ion-title
                 >
               </ion-col>
             </ion-row>
@@ -225,7 +225,7 @@
                 >
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="!hasTrackingCheckResult">
+            <ion-row *ngIf="!hasMaterialTrackingCheckResult">
               <ion-col>
                 <ion-button
                   color="primary"
@@ -236,10 +236,10 @@
                 >
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="hasTrackingCheckResult">
+            <ion-row *ngIf="hasMaterialTrackingCheckResult">
               <ion-col>
                 <ion-text
-                  *ngIf="isTrackingBalanced"
+                  *ngIf="isMaterialTrackingBalanced"
                   color="success"
                   class="ion-padding"
                 >
@@ -247,7 +247,7 @@
                   The total amount of material is balanced!
                 </ion-text>
                 <ion-text
-                  *ngIf="!isTrackingBalanced"
+                  *ngIf="!isMaterialTrackingBalanced"
                   color="danger"
                   class="ion-padding"
                 >

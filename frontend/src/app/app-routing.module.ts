@@ -45,18 +45,18 @@ const routes: Routes = [
       )
   },
   {
-    path: 'tracking_validation',
+    path: 'material_tracking_validation',
     loadChildren: () =>
-      import('./tracking_validation/tracking_validation.module').then(
-        m => m.TrackingValidationPageModule
-      )
+      import(
+        './material_tracking_validation/material_tracking_validation.module'
+      ).then(m => m.MaterialTrackingValidationPageModule)
   },
   {
-    path: 'tracking_validation/:openedValue',
+    path: 'material_tracking_validation/:openedValue',
     loadChildren: () =>
-      import('./tracking_validation/tracking_validation.module').then(
-        m => m.TrackingValidationPageModule
-      )
+      import(
+        './material_tracking_validation/material_tracking_validation.module'
+      ).then(m => m.MaterialTrackingValidationPageModule)
   },
   {
     path: 'transaction-rawdata',

@@ -9,14 +9,14 @@ const isColorId = colorId => {
   return /^(c|C)[1-3]{1}[0-9a-fA-F]{64}$/.test(colorId);
 };
 
-const isTrackingTransaction = tx => {
+const isMaterialTrackingTransaction = tx => {
   return trackingOutputs(tx).length > 0;
 };
 
 const trackingOutputs = tx => {
   let tpos = tx.vout
     .map((output, index) => {
-      return getTrackingPayload(output, index);
+      return getMaterialTrackingPayload(output, index);
     })
     .filter(element => element != null);
   tpos = tpos.map(element => {
@@ -42,7 +42,7 @@ const trackingOutputs = tx => {
   });
   return tpos.filter(element => element != null);
 };
-const getTrackingPayload = (output, index) => {
+const getMaterialTrackingPayload = (output, index) => {
   if (!output) {
     return null;
   }
@@ -127,9 +127,9 @@ const sortTxs = txs => {
 module.exports = {
   isHash,
   isColorId,
-  isTrackingTransaction,
+  isMaterialTrackingTransaction,
   trackingOutputs,
-  getTrackingPayload,
+  getMaterialTrackingPayload,
   getCommitment,
   splitColor,
   updateAddress,
