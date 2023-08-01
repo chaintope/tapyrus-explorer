@@ -3,7 +3,12 @@ const logger = require('../libs/logger.js');
 const rest = require('../libs/rest');
 const jsontokens = require('jsontokens');
 const Commitment = require('../libs/commitment');
-const { isHash, trackingOutputs, getTrackingPayload } = require('../libs/util');
+const {
+  isHash,
+  trackingOutputs,
+  getTrackingPayload,
+  getCommitment
+} = require('../libs/util');
 const secp256k1 = require('@noble/curves/secp256k1');
 
 app.use((req, res, next) => {
@@ -20,17 +25,7 @@ const isValidFormat = (script, commitment) => {
     return false;
   }
 
-  return (
-    script.substring(0, 2) == '6a' && // OP_RETURN
-    script.substring(2, 4) == '26' && // size(38 bytes)
-    script.substring(4, 8) == '5450' && // marker
-    script.substring(8, 10) == '02' && // version
-    script.substring(10, 12) == '22' && // payload size(22 bytes)
-    (script.substring(12, 14) == '01' ||
-      script.substring(12, 14) == '02' ||
-      script.substring(12, 14) == '03') && // operation
-    script.substring(14) == commitment
-  ); //commitment
+  return getCommitment(script)[1] == commitment;
 };
 
 const isValidCommitment = payload => {

@@ -51,6 +51,15 @@ const getTrackingPayload = (output, index) => {
     return null;
   }
   const script = output.scriptpubkey;
+  const commtiment = getCommitment(script);
+  if (commtiment) {
+    return [commtiment[0], commtiment[1], index];
+  } else {
+    return null;
+  }
+};
+
+const getCommitment = script => {
   if (
     script.substring(0, 2) == '6a' && // OP_RETURN
     script.substring(2, 4) == '26' && // size(38 bytes)
@@ -61,12 +70,11 @@ const getTrackingPayload = (output, index) => {
       script.substring(12, 14) == '02' ||
       script.substring(12, 14) == '03') // operation
   ) {
-    return [script.substring(12, 14), script.substring(14), index];
+    return [script.substring(12, 14), script.substring(14)];
   } else {
     return null;
   }
 };
-
 // Determine uncolored address for colored coin
 // and upadte fields (scriptpubkey_uncolored_address, color_id)
 const updateAddress = tx => {
@@ -122,6 +130,7 @@ module.exports = {
   isTrackingTransaction,
   trackingOutputs,
   getTrackingPayload,
+  getCommitment,
   splitColor,
   updateAddress,
   sortTxs
