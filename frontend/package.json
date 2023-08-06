@@ -29,6 +29,7 @@
     "big.js": "^6.0.3",
     "core-js": "^2.6.12",
     "moment": "^2.29.4",
+    "moment-timezone": "0.5.43",
     "ngx-pagination": "^6.0.3",
     "rxjs": "~6.6.3",
     "tslib": "^1.14.1",

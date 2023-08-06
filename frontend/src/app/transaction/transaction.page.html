@@ -32,7 +32,7 @@
         <ion-row class="table-content">
           <ion-col size="2" class="font-w500">Received Time:</ion-col>
           <ion-col size="8"
-            >{{ transaction.status?.block_time || "N/A" }}</ion-col
+            >{{ transaction.status?.block_time | dateFormat }}</ion-col
           >
         </ion-row>
         <ion-row class="table-content">
@@ -42,7 +42,7 @@
         <ion-row class="table-content">
           <ion-col size="2" class="font-w500">Verified Time:</ion-col>
           <ion-col size="8"
-            >{{ transaction.status?.block_time || "N/A" }}</ion-col
+            >{{ transaction.status?.block_time | dateFormat }}</ion-col
           >
         </ion-row>
         <ion-row class="table-content">
@@ -59,12 +59,6 @@
             <div class="text-primary pl-5">
               <ion-icon name="add-circle" color="primary"></ion-icon>
               {{ transaction.txid }}
-            </div>
-          </ion-col>
-          <ion-col size="4" class="ion-text-right">
-            <div>
-              Verified: {{ transaction.status?.block_time * 1000 | date: 'MMM
-              dd, yyyy hh:mm:ss' }}
             </div>
           </ion-col>
         </ion-row>

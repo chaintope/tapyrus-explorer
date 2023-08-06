@@ -38,7 +38,7 @@
         </ion-row>
         <ion-row class="block">
           <ion-col size="2" class="font-w500">Timestamp:</ion-col>
-          <ion-col size="8">{{ block.timestamp }}</ion-col>
+          <ion-col size="8">{{ block.timestamp | dateFormat }}</ion-col>
         </ion-row>
         <ion-row class="block">
           <ion-col size="2" class="font-w500">Proof:</ion-col>
@@ -152,12 +152,6 @@
                 (click)="goToTransaction(tx.txid)"
               ></ion-icon>
               {{ tx.txid }}
-            </div>
-          </ion-col>
-          <ion-col size="4" class="ion-text-right">
-            <div>
-              Verified: {{ tx.status.block_time * 1000 | date: 'MMM dd, yyyy
-              hh:mm:ss' }}
             </div>
           </ion-col>
         </ion-row>
