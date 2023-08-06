@@ -8,7 +8,7 @@ import { BackendService } from '../backend.service';
   selector: 'app-block-rawdata',
   templateUrl: './block-rawdata.page.html',
   styleUrls: ['./block-rawdata.page.scss'],
-  providers: [BackendService]
+  providers: [BackendService, NavParams]
 })
 export class BlockRawdataPage implements OnInit {
   @Input() blockHash: string;

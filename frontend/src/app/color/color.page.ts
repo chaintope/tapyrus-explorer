@@ -28,7 +28,7 @@ export class ColorPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.colorId = this.activatedRoute.snapshot.paramMap.get('colorId');
+    this.colorId = this.activatedRoute.snapshot.paramMap.get('colorId') || '';
     if (this.colorId.startsWith('c1')) {
       this.tokenType = 'Reissuable';
     } else if (this.colorId.startsWith('c2')) {

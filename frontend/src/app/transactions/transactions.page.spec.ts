@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { TransactionsPage } from './transactions.page';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 describe('TransactionsPage', () => {
   let component: TransactionsPage;
@@ -10,7 +12,11 @@ describe('TransactionsPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TransactionsPage],
-      imports: [IonicModule.forRoot()]
+      imports: [
+        IonicModule.forRoot(),
+        HttpClientTestingModule,
+        NgxPaginationModule
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionsPage);
