@@ -1,5 +1,5 @@
 <ion-content class="pb-footer">
-  <div class="ion-padding">
+  <div class="ion-padding" *ngIf="!hasError">
     <div class="bg-white ion-padding">
       <ion-row>
         <ion-col size="8">
@@ -138,7 +138,7 @@
       </ion-row>
     </div>
   </div>
-  <ion-grid>
+  <ion-grid *ngIf="!hasError">
     <ion-row>
       <ion-col class="ion-text-center">
         <ion-button
@@ -151,4 +151,13 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <div class="ion-padding" *ngIf="hasError">
+    <h1 class="error text-primary">
+      <div class="code">{{ statusCode }}</div>
+      <div class="message">{{ statusMsg }}</div>
+    </h1>
+    <div>
+      <p class="detail">{{ detailMsg }}</p>
+    </div>
+  </div>
 </ion-content>

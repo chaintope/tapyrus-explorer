@@ -1,5 +1,5 @@
 <ion-content class="pb-footer">
-  <div class="ion-padding">
+  <div class="ion-padding" *ngIf="!hasError">
     <ion-grid>
       <ion-row>
         <ion-col offset-md="2" offset-sm="2" size-md="6" size-sm="8">
@@ -17,11 +17,6 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <div class="bg-white ion-padding" *ngIf="hasError">
-      <div class="flex">
-        <p id="block-header-text">{{errorMsg}}</p>
-      </div>
-    </div>
     <ion-grid class="ion-padding" id="table" *ngIf="!hasError">
       <ion-row id="table-header">
         <ion-col size="2">HEIGHT</ion-col>
@@ -61,4 +56,13 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <div class="ion-padding" *ngIf="hasError">
+    <h1 class="error text-primary">
+      <div class="code">{{ statusCode }}</div>
+      <div class="message">{{ statusMsg }}</div>
+    </h1>
+    <div>
+      <p class="detail">{{ detailMsg }}</p>
+    </div>
+  </div>
 </ion-content>

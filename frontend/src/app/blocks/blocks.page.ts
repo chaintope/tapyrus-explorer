@@ -18,8 +18,10 @@ export class BlocksPage implements OnInit {
   blocks: any = [];
   searchValue: string;
   bestHeight = 0;
-  hasError = false;
-  errorMsg = '';
+  hasError: boolean;
+  statusCode: string;
+  statusMsg: string;
+  detailMsg: string;
 
   constructor(
     private httpClient: HttpClient,
@@ -43,6 +45,10 @@ export class BlocksPage implements OnInit {
       },
       err => {
         console.log(err);
+        this.hasError = true;
+        this.statusCode = err.status;
+        this.statusMsg = err.statusText;
+        this.detailMsg = err.error;
       }
     );
   }
@@ -79,7 +85,9 @@ export class BlocksPage implements OnInit {
         },
         err => {
           this.hasError = true;
-          this.errorMsg = err.error;
+          this.statusCode = err.status;
+          this.statusMsg = err.statusText;
+          this.detailMsg = err.error;
         }
       );
     }
@@ -87,6 +95,8 @@ export class BlocksPage implements OnInit {
 
   resetError() {
     this.hasError = false;
-    this.errorMsg = '';
+    this.statusCode = null;
+    this.statusMsg = null;
+    this.detailMsg = null;
   }
 }

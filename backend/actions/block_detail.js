@@ -47,6 +47,7 @@ app.get('/api/block/:blockHash', async (req, res) => {
     logger.error(
       `Error retrieving information for block  - ${blockHash}. Error Message - ${err.message}`
     );
+    res.status(503).send('Service Temporary Unavailable');
   }
 });
 
@@ -67,6 +68,7 @@ app.get('/api/block/:blockHash/raw', async (req, res) => {
     logger.error(
       `Error retrieving raw data for block  - ${blockHash}. Error Message - ${error.message}`
     );
+    res.status(503).send('Service Temporary Unavailable');
   }
 });
 
@@ -90,5 +92,6 @@ app.get('/api/block/:blockHash/txns', async (req, res) => {
     logger.error(
       `Error retrieving txns for block  - ${blockHash}. Error Message - ${error.message}`
     );
+    res.status(503).send('Service Temporary Unavailable');
   }
 });

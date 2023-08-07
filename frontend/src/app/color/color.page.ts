@@ -18,6 +18,10 @@ export class ColorPage implements OnInit {
   txids = new Set();
   txs: any = [];
   lastSeenTxid?: string;
+  hasError: boolean;
+  statusCode: string;
+  statusMsg: string;
+  detailMsg: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -43,6 +47,7 @@ export class ColorPage implements OnInit {
   }
 
   getColorInfo() {
+    this.resetError();
     this.backendService.getColor(this.colorId, this.lastSeenTxid).subscribe(
       data => {
         this.stats = data['stats']['chain_stats'] || {};
@@ -56,6 +61,10 @@ export class ColorPage implements OnInit {
       },
       err => {
         console.log(err);
+        this.hasError = true;
+        this.statusCode = err.status;
+        this.statusMsg = err.statusText;
+        this.detailMsg = err.error;
       }
     );
   }
@@ -74,5 +83,12 @@ export class ColorPage implements OnInit {
 
   onNextPage() {
     this.getColorInfo();
+  }
+
+  resetError() {
+    this.hasError = false;
+    this.statusCode = null;
+    this.statusMsg = null;
+    this.detailMsg = null;
   }
 }

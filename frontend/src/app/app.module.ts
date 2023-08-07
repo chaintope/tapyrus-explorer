@@ -14,9 +14,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { FooterComponent } from './components/footer/footer.component';
 import { ConfigService } from './config.service';
 import { BackendService } from './backend.service';
+import { NotFoundComponent } from './components/errors/not_found.component';
 
 @NgModule({
-  declarations: [AppComponent, FooterComponent],
+  declarations: [AppComponent, FooterComponent, NotFoundComponent],
   imports: [
     BackendService,
     BrowserModule,
