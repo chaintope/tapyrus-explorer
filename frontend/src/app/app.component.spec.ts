@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -27,7 +28,7 @@ describe('AppComponent', () => {
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy }
       ],
-      imports: [RouterTestingModule.withRoutes([])]
+      imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule]
     }).compileComponents();
   }));
 
@@ -50,7 +51,7 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(2);
+    expect(menuItems.length).toEqual(3);
     expect(menuItems[0].textContent).toContain('Blocks');
     expect(menuItems[1].textContent).toContain('Txns');
     expect(menuItems[2].textContent).toContain('Tracking Validation');
@@ -61,14 +62,14 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(2);
+    expect(menuItems.length).toEqual(3);
     expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual(
       '/blocks'
     );
     expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual(
       '/tx/recent'
     );
-    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual(
+    expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual(
       '/tracking_validation'
     );
   });

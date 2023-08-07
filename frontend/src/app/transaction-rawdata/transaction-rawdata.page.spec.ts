@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavParams } from '@ionic/angular';
 
 import { TransactionRawdataPage } from './transaction-rawdata.page';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('TransactionRawdataPage', () => {
   let component: TransactionRawdataPage;
@@ -10,7 +11,8 @@ describe('TransactionRawdataPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TransactionRawdataPage],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), HttpClientTestingModule],
+      providers: [NavParams]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionRawdataPage);

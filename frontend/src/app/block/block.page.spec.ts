@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { BlockPage } from './block.page';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedPipeModule } from '../modules/sharePipe.module';
 
 describe('BlockPage', () => {
   let component: BlockPage;
@@ -10,7 +13,12 @@ describe('BlockPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BlockPage],
-      imports: [IonicModule.forRoot()]
+      imports: [
+        IonicModule.forRoot(),
+        RouterTestingModule,
+        HttpClientTestingModule,
+        SharedPipeModule
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BlockPage);
