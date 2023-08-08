@@ -1,7 +1,11 @@
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { isHash, updateAddress } = require('../libs/util');
+const {
+  isHash,
+  updateAddress,
+  isMaterialTrackingTransaction
+} = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -30,6 +34,7 @@ app.get('/api/tx/:txid', async (req, res) => {
     updateAddress(tx);
     const height = await rest.block.tip.height();
     tx['status']['confirmations'] = height - tx['status']['block_height'] + 1;
+    tx['isMaterialTracking'] = isMaterialTrackingTransaction(tx);
     res.json(tx);
   } catch (error) {
     logger.error(

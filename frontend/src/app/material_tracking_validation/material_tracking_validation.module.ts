@@ -5,8 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { SharedPipeModule } from '../modules/sharePipe.module';
-import { TrackingValidationPageRoutingModule } from './tracking_validation-routing.module';
-import { TrackingValidationPage } from './tracking_validation.page';
+import { MaterialTrackingValidationPageRoutingModule } from './material_tracking_validation-routing.module';
+import { MaterialTrackingValidationPage } from './material_tracking_validation.page';
 
 @NgModule({
   imports: [
@@ -14,8 +14,8 @@ import { TrackingValidationPage } from './tracking_validation.page';
     FormsModule,
     IonicModule,
     SharedPipeModule,
-    TrackingValidationPageRoutingModule
+    MaterialTrackingValidationPageRoutingModule
   ],
-  declarations: [TrackingValidationPage]
+  declarations: [MaterialTrackingValidationPage]
 })
-export class TrackingValidationPageModule {}
+export class MaterialTrackingValidationPageModule {}

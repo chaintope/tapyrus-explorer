@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Tracking Validation',
-      url: '/tracking_validation'
+      url: '/material_tracking_validation'
     }
   ];
   public menuToggle = false;

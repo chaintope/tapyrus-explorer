@@ -20,6 +20,9 @@ export class TransactionPage implements OnInit {
   statusCode: string;
   statusMsg: string;
   detailMsg: string;
+  isMaterialTracking: boolean;
+  hasMaterialTrackingCheckResult: boolean;
+  isMaterialTrackingBalanced: boolean;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -40,6 +43,7 @@ export class TransactionPage implements OnInit {
       data => {
         this.transaction = data || {};
         this.calculateTotal();
+        this.isMaterialTracking = data.isMaterialTracking;
       },
       err => {
         console.log(err);
@@ -75,6 +79,19 @@ export class TransactionPage implements OnInit {
 
   goToCoin(colorId) {
     this.navCtrl.navigateForward(`/color/${colorId}`);
+  }
+
+  checkBalance() {
+    this.hasMaterialTrackingCheckResult = false;
+    this.backendService.checkMaterialTrackingTransaction(this.txid).subscribe(
+      data => {
+        this.hasMaterialTrackingCheckResult = true;
+        this.isMaterialTrackingBalanced = data.balanced;
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   async goToTransactionRawData() {
