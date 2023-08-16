@@ -35,6 +35,7 @@ jobs:
           npm run lint
           npm run prettier-ci
           npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+          npm run build -- --configuration=production
       - name: Setup Frontend ${{ matrix.node-version }}
         if: ${{ matrix.node-version != '16.x' }}
         run: |
@@ -43,3 +44,4 @@ jobs:
           npm run lint
           npm run prettier-ci
           npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+          npm run build -- --configuration=production
