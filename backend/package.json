@@ -11,7 +11,7 @@
     "prettier-ci": "prettier --check ."
   },
   "keywords": [],
-  "author": "",
+  "author": "chaintope, Inc.",
   "license": "ISC",
   "dependencies": {
     "compression": "^1.7.4",
