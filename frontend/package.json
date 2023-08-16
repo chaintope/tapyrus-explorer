@@ -1,8 +1,8 @@
 {
   "name": "frontend",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "chaintope, Inc.",
+  "homepage": "https://github.com/chaintope/tapyrus-explorer",
   "scripts": {
     "ng": "ng",
     "build": "ng build",
