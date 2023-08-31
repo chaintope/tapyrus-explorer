@@ -40,6 +40,7 @@ export class MaterialTrackingValidationPage implements OnInit {
         this.alg = data.header.alg;
         this.payload = data.payload;
         this.valid = data.valid;
+        this.hasError = !data.valid;
         this.errorMsg = data.error;
       },
       err => {
