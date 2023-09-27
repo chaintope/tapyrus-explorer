@@ -54,27 +54,22 @@
 
     <div>
       <div class="bg-white ion-padding ion-margin-bottom ion-margin-top">
-        <ion-row>
-          <ion-col size="8" class="ion-text-left">
-            <div class="text-primary pl-5">
-              <ion-icon name="add-circle" color="primary"></ion-icon>
-              {{ transaction.txid }}
-            </div>
-          </ion-col>
-        </ion-row>
-
         <ion-grid>
           <ion-row class="word-break">
             <ion-col size-xs="12" size-sm="12" size-md="5">
-              <div *ngFor="let vin of transaction.vin">
+              <div class="mb-5"><b>Inputs: </b></div>
+              <div *ngFor="let vin of transaction.vin; index as i">
                 <div *ngIf="vin.is_coinbase">
                   No Inputs (Newly Generated Coins)
                 </div>
-                <div *ngIf="!vin.is_coinbase">
+                <div *ngIf="!vin.is_coinbase" class="with-border">
                   <ion-row class="mb-5">
+                    <ion-col size="1" class="font-w500 text-gray cursor-pointer"
+                      >#{{ i }}</ion-col
+                    >
                     <ion-col
-                      size="8"
-                      class="ion-no-margin text-primary cursor-pointer"
+                      size="7"
+                      class="ion-no-margin link-color cursor-pointer"
                       (click)="goToAddress(vin.prevout.scriptpubkey_uncolored_address)"
                       >{{ vin.prevout.scriptpubkey_uncolored_address }}</ion-col
                     >
@@ -90,6 +85,15 @@
                         >COIN
                       </span>
                       <span *ngIf="!vin.prevout.colorId">TPC</span>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="mb-5">
+                    <ion-col
+                      offset="1"
+                      size="15"
+                      class="text-gray font-small link-color cursor-pointer"
+                      (click)="goToTransaction(vin.txid, 'output_' + vin.vout)"
+                      >{{ vin.txid }}:{{ vin.vout }}
                     </ion-col>
                   </ion-row>
                 </div>
@@ -113,10 +117,18 @@
               ></ion-icon>
             </ion-col>
             <ion-col size-xs="12" size-sm="12" size-md="5">
-              <ion-row *ngFor="let vout of transaction.vout" class="mb-5">
+              <div class="mb-5"><b>Outputs: </b></div>
+              <ion-row
+                *ngFor="let vout of transaction.vout; index as i"
+                class="with-border"
+                id="output_{{i}}"
+              >
+                <ion-col size="1" class="text-gray cursor-pointer"
+                  >#{{ i }}</ion-col
+                >
                 <ion-col
-                  size="8"
-                  class="text-primary cursor-pointer"
+                  size="7"
+                  class="link-color cursor-pointer"
                   (click)="goToAddress(vout.scriptpubkey_uncolored_address)"
                   >{{ vout.scriptpubkey_uncolored_address }}</ion-col
                 >

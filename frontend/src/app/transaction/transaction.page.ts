@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ModalController, NavController } from '@ionic/angular';
 
 import { TransactionRawdataPage } from '../transaction-rawdata/transaction-rawdata.page';
 import { BackendService } from '../backend.service';
-import { NotFoundComponent } from '../components/errors/not_found.component';
 
 @Component({
   selector: 'app-transaction',
@@ -13,7 +12,7 @@ import { NotFoundComponent } from '../components/errors/not_found.component';
   styleUrls: ['./transaction.page.scss'],
   providers: [BackendService]
 })
-export class TransactionPage implements OnInit {
+export class TransactionPage implements OnInit, AfterViewChecked {
   txid: string;
   transaction: any = {};
   hasError: boolean;
@@ -23,6 +22,7 @@ export class TransactionPage implements OnInit {
   isMaterialTracking: boolean;
   hasMaterialTrackingCheckResult: boolean;
   isMaterialTrackingBalanced: boolean;
+  isScrolling = true;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -35,6 +35,9 @@ export class TransactionPage implements OnInit {
   ngOnInit() {
     this.txid = this.activatedRoute.snapshot.paramMap.get('txid');
     this.getTransactionInfo();
+  }
+  ngAfterViewChecked() {
+    this.scrollToOutput();
   }
 
   getTransactionInfo() {
@@ -55,6 +58,18 @@ export class TransactionPage implements OnInit {
     );
   }
 
+  scrollToOutput() {
+    try {
+      const hash = document.location.hash;
+      const target = document.querySelector(hash);
+      if (target && this.isScrolling) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth' });
+          this.isScrolling = false;
+        }, 100);
+      }
+    } catch (e) {}
+  }
   resetError() {
     this.hasError = false;
     this.statusCode = null;
@@ -75,6 +90,10 @@ export class TransactionPage implements OnInit {
 
   goToAddress(add = '') {
     this.navCtrl.navigateForward(`/addresses/${add}`);
+  }
+
+  goToTransaction(txid, index) {
+    this.navCtrl.navigateForward(`/tx/${txid}`, { fragment: index });
   }
 
   goToCoin(colorId) {
