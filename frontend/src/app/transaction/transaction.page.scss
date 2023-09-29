@@ -115,3 +115,9 @@ ion-content {
 .font-small {
   font-size: small;
 }
+
+.highlight {
+  border-color: var(--ion-color-secondary);
+  background-color: rgb(var(--ion-color-secondary-rgb), 0.1);
+  color: var(--ion-color-secondary-contrast);
+}

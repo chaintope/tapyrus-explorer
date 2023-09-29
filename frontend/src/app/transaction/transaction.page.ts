@@ -23,6 +23,7 @@ export class TransactionPage implements OnInit, AfterViewChecked {
   hasMaterialTrackingCheckResult: boolean;
   isMaterialTrackingBalanced: boolean;
   isScrolling = true;
+  scrollTarget: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -63,6 +64,7 @@ export class TransactionPage implements OnInit, AfterViewChecked {
       const hash = document.location.hash;
       const target = document.querySelector(hash);
       if (target && this.isScrolling) {
+        this.scrollTarget = hash;
         setTimeout(() => {
           target.scrollIntoView({ behavior: 'smooth' });
           this.isScrolling = false;

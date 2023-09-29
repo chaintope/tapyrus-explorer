@@ -120,7 +120,7 @@
               <div class="mb-5"><b>Outputs: </b></div>
               <ion-row
                 *ngFor="let vout of transaction.vout; index as i"
-                class="with-border"
+                class="with-border {{'#output_' + i == this.scrollTarget ? 'highlight' : ''}}"
                 id="output_{{i}}"
               >
                 <ion-col size="1" class="text-gray cursor-pointer"
