@@ -4,6 +4,11 @@ ion-content {
     var(--ion-background-color, #e5e5e5)
   ) !important;
 }
+.with-border {
+  border: solid 1px lightgray;
+  padding: 8px;
+  margin-bottom: 16px;
+}
 
 #block-header-text {
   @media (max-width: 539px) {
@@ -105,4 +110,14 @@ ion-content {
 
 .font-24 {
   font-size: 24px;
+}
+
+.font-small {
+  font-size: small;
+}
+
+.highlight {
+  border-color: var(--ion-color-secondary);
+  background-color: rgb(var(--ion-color-secondary-rgb), 0.1);
+  color: var(--ion-color-secondary-contrast);
 }
