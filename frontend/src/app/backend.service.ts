@@ -30,6 +30,10 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/api/block/${blockHash}`);
   }
 
+  getBlockByHeight(height: number): Observable<any> {
+    return this.http.get(`${this.backendUrl}/api/block/height/${height}`);
+  }
+
   getRawBlock(blockHash: string): Observable<any> {
     return this.http.get(`${this.backendUrl}/api/block/${blockHash}/raw`);
   }
