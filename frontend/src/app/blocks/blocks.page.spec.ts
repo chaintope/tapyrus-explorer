@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { BlocksPage } from './blocks.page';
+import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgxPaginationModule } from 'ngx-pagination';
 
@@ -15,7 +16,8 @@ describe('BlocksPage', () => {
       imports: [
         IonicModule.forRoot(),
         HttpClientTestingModule,
-        NgxPaginationModule
+        NgxPaginationModule,
+        RouterTestingModule
       ]
     }).compileComponents();
 
