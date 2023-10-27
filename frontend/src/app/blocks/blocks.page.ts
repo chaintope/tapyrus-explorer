@@ -4,6 +4,7 @@ import { NavController } from '@ionic/angular';
 
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-blocks',
@@ -26,10 +27,14 @@ export class BlocksPage implements OnInit {
   constructor(
     private httpClient: HttpClient,
     private navCtrl: NavController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      this.page = Math.max(Number(params.get('page')), 1);
+    });
     this.getBlockLists();
   }
 
