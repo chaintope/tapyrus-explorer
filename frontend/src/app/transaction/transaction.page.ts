@@ -24,6 +24,7 @@ export class TransactionPage implements OnInit, AfterViewChecked {
   isMaterialTrackingBalanced: boolean;
   isScrolling = true;
   scrollTarget: string;
+  detailVisible = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -57,6 +58,10 @@ export class TransactionPage implements OnInit, AfterViewChecked {
         this.detailMsg = err.error;
       }
     );
+  }
+
+  toggleDetail() {
+    this.detailVisible = !this.detailVisible;
   }
 
   scrollToOutput() {

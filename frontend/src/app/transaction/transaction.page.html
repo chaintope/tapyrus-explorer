@@ -51,7 +51,33 @@
         </ion-row>
       </ion-grid>
     </div>
-
+    <div class="ion-margin-bottom ion-margin-top">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="2" offset="10">
+            <ion-button
+              color="primary"
+              id="show-script-btn"
+              class="cursor-pointer"
+              (click)="toggleDetail()"
+            >
+              <ion-icon
+                slot="start"
+                name="chevron-down-circle-outline"
+                *ngIf="!detailVisible"
+              ></ion-icon>
+              <ion-icon
+                slot="start"
+                name="chevron-up-circle-outline"
+                *ngIf="detailVisible"
+              ></ion-icon>
+              <span *ngIf="!detailVisible">Show Detail</span>
+              <span *ngIf="detailVisible">Hide Detail</span>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
     <div>
       <div class="bg-white ion-padding ion-margin-bottom ion-margin-top">
         <ion-grid>
@@ -96,6 +122,38 @@
                       >{{ vin.txid }}:{{ vin.vout }}
                     </ion-col>
                   </ion-row>
+                  <ion-row *ngIf="detailVisible">
+                    <ion-col size="11" offset="1" class="with-border-top">
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-gray ion-text-uppercase"
+                          *ngIf="vin.scriptsig_asm"
+                          >script sig asm</ion-col
+                        >
+                      </ion-row>
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-primary"
+                          *ngIf="vin.scriptsig_asm"
+                          >{{ vin.scriptsig_asm }}</ion-col
+                        >
+                      </ion-row>
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-gray ion-text-uppercase"
+                          *ngIf="vin.scriptsig"
+                          >script sig hex</ion-col
+                        >
+                      </ion-row>
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-primary"
+                          *ngIf="vin.scriptsig"
+                          >{{ vin.scriptsig }}</ion-col
+                        >
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
                 </div>
               </div>
             </ion-col>
@@ -123,68 +181,62 @@
                 class="with-border {{'#output_' + i == this.scrollTarget ? 'highlight' : ''}}"
                 id="output_{{i}}"
               >
-                <ion-col size="1" class="text-gray cursor-pointer"
-                  >#{{ i }}</ion-col
-                >
-                <ion-col
-                  size="7"
-                  class="link-color cursor-pointer"
-                  (click)="goToAddress(vout.scriptpubkey_uncolored_address)"
-                  >{{ vout.scriptpubkey_uncolored_address }}</ion-col
-                >
-                <ion-col size="4" class="ion-text-right text-gray">
-                  {{vout.value | asTpc }}
-                  <span
-                    *ngIf="!!vout.colorId"
-                    class="link-color cursor-pointer"
-                    (click)="goToCoin(vout.colorId)"
-                    >COIN
-                  </span>
-                  <span *ngIf="!vout.colorId">TPC</span>
+                <ion-col>
+                  <ion-row>
+                    <ion-col size="1" class="text-gray cursor-pointer"
+                      >#{{ i }}</ion-col
+                    >
+                    <ion-col
+                      size="7"
+                      class="link-color cursor-pointer"
+                      (click)="goToAddress(vout.scriptpubkey_uncolored_address)"
+                      >{{ vout.scriptpubkey_uncolored_address }}</ion-col
+                    >
+                    <ion-col size="4" class="ion-text-right text-gray">
+                      {{vout.value | asTpc }}
+                      <span
+                        *ngIf="!!vout.colorId"
+                        class="link-color cursor-pointer"
+                        (click)="goToCoin(vout.colorId)"
+                        >COIN
+                      </span>
+                      <span *ngIf="!vout.colorId">TPC</span>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="detailVisible">
+                    <ion-col size="11" offset="1" class="with-border-top">
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-gray ion-text-uppercase"
+                          *ngIf="vout.scriptpubkey_asm"
+                          >script pubkey asm</ion-col
+                        >
+                      </ion-row>
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-primary"
+                          *ngIf="vout.scriptpubkey_asm"
+                          >{{ vout.scriptpubkey_asm }}</ion-col
+                        >
+                      </ion-row>
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-gray ion-text-uppercase"
+                          *ngIf="vout.scriptpubkey"
+                          >script pubkey hex</ion-col
+                        >
+                      </ion-row>
+                      <ion-row>
+                        <ion-col
+                          class="ion-no-margin text-primary"
+                          *ngIf="vout.scriptpubkey"
+                          >{{ vout.scriptpubkey }}</ion-col
+                        >
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
                 </ion-col>
               </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-item-divider></ion-item-divider>
-          <ion-row class="word-break ion-margin-top">
-            <ion-col size-xs="12" size-sm="12" size-md="5">
-              <b>Input Scripts: </b><br /><br />
-              <div *ngFor="let vin of transaction.vin">
-                <div>
-                  <div class="mb-5">
-                    <ion-row class="vin-vout-input">
-                      <ion-col
-                        class="ion-no-margin text-primary"
-                        *ngIf="vin.scriptsig_asm"
-                        >{{ vin.scriptsig_asm }}</ion-col
-                      >
-                    </ion-row>
-                  </div>
-                </div>
-              </div>
-            </ion-col>
-            <ion-col
-              size-xs="12"
-              size-sm="12"
-              size-md="2"
-              class="ion-text-center display-none-max-md ion-margin-top"
-            >
-              <ion-icon name="arrow-forward" size="large"></ion-icon>
-            </ion-col>
-            <ion-col
-              size-xs="12"
-              size-sm="12"
-              size-md="5"
-              class="word-break ion-margin-top"
-            >
-              <b>Output Scripts: </b><br /><br />
-              <div *ngFor="let vout of transaction.vout" class="mb-5">
-                <ion-row class="vin-vout-input">
-                  <ion-col class="text-primary"
-                    >{{ vout.scriptpubkey_asm }}</ion-col
-                  >
-                </ion-row>
-              </div>
             </ion-col>
           </ion-row>
           <ion-item-divider></ion-item-divider>

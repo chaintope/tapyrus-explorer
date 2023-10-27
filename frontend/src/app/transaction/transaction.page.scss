@@ -10,6 +10,13 @@ ion-content {
   margin-bottom: 16px;
 }
 
+.with-border-top {
+  border-top: solid 1px lightgray;
+  padding-top: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
 #block-header-text {
   @media (max-width: 539px) {
     font-size: 16px;
