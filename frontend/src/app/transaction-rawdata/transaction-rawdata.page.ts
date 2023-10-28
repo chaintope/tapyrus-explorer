@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NavParams, ModalController } from '@ionic/angular';
+import { NavParams, ModalController, ToastController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
 import { BackendService } from '../backend.service';
+import Helper from '../app.helper';
 
 @Component({
   selector: 'app-transaction-rawdata',
@@ -13,12 +14,12 @@ import { BackendService } from '../backend.service';
 export class TransactionRawdataPage implements OnInit {
   @Input() txid: string;
   txRawData = '';
-  copied = false;
 
   constructor(
     private navParams: NavParams,
     private httpClient: HttpClient,
     private modalCtrl: ModalController,
+    private toastController: ToastController,
     private backendService: BackendService
   ) {}
 
@@ -39,25 +40,8 @@ export class TransactionRawdataPage implements OnInit {
     );
   }
 
-  copyTxRawData() {
-    const textArea = document.createElement('textarea');
-    textArea.value = this.txRawData;
-
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      document.execCommand('copy');
-      this.copied = true;
-      setTimeout(() => {
-        this.copied = false;
-      }, 800);
-    } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
-    }
-
-    document.body.removeChild(textArea);
+  async copyTxRawData() {
+    Helper.copy(this.toastController, this.txRawData);
   }
 
   dismiss() {
