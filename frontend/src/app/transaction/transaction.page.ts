@@ -1,10 +1,15 @@
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ModalController, NavController } from '@ionic/angular';
+import {
+  ModalController,
+  NavController,
+  ToastController
+} from '@ionic/angular';
 
 import { TransactionRawdataPage } from '../transaction-rawdata/transaction-rawdata.page';
 import { BackendService } from '../backend.service';
+import Helper from '../app.helper';
 
 @Component({
   selector: 'app-transaction',
@@ -31,7 +36,8 @@ export class TransactionPage implements OnInit, AfterViewChecked {
     private httpClient: HttpClient,
     private modalCtrl: ModalController,
     private navCtrl: NavController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -40,6 +46,10 @@ export class TransactionPage implements OnInit, AfterViewChecked {
   }
   ngAfterViewChecked() {
     this.scrollToOutput();
+  }
+
+  async copy(text: string) {
+    Helper.copy(this.toastController, text);
   }
 
   getTransactionInfo() {

@@ -122,35 +122,47 @@
                       >{{ vin.txid }}:{{ vin.vout }}
                     </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="detailVisible">
+                  <ion-row
+                    *ngIf="detailVisible && vin.scriptsig && vin.scriptsig_asm"
+                  >
                     <ion-col size="11" offset="1" class="with-border-top">
                       <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-gray ion-text-uppercase"
-                          *ngIf="vin.scriptsig_asm"
+                        <ion-col class="text-gray ion-text-uppercase"
                           >script sig asm</ion-col
                         >
                       </ion-row>
-                      <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-primary"
-                          *ngIf="vin.scriptsig_asm"
-                          >{{ vin.scriptsig_asm }}</ion-col
-                        >
+                      <ion-row class="text-script">
+                        <ion-col>
+                          <span>{{ vin.scriptsig_asm }}</span>
+                          <ion-button
+                            fill="clear"
+                            (click)="copy(vin.scriptsig_asm)"
+                          >
+                            <ion-icon
+                              name="copy-outline"
+                              class="cursor-pointer"
+                            ></ion-icon>
+                          </ion-button>
+                        </ion-col>
                       </ion-row>
                       <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-gray ion-text-uppercase"
-                          *ngIf="vin.scriptsig"
+                        <ion-col class="text-gray ion-text-uppercase"
                           >script sig hex</ion-col
                         >
                       </ion-row>
-                      <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-primary"
-                          *ngIf="vin.scriptsig"
-                          >{{ vin.scriptsig }}</ion-col
-                        >
+                      <ion-row class="text-script">
+                        <ion-col>
+                          <span>{{ vin.scriptsig }}</span>
+                          <ion-button
+                            fill="clear"
+                            (click)="copy(vin.scriptsig)"
+                          >
+                            <ion-icon
+                              name="copy-outline"
+                              class="cursor-pointer"
+                            ></ion-icon>
+                          </ion-button>
+                        </ion-col>
                       </ion-row>
                     </ion-col>
                   </ion-row>
@@ -203,35 +215,48 @@
                       <span *ngIf="!vout.colorId">TPC</span>
                     </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="detailVisible">
+                  <ion-row
+                    *ngIf="detailVisible && vout.scriptpubkey && vout.scriptpubkey_asm"
+                  >
                     <ion-col size="11" offset="1" class="with-border-top">
                       <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-gray ion-text-uppercase"
-                          *ngIf="vout.scriptpubkey_asm"
+                        <ion-col class="text-gray ion-text-uppercase"
                           >script pubkey asm</ion-col
                         >
                       </ion-row>
-                      <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-primary"
-                          *ngIf="vout.scriptpubkey_asm"
-                          >{{ vout.scriptpubkey_asm }}</ion-col
-                        >
+                      <ion-row class="text-script">
+                        <ion-col>
+                          <span>{{ vout.scriptpubkey_asm }}</span>
+                          <ion-button
+                            fill="clear"
+                            (click)="copy(vout.scriptpubkey_asm)"
+                          >
+                            <ion-icon
+                              name="copy-outline"
+                              class="cursor-pointer"
+                            ></ion-icon>
+                          </ion-button>
+                        </ion-col>
                       </ion-row>
                       <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-gray ion-text-uppercase"
-                          *ngIf="vout.scriptpubkey"
+                        <ion-col class="text-gray ion-text-uppercase"
                           >script pubkey hex</ion-col
                         >
                       </ion-row>
-                      <ion-row>
-                        <ion-col
-                          class="ion-no-margin text-primary"
-                          *ngIf="vout.scriptpubkey"
-                          >{{ vout.scriptpubkey }}</ion-col
-                        >
+                      <ion-row class="text-script">
+                        <ion-col>
+                          <span>{{ vout.scriptpubkey }}</span>
+                          <ion-button
+                            id="'out_' + i + '_hex'"
+                            fill="clear"
+                            (click)="copy(vout.scriptpubkey)"
+                          >
+                            <ion-icon
+                              name="copy-outline"
+                              class="cursor-pointer"
+                            ></ion-icon>
+                          </ion-button>
+                        </ion-col>
                       </ion-row>
                     </ion-col>
                   </ion-row>

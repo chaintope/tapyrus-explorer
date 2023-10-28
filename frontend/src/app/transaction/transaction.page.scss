@@ -17,6 +17,15 @@ ion-content {
   margin-bottom: 16px;
 }
 
+.text-script {
+  color: var(--ion-color-primary) !important;
+
+  > ion-col {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
 #block-header-text {
   @media (max-width: 539px) {
     font-size: 16px;
