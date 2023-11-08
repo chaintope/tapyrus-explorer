@@ -68,6 +68,9 @@ export class BlocksPage implements OnInit {
 
   onPageChange(pageNumber: number) {
     this.page = pageNumber;
+    this.navCtrl.navigateForward('/blocks', {
+      queryParams: { page: this.page }
+    });
     this.getBlockLists();
   }
 
