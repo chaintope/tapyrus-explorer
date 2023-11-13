@@ -13,6 +13,7 @@ import { AppConst } from '../app.const';
 })
 export class BlockPage implements OnInit {
   blockHash: string;
+  height: number;
   block: any = {};
   blockTxns: any = {};
   openTxns = false;
@@ -37,13 +38,39 @@ export class BlockPage implements OnInit {
 
   ngOnInit() {
     this.blockHash = this.activatedRoute.snapshot.paramMap.get('hash');
+    this.height = Number(this.activatedRoute.snapshot.paramMap.get('height'));
     this.getBlockInfo();
   }
 
   getBlockInfo() {
+    if (this.blockHash != null) {
+      this.getBlockInfoByHash();
+    } else if (this.height != null) {
+      this.getBlockInfoByHeight();
+    }
+  }
+
+  getBlockInfoByHash() {
     this.backendService.getBlock(this.blockHash).subscribe(
       data => {
         this.block = data || {};
+        this.calculatePagination();
+      },
+      err => {
+        console.log(err);
+        this.hasError = true;
+        this.statusCode = err.status;
+        this.statusMsg = err.statusText;
+        this.detailMsg = err.error;
+      }
+    );
+  }
+
+  getBlockInfoByHeight() {
+    this.backendService.getBlockByHeight(this.height).subscribe(
+      data => {
+        this.block = data || {};
+        this.blockHash = this.block.blockHash;
         this.calculatePagination();
       },
       err => {

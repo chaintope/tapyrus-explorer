@@ -12,6 +12,40 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/api/block/height/:height', async (req, res) => {
+  const height = req.params.height;
+
+  try {
+    const blockHash = await rest.block.height(height);
+    const block = await rest.block.get(blockHash);
+    const status = await rest.block.status(blockHash);
+    if (!block || !status) {
+      res.status(404).send('Block not found.');
+      return;
+    }
+    const tip = await rest.block.tip.height();
+    res.json({
+      blockHash: block.id,
+      confirmations: tip - block.height,
+      ntx: block.tx_count,
+      height: block.height,
+      timestamp: block.time,
+      proof: block.signature,
+      sizeBytes: block.size,
+      version: block.features,
+      merkleRoot: block.merkle_root,
+      immutableMerkleRoot: block.im_merkle_root,
+      previousBlock: block.previousblockhash,
+      nextBlock: status.next_best
+    });
+  } catch (err) {
+    logger.error(
+      `Error retrieving information for block  - height = ${height}. Error Message - ${err.message}`
+    );
+    res.status(503).send('Service Temporary Unavailable');
+  }
+});
+
 app.get('/api/block/:blockHash', async (req, res) => {
   const blockHash = req.params.blockHash;
 
