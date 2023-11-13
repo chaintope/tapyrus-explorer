@@ -12,16 +12,8 @@
       <ion-icon name="copy-outline" color="primary" id="copy-icon"></ion-icon>
       Copy Raw Data
     </ion-button>
-    <b *ngIf="copied" id="copied-text">Copied !</b>
   </div>
   <div class="ion-padding ion-margin" id="copy-content">
     <p id="myInput" class="text-color">{{ txRawData }}</p>
-  </div>
-  <div class="ion-text-center block-md">
-    <ion-button (click)="copyTxRawData()">
-      <ion-icon name="copy-outline" color="primary" id="copy-icon"></ion-icon>
-      Copy Raw Data </ion-button
-    ><br />
-    <b *ngIf="copied" id="copied-text-md">Copied !</b>
   </div>
 </ion-content>

@@ -87,3 +87,9 @@ a {
 .block {
   padding: 5px 5px;
 }
+
+ion-toast {
+  --max-width: 100px;
+  font-weight: bold;
+  text-align: center !important;
+}
