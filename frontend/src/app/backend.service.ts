@@ -80,6 +80,16 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/api/tx/${query}/get`);
   }
 
+  getColors(lastSeenColorId?: string): Observable<any> {
+    return this.http.get(`${this.backendUrl}/api/colors`, {
+      params: new HttpParams({
+        fromObject: {
+          lastSeenColorId: (lastSeenColorId || '').toString()
+        }
+      })
+    });
+  }
+
   getColor(colorId: string, lastSeenTxid?: string): Observable<any> {
     return this.http.get(`${this.backendUrl}/api/color/${colorId}`, {
       params: new HttpParams({

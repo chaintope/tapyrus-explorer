@@ -31,6 +31,11 @@ const routes: Routes = [
       )
   },
   {
+    path: 'colors',
+    loadChildren: () =>
+      import('./colors/colors.module').then(m => m.ColorsPageModule)
+  },
+  {
     path: 'color/:colorId',
     loadChildren: () =>
       import('./color/color.module').then(m => m.ColorPageModule)

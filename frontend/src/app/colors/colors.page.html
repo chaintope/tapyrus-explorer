@@ -1,0 +1,51 @@
+<ion-content class="pb-footer">
+  <div class="ion-padding" *ngIf="!hasError">
+    <div class="bg-white ion-padding ion-margin-top">
+      <ion-row>
+        <ion-col size="12">
+          <h3 id="color-header-text">Colors</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="table-header">
+        <ion-col size="8" class="pt-10">COLOR ID</ion-col>
+        <ion-col size="4" class="pt-10">LATEST USED BLOCK</ion-col>
+      </ion-row>
+      <ion-row class="text-color table-border-bottom" *ngFor="let color of colors">
+        <ion-col
+          size="8"
+          (click)="goToColorPage(color[0])"
+          class="link-color cursor-pointer ellipsis"
+          >{{ color[0] }}</ion-col
+        >
+        <ion-col
+          size="4"
+          (click)="goToBlock(color[1])"
+          class="link-color cursor-pointer ellipsis"
+          >{{ color[1] }}</ion-col
+        >
+      </ion-row>
+    </div>
+  </div>
+  <ion-grid *ngIf="!hasError">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button
+          color="primary"
+          id="next"
+          class="cursor-pointer"
+          (click)="onNextPage()"
+          >Load More</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="ion-padding" *ngIf="hasError">
+    <h1 class="error text-primary">
+      <div class="code">{{ statusCode }}</div>
+      <div class="message">{{ statusMsg }}</div>
+    </h1>
+    <div>
+      <p class="detail">{{ detailMsg }}</p>
+    </div>
+  </div>
+</ion-content>
