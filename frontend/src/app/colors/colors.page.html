@@ -10,7 +10,10 @@
         <ion-col size="8" class="pt-10">COLOR ID</ion-col>
         <ion-col size="4" class="pt-10">LATEST USED BLOCK</ion-col>
       </ion-row>
-      <ion-row class="text-color table-border-bottom" *ngFor="let color of colors">
+      <ion-row
+        class="text-color table-border-bottom"
+        *ngFor="let color of colors"
+      >
         <ion-col
           size="8"
           (click)="goToColorPage(color[0])"

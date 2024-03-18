@@ -19,9 +19,7 @@ app.get('/api/colors', async (req, res) => {
     console.log(colors);
     res.json({ colors: colors });
   } catch (err) {
-    logger.error(
-      `Error retrieving colors. Error Message - ${err.message}`
-    );
+    logger.error(`Error retrieving colors. Error Message - ${err.message}`);
     res.status(500).send(`Error Retrieving Blocks`);
   }
 });

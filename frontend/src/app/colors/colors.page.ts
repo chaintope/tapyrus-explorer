@@ -28,7 +28,8 @@ export class ColorsPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.lastSeenColorId = this.activatedRoute.snapshot.paramMap.get('lastSeenColorId') || '';
+    this.lastSeenColorId =
+      this.activatedRoute.snapshot.paramMap.get('lastSeenColorId') || '';
     this.getColorsInfo();
   }
 
@@ -36,8 +37,8 @@ export class ColorsPage implements OnInit {
     this.resetError();
     this.backendService.getColors(this.lastSeenColorId).subscribe(
       data => {
-        this.colors = this.colors.concat(data["colors"]);
-        this.lastSeenColorId = data["colors"][data["colors"].length - 1][0];
+        this.colors = this.colors.concat(data['colors']);
+        this.lastSeenColorId = data['colors'][data['colors'].length - 1][0];
       },
       err => {
         console.log(err);
