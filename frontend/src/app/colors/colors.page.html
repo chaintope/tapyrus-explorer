@@ -7,24 +7,32 @@
         </ion-col>
       </ion-row>
       <ion-row class="table-header">
-        <ion-col size="8" class="pt-10">COLOR ID</ion-col>
-        <ion-col size="4" class="pt-10">LATEST USED BLOCK</ion-col>
+        <ion-col size="6" class="pt-10">COLOR ID</ion-col>
+        <ion-col size="3" class="pt-10">LATEST USED BLOCK</ion-col>
+        <ion-col size="3" class="pt-10">ISSUED</ion-col>
       </ion-row>
       <ion-row
         class="text-color table-border-bottom"
         *ngFor="let color of colors"
       >
         <ion-col
-          size="8"
-          (click)="goToColorPage(color[0])"
+          size="6"
+          (click)="goToColorPage(color['color_id'])"
           class="link-color cursor-pointer ellipsis"
-          >{{ color[0] }}</ion-col
+          >{{ color['color_id'] }}</ion-col
         >
         <ion-col
-          size="4"
-          (click)="goToBlock(color[1])"
+          size="3"
+          (click)="goToBlock(color['height'])"
           class="link-color cursor-pointer ellipsis"
-          >{{ color[1] }}</ion-col
+          >{{ color['height'] }}</ion-col
+        >
+        <ion-col
+          size="3"
+          (click)="goToColorPage(color['color_id'])"
+          class="link-color cursor-pointer ellipsis"
+          >{{ color['chain_stats']['issued_sum'] +
+          color['mempool_stats']['issued_sum'] }}</ion-col
         >
       </ion-row>
     </div>

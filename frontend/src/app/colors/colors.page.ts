@@ -38,7 +38,8 @@ export class ColorsPage implements OnInit {
     this.backendService.getColors(this.lastSeenColorId).subscribe(
       data => {
         this.colors = this.colors.concat(data['colors']);
-        this.lastSeenColorId = data['colors'][data['colors'].length - 1][0];
+        this.lastSeenColorId =
+          data['colors'][data['colors'].length - 1]['color_id'];
       },
       err => {
         console.log(err);
