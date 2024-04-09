@@ -51,10 +51,11 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(3);
+    expect(menuItems.length).toEqual(4);
     expect(menuItems[0].textContent).toContain('Blocks');
     expect(menuItems[1].textContent).toContain('Txns');
-    expect(menuItems[2].textContent).toContain('Tracking Validation');
+    expect(menuItems[2].textContent).toContain('Colors');
+    expect(menuItems[3].textContent).toContain('Tracking Validation');
   });
 
   it('should have urls', async () => {
@@ -62,7 +63,7 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(3);
+    expect(menuItems.length).toEqual(4);
     expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual(
       '/blocks'
     );
@@ -70,6 +71,9 @@ describe('AppComponent', () => {
       '/tx/recent'
     );
     expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual(
+      '/colors'
+    );
+    expect(menuItems[3].getAttribute('ng-reflect-router-link')).toEqual(
       '/material_tracking_validation'
     );
   });

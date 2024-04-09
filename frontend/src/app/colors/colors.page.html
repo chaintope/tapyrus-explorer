@@ -1,0 +1,62 @@
+<ion-content class="pb-footer">
+  <div class="ion-padding" *ngIf="!hasError">
+    <div class="bg-white ion-padding ion-margin-top">
+      <ion-row>
+        <ion-col size="12">
+          <h3 id="color-header-text">Colors</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="table-header">
+        <ion-col size="6" class="pt-10">COLOR ID</ion-col>
+        <ion-col size="3" class="pt-10">LATEST USED BLOCK</ion-col>
+        <ion-col size="3" class="pt-10">TOTAL SUPPLY</ion-col>
+      </ion-row>
+      <ion-row
+        class="text-color table-border-bottom"
+        *ngFor="let color of colors"
+      >
+        <ion-col
+          size="6"
+          (click)="goToColorPage(color['color_id'])"
+          class="link-color cursor-pointer ellipsis"
+          >{{ color['color_id'] }}</ion-col
+        >
+        <ion-col
+          size="3"
+          (click)="goToBlock(color['height'])"
+          class="link-color cursor-pointer ellipsis"
+          >{{ color['height'] }}</ion-col
+        >
+        <ion-col
+          size="3"
+          (click)="goToColorPage(color['color_id'])"
+          class="link-color cursor-pointer ellipsis"
+          >{{ color['chain_stats']['issued_sum'] +
+          color['mempool_stats']['issued_sum'] }}</ion-col
+        >
+      </ion-row>
+    </div>
+  </div>
+  <ion-grid *ngIf="!hasError">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button
+          color="primary"
+          id="next"
+          class="cursor-pointer"
+          (click)="onNextPage()"
+          >Load More</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="ion-padding" *ngIf="hasError">
+    <h1 class="error text-primary">
+      <div class="code">{{ statusCode }}</div>
+      <div class="message">{{ statusMsg }}</div>
+    </h1>
+    <div>
+      <p class="detail">{{ detailMsg }}</p>
+    </div>
+  </div>
+</ion-content>
