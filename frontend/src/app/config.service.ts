@@ -34,10 +34,17 @@ export class ConfigService {
   }
 
   getConfig(): Observable<Config> {
-    return this.http.get<Config>(this.configUrl).pipe(
-      retry(3), // retry a failed request up to 3 times
-      catchError(this.handleError) // then handle the error
-    );
+    if (this.config) {
+      return new Observable(observer => {
+        observer.next(this.config);
+        observer.complete();
+      });
+    } else {
+      return this.http.get<Config>(this.configUrl).pipe(
+        retry(3), // retry a failed request up to 3 times
+        catchError(this.handleError) // then handle the error
+      );
+    }
   }
 
   private handleError(error: HttpErrorResponse) {
