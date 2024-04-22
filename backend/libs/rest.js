@@ -148,6 +148,20 @@ const block = {
 };
 
 const color = {
+  list: async lastSeenColorId => {
+    let url;
+    if (lastSeenColorId) {
+      url = `${baseUrl}/colors/${lastSeenColorId}`;
+    } else {
+      url = `${baseUrl}/colors`;
+    }
+    const response = await fetch(url, { agent: agentSelector });
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
+  },
   get: async colorId => {
     const url = `${baseUrl}/color/${colorId}`;
     const response = await fetch(url, { agent: agentSelector });

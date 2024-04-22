@@ -22,6 +22,10 @@ export class AppComponent implements OnInit {
       url: '/tx/recent'
     },
     {
+      title: 'Colors',
+      url: '/colors'
+    },
+    {
       title: 'Tracking Validation',
       url: '/material_tracking_validation'
     }

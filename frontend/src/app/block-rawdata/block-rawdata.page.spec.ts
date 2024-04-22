@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavParams } from '@ionic/angular';
 
 import { BlockRawdataPage } from './block-rawdata.page';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -11,7 +11,8 @@ describe('BlockRawdataPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BlockRawdataPage],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule]
+      imports: [IonicModule.forRoot(), HttpClientTestingModule],
+      providers: [NavParams]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BlockRawdataPage);

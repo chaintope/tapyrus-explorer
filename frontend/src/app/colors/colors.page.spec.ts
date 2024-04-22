@@ -1,27 +1,25 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { BlocksPage } from './blocks.page';
+import { ColorsPage } from './colors.page';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NgxPaginationModule } from 'ngx-pagination';
 
-describe('BlocksPage', () => {
-  let component: BlocksPage;
-  let fixture: ComponentFixture<BlocksPage>;
+describe('ColorsPage', () => {
+  let component: ColorsPage;
+  let fixture: ComponentFixture<ColorsPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [BlocksPage],
+      declarations: [ColorsPage],
       imports: [
         IonicModule.forRoot(),
-        HttpClientTestingModule,
-        NgxPaginationModule,
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientTestingModule
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BlocksPage);
+    fixture = TestBed.createComponent(ColorsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

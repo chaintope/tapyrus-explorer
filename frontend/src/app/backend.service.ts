@@ -30,6 +30,10 @@ export class BackendService {
     return this.http.get(`${this.backendUrl}/api/block/${blockHash}`);
   }
 
+  getBlockByHeight(height: number): Observable<any> {
+    return this.http.get(`${this.backendUrl}/api/block/height/${height}`);
+  }
+
   getRawBlock(blockHash: string): Observable<any> {
     return this.http.get(`${this.backendUrl}/api/block/${blockHash}/raw`);
   }
@@ -74,6 +78,16 @@ export class BackendService {
 
   searchTransaction(query: string): Observable<any> {
     return this.http.get(`${this.backendUrl}/api/tx/${query}/get`);
+  }
+
+  getColors(lastSeenColorId?: string): Observable<any> {
+    return this.http.get(`${this.backendUrl}/api/colors`, {
+      params: new HttpParams({
+        fromObject: {
+          lastSeenColorId: (lastSeenColorId || '').toString()
+        }
+      })
+    });
   }
 
   getColor(colorId: string, lastSeenTxid?: string): Observable<any> {

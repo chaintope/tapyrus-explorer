@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
+import Helper from '../app.helper';
 
 @Component({
   selector: 'app-address',
@@ -34,6 +35,7 @@ export class AddressPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
+    private toastController: ToastController,
     private backendService: BackendService
   ) {}
 
@@ -56,24 +58,7 @@ export class AddressPage implements OnInit {
   }
 
   copyAddress() {
-    const textArea = document.createElement('textarea');
-    textArea.value = this.address;
-
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      document.execCommand('copy');
-      this.copied = true;
-      setTimeout(() => {
-        this.copied = false;
-      }, 800);
-    } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
-    }
-
-    document.body.removeChild(textArea);
+    Helper.copy(this.toastController, this.address);
   }
 
   onNextPage() {

@@ -14,6 +14,11 @@ const routes: Routes = [
       import('./blocks/blocks.module').then(m => m.BlocksPageModule)
   },
   {
+    path: 'block/height/:height',
+    loadChildren: () =>
+      import('./block/block.module').then(m => m.BlockPageModule)
+  },
+  {
     path: 'block/:hash',
     loadChildren: () =>
       import('./block/block.module').then(m => m.BlockPageModule)
@@ -24,6 +29,11 @@ const routes: Routes = [
       import('./block-rawdata/block-rawdata.module').then(
         m => m.BlockRawdataPageModule
       )
+  },
+  {
+    path: 'colors',
+    loadChildren: () =>
+      import('./colors/colors.module').then(m => m.ColorsPageModule)
   },
   {
     path: 'color/:colorId',
