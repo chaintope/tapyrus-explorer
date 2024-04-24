@@ -35,14 +35,18 @@ export class ConfigService {
   }
 
   getConfig(): Observable<Config> {
-    if (this.config && this.observable) {
+    if (this.config) {
       return new Observable(observer => {
         observer.next(this.config);
         observer.complete();
       });
-    } else {
-      return (this.observable = this.loadConfig());
     }
+
+    if (this.observable) {
+      return this.observable;
+    }
+
+    return (this.observable = this.loadConfig());
   }
 
   private loadConfig(): Observable<Config> {
