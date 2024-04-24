@@ -35,15 +35,21 @@ export class BackendService {
     page: number,
     perPage: number
   ): Observable<any> {
-    return this.request(`/api/block/${blockHash}/txns`, new HttpParams({
-      fromObject: { page: page.toString(), perPage: perPage.toString() }
-    }));
+    return this.request(
+      `/api/block/${blockHash}/txns`,
+      new HttpParams({
+        fromObject: { page: page.toString(), perPage: perPage.toString() }
+      })
+    );
   }
 
   getTransactions(page: number, perPage: number): Observable<any> {
-    return this.request('/api/transactions', new HttpParams({
-      fromObject: { page: page.toString(), perPage: perPage.toString() }
-    }));
+    return this.request(
+      '/api/transactions',
+      new HttpParams({
+        fromObject: { page: page.toString(), perPage: perPage.toString() }
+      })
+    );
   }
 
   getTransaction(txId: string): Observable<any> {
@@ -55,11 +61,14 @@ export class BackendService {
   }
 
   getAddressInfo(address: string, lastSeenTxid?: string): Observable<any> {
-    return this.request(`/api/address/${address}`, new HttpParams({
-      fromObject: {
-        lastSeenTxid: (lastSeenTxid || '').toString()
-      }
-    }));
+    return this.request(
+      `/api/address/${address}`,
+      new HttpParams({
+        fromObject: {
+          lastSeenTxid: (lastSeenTxid || '').toString()
+        }
+      })
+    );
   }
 
   searchTransaction(query: string): Observable<any> {
@@ -67,19 +76,25 @@ export class BackendService {
   }
 
   getColors(lastSeenColorId?: string): Observable<any> {
-    return this.request('/api/colors', new HttpParams({
-      fromObject: {
-        lastSeenColorId: (lastSeenColorId || '').toString()
-      }
-    }));
+    return this.request(
+      '/api/colors',
+      new HttpParams({
+        fromObject: {
+          lastSeenColorId: (lastSeenColorId || '').toString()
+        }
+      })
+    );
   }
 
   getColor(colorId: string, lastSeenTxid?: string): Observable<any> {
-    return this.request(`/api/color/${colorId}`, new HttpParams({
-      fromObject: {
-        lastSeenTxid: (lastSeenTxid || '').toString()
-      }
-    }));
+    return this.request(
+      `/api/color/${colorId}`,
+      new HttpParams({
+        fromObject: {
+          lastSeenTxid: (lastSeenTxid || '').toString()
+        }
+      })
+    );
   }
 
   validateOpenedValue(opened_value: string): Observable<any> {

@@ -41,7 +41,7 @@ export class ConfigService {
         observer.complete();
       });
     } else {
-      return this.observable = this.loadConfig();
+      return (this.observable = this.loadConfig());
     }
   }
 
