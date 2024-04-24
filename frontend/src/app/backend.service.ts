@@ -11,47 +11,23 @@ export class BackendService {
   constructor(private http: HttpClient, private configService: ConfigService) {}
 
   getBlocks(page: number, perPage: number): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/blocks`, {
-          params: new HttpParams({
-            fromObject: { page: page.toString(), perPage: perPage.toString() }
-          })
-        });
-      })
-    );
+    return this.request('/api/blocks');
   }
 
   searchBlock(query: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/block/${query}`);
-      })
-    );
+    return this.request(`/api/block/${query}`);
   }
 
   getBlock(blockHash: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/block/${blockHash}`);
-      })
-    );
+    return this.request(`/api/block/${blockHash}`);
   }
 
   getBlockByHeight(height: number): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/block/height/${height}`);
-      })
-    );
+    return this.request(`/api/block/height/${height}`);
   }
 
   getRawBlock(blockHash: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/block/${blockHash}/raw`);
-      })
-    );
+    return this.request(`/api/block/${blockHash}/raw`);
   }
 
   getBlockTransactions(
@@ -59,114 +35,65 @@ export class BackendService {
     page: number,
     perPage: number
   ): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(
-          `${config.backendUrl}/api/block/${blockHash}/txns`,
-          {
-            params: new HttpParams({
-              fromObject: { page: page.toString(), perPage: perPage.toString() }
-            })
-          }
-        );
-      })
-    );
+    return this.request(`/api/block/${blockHash}/txns`, new HttpParams({
+      fromObject: { page: page.toString(), perPage: perPage.toString() }
+    }));
   }
 
   getTransactions(page: number, perPage: number): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/transactions`, {
-          params: new HttpParams({
-            fromObject: { page: page.toString(), perPage: perPage.toString() }
-          })
-        });
-      })
-    );
+    return this.request('/api/transactions', new HttpParams({
+      fromObject: { page: page.toString(), perPage: perPage.toString() }
+    }));
   }
 
   getTransaction(txId: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/tx/${txId}`);
-      })
-    );
+    return this.request(`/api/tx/${txId}`);
   }
 
   getRawTransaction(txId: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/tx/${txId}/rawData`);
-      })
-    );
+    return this.request(`/api/tx/${txId}/rawData`);
   }
 
   getAddressInfo(address: string, lastSeenTxid?: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/address/${address}`, {
-          params: new HttpParams({
-            fromObject: {
-              lastSeenTxid: (lastSeenTxid || '').toString()
-            }
-          })
-        });
-      })
-    );
+    return this.request(`/api/address/${address}`, new HttpParams({
+      fromObject: {
+        lastSeenTxid: (lastSeenTxid || '').toString()
+      }
+    }));
   }
 
   searchTransaction(query: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/tx/${query}/get`);
-      })
-    );
+    return this.request(`/api/tx/${query}/get`);
   }
 
   getColors(lastSeenColorId?: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/colors`, {
-          params: new HttpParams({
-            fromObject: {
-              lastSeenColorId: (lastSeenColorId || '').toString()
-            }
-          })
-        });
-      })
-    );
+    return this.request('/api/colors', new HttpParams({
+      fromObject: {
+        lastSeenColorId: (lastSeenColorId || '').toString()
+      }
+    }));
   }
 
   getColor(colorId: string, lastSeenTxid?: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/api/color/${colorId}`, {
-          params: new HttpParams({
-            fromObject: {
-              lastSeenTxid: (lastSeenTxid || '').toString()
-            }
-          })
-        });
-      })
-    );
+    return this.request(`/api/color/${colorId}`, new HttpParams({
+      fromObject: {
+        lastSeenTxid: (lastSeenTxid || '').toString()
+      }
+    }));
   }
 
   validateOpenedValue(opened_value: string): Observable<any> {
-    return this.getConfig().pipe(
-      mergeMap((config: Config) => {
-        return this.http.get(
-          `${config.backendUrl}/api/validate/${opened_value}`
-        );
-      })
-    );
+    return this.request(`/api/validate/${opened_value}`);
   }
 
   checkMaterialTrackingTransaction(txId: string): Observable<any> {
+    return this.request(`/api/check_material_tracking_balance/${txId}`);
+  }
+
+  private request(url: string, params?: HttpParams): Observable<any> {
     return this.getConfig().pipe(
       mergeMap((config: Config) => {
-        return this.http.get(
-          `${config.backendUrl}/api/check_material_tracking_balance/${txId}`
-        );
+        return this.http.get(`${config.backendUrl}/${url}`, { params });
       })
     );
   }

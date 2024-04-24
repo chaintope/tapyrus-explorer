@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, mergeMap, retry } from 'rxjs/operators';
 
 /***
  * Config service to supply configuration items from assets/config.json file.
@@ -21,6 +21,7 @@ export interface Config {
 export class ConfigService {
   configUrl = 'assets/config.json';
   config: Config;
+  observable: Observable<Config>;
 
   constructor(private http: HttpClient) {}
 
@@ -34,17 +35,21 @@ export class ConfigService {
   }
 
   getConfig(): Observable<Config> {
-    if (this.config) {
+    if (this.config && this.observable) {
       return new Observable(observer => {
         observer.next(this.config);
         observer.complete();
       });
     } else {
-      return this.http.get<Config>(this.configUrl).pipe(
-        retry(3), // retry a failed request up to 3 times
-        catchError(this.handleError) // then handle the error
-      );
+      return this.observable = this.loadConfig();
     }
+  }
+
+  private loadConfig(): Observable<Config> {
+    return this.http.get<Config>(this.configUrl).pipe(
+      retry(3), // retry a failed request up to 3 times
+      catchError(this.handleError) // then handle the error
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
