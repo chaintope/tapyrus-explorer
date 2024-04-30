@@ -11,7 +11,12 @@ export class BackendService {
   constructor(private http: HttpClient, private configService: ConfigService) {}
 
   getBlocks(page: number, perPage: number): Observable<any> {
-    return this.request('/api/blocks');
+    return this.request(
+      '/api/blocks',
+      new HttpParams({
+        fromObject: { page: page.toString(), perPage: perPage.toString() }
+      })
+    );
   }
 
   searchBlock(query: string): Observable<any> {
@@ -108,7 +113,7 @@ export class BackendService {
   private request(url: string, params?: HttpParams): Observable<any> {
     return this.getConfig().pipe(
       mergeMap((config: Config) => {
-        return this.http.get(`${config.backendUrl}/${url}`, { params });
+        return this.http.get(`${config.backendUrl}${url}`, { params });
       })
     );
   }
