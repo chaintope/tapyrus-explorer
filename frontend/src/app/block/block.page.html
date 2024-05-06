@@ -173,14 +173,19 @@
                   <ion-col
                     size="4"
                     class="ion-no-margin ion-text-right text-gray"
-                    >{{ input.prevout.value | asTpc }}
-                    <span
-                      *ngIf="!!input.prevout.colorId"
-                      class="link-color cursor-pointer"
-                      (click)="goToCoin(input.prevout.colorId)"
+                    >
+                    <ng-container *ngIf="!!input.prevout.colorId">
+                      {{ input.prevout.value }}
+                      <span
+                        class="link-color cursor-pointer"
+                        (click)="goToCoin(input.prevout.colorId)"
                       >COIN
-                    </span>
-                    <span *ngIf="!input.prevout.colorId">TPC</span>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="!input.prevout.colorId">
+                      {{ input.prevout.value | asTpc }}
+                      <span>TPC</span>
+                    </ng-container>
                   </ion-col>
                 </div>
               </div>
@@ -210,15 +215,19 @@
                   (click)="goToAddress(vout.scriptpubkey_uncolored_address)"
                   >{{ vout.scriptpubkey_uncolored_address }}</ion-col
                 >
-                <ion-col size="4" class="ion-text-right text-gray"
-                  >{{ vout.value | asTpc }}
-                  <span
-                    *ngIf="!!vout.colorId"
-                    class="link-color cursor-pointer"
-                    (click)="goToCoin(vout.colorId)"
-                    >COIN
-                  </span>
-                  <span *ngIf="!vout.colorId">TPC</span>
+                <ion-col size="4" class="ion-text-right text-gray">
+                  <ng-container *ngIf="!!vout.colorId">
+                    {{ vout.value }}
+                    <span
+                      class="link-color cursor-pointer"
+                      (click)="goToCoin(vout.colorId)"
+                      >COIN
+                    </span>
+                  </ng-container>
+                  <ng-container *ngIf="!vout.colorId">
+                    {{ vout.value | asTpc }}
+                    <span>TPC</span>
+                  </ng-container>
                 </ion-col>
               </div>
             </ion-col>

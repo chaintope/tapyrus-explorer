@@ -74,20 +74,24 @@
                 >COINBASE</ion-badge
               >
             </ion-col>
-            <ion-col
-              size="4"
-              class="ion-text-right"
-              *ngIf="input.is_coinbase"
-            ></ion-col>
-            <ion-col size="4" class="ion-text-right" *ngIf="!input.is_coinbase"
-              >{{ input.prevout?.value | asTpc}}
-              <span
-                *ngIf="!!input.prevout.colorId"
-                class="link-color cursor-pointer"
-                (click)="goToCoin(input.prevout.colorId)"
-                >COIN
-              </span>
-              <span *ngIf="!input.prevout.colorId">TPC</span>
+            <ion-col size="4" class="ion-text-right">
+              <ng-container *ngIf="input.is_coinbase"></ng-container>
+              <ng-container *ngIf="!input.is_coinbase && !!input.prevout.colorId && input.prevout.colorId !== colorId">
+                {{ input.prevout?.value }}
+                <span
+                  class="link-color cursor-pointer"
+                  (click)="goToCoin(input.prevout.colorId)"
+                  >COIN
+                </span>
+              </ng-container>
+              <ng-container *ngIf="!input.is_coinbase && !!input.prevout.colorId && input.prevout.colorId === colorId">
+                {{ input.prevout?.value }}
+                <span class="cursor-pointer">COIN</span>
+              </ng-container>
+              <ng-container *ngIf="!input.is_coinbase && !input.prevout.colorId">
+                {{ input.prevout?.value | asTpc}}
+                <span>TPC</span>
+              </ng-container>
             </ion-col>
           </ion-row>
         </ion-col>
@@ -102,15 +106,23 @@
             <ion-col size="2">
               <ion-badge color="danger">OUT</ion-badge>
             </ion-col>
-            <ion-col size="4" class="ion-text-right"
-              >{{ output.value | asTpc }}
-              <span
-                *ngIf="!!output.colorId"
-                class="link-color cursor-pointer"
-                (click)="goToCoin(output.colorId)"
-                >COIN
-              </span>
-              <span *ngIf="!output.colorId">TPC</span>
+            <ion-col size="4" class="ion-text-right">
+              <ng-container *ngIf="!!output.colorId && output.colorId !== colorId">
+                {{ output.value }}
+                <span
+                  class="link-color cursor-pointer"
+                  (click)="goToCoin(output.colorId)"
+                  >COIN
+                </span>
+              </ng-container>
+              <ng-container *ngIf="!!output.colorId && output.colorId === colorId">
+                {{ output.value }}
+                <span class="cursor-pointer">COIN</span>
+              </ng-container>
+              <ng-container *ngIf="!output.colorId">
+                {{ output.value | asTpc }}
+                <span>TPC</span>
+              </ng-container>
             </ion-col>
           </ion-row>
         </ion-col>
