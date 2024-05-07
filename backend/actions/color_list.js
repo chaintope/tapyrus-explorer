@@ -16,7 +16,6 @@ app.get('/api/colors', async (req, res) => {
 
   try {
     const colors = await rest.color.list(lastSeenColorId);
-    console.log(colors);
     res.json({ colors: colors });
   } catch (err) {
     logger.error(`Error retrieving colors. Error Message - ${err.message}`);

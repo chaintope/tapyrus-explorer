@@ -15,39 +15,55 @@
               id="copy-icon"
             ></ion-icon>
           </div>
-          <div id="block-hash-bg" class="col-5">
-            <strong id="block-hash-text">
-              <strong>Balance:</strong> {{ balanced | asTpc}} TPC</strong
-            >
-          </div>
         </ion-col>
         <ion-col size="4" class="ion-text-end">
           <qrcode [qrdata]="qrcode" [errorCorrectionLevel]="'L'"></qrcode>
         </ion-col>
       </ion-row>
-      <ion-item-divider class="mt-0 pt-0"></ion-item-divider>
-      <ion-grid class="font-14 text-color">
-        <ion-row>
-          <ion-col size="3" class="font-w500">Total Received:</ion-col>
-          <ion-col size="3" class="ion-text-right"
-            >{{ received | asTpc }}</ion-col
-          >
-        </ion-row>
-        <ion-row>
-          <ion-col size="3" class="font-w500">Total Sent:</ion-col>
-          <ion-col size="3" class="ion-text-right">{{ sent | asTpc }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="3" class="font-w500">No. Transactions:</ion-col>
-          <ion-col size="3" class="ion-text-right">{{ txCount }}</ion-col>
-        </ion-row>
-      </ion-grid>
     </div>
 
     <div class="bg-white ion-padding ion-margin-top">
       <ion-row>
         <ion-col size="12">
-          <p id="block-header-text">Transactions</p>
+          <p class="table-title">Balances</p>
+        </ion-col>
+      </ion-row>
+      <ion-row class="table-header">
+        <ion-col size="4" class="pt-10">Color ID</ion-col>
+        <ion-col size="2" class="pt-10">Total Balance</ion-col>
+        <ion-col size="2" class="pt-10">Total Received</ion-col>
+        <ion-col size="2" class="pt-10">Total Sent</ion-col>
+        <ion-col size="2" class="pt-10">No. Transactions</ion-col>
+      </ion-row>
+      <ion-row
+        class="text-color table-border-bottom"
+        *ngFor="let color of colors"
+      >
+        <ng-container *ngIf="isColored(color['colorId'])">
+          <ion-col
+            size="4"
+            class="pt-10 link-color cursor-pointer"
+            (click)="goToCoin(color['colorId'])"
+            >{{ color['colorId'] | formatColorId }}</ion-col
+          >
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['balanced'] }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['received'] }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['sent'] }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['count'] }}</ion-col>
+        </ng-container>
+        <ng-container *ngIf="!isColored(color['colorId'])">
+          <ion-col size="4" class="pt-10">{{ color['colorId'] | formatColorId }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['balanced'] | asTpc }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['received'] | asTpc }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['sent'] | asTpc }}</ion-col>
+          <ion-col size="2" class="pt-10 ion-text-right">{{ color['count'] }}</ion-col>
+        </ng-container>
+      </ion-row>
+    </div>
+    <div class="bg-white ion-padding ion-margin-top">
+      <ion-row>
+        <ion-col size="12">
+          <p class="table-title">Transactions</p>
         </ion-col>
       </ion-row>
       <ion-row class="table-header">
