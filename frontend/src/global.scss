@@ -99,6 +99,11 @@ ion-toast {
   padding: 10px 10px;
 }
 
+:last-child.table-border-bottom {
+  border-bottom: 0px;
+  padding: 10px 10px;
+}
+
 .ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap;

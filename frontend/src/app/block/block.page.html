@@ -190,10 +190,7 @@
                       </ng-container>
                     </ion-col>
                   </ion-row>
-                  <ion-row
-                    *ngIf="!!input.prevout.colorId"
-                    class="table-border-bottom"
-                  >
+                  <ion-row *ngIf="!!input.prevout.colorId">
                     <ion-col
                       size="8"
                       class="ion-margin-bottom link-color cursor-pointer font-14 ellipsis"
@@ -202,6 +199,7 @@
                       Color ID: {{ input.prevout.colorId | formatColorId }}
                     </ion-col>
                   </ion-row>
+                  <span class="table-border-bottom"></span>
                 </div>
               </div>
             </ion-col>

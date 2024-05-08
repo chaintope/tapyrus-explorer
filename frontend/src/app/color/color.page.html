@@ -91,7 +91,7 @@
                   *ngIf="!input.is_coinbase && !!input.prevout.colorId && input.prevout.colorId === colorId"
                 >
                   {{ input.prevout?.value }}
-                  <span class="cursor-pointer">COIN</span>
+                  <span>COIN</span>
                 </ng-container>
                 <ng-container
                   *ngIf="!input.is_coinbase && !input.prevout.colorId"
@@ -102,8 +102,7 @@
               </ion-col>
             </ion-row>
             <ion-row
-              *ngIf="!!input.prevout.colorId"
-              class="table-border-bottom"
+              *ngIf="!!input.prevout.colorId && input.prevout.colorId !== colorId"
             >
               <ion-col
                 size="8"
@@ -113,6 +112,14 @@
                 Color ID: {{ input.prevout.colorId | formatColorId }}
               </ion-col>
             </ion-row>
+            <ion-row
+              *ngIf="!!input.prevout.colorId && input.prevout.colorId === colorId"
+            >
+              <ion-col size="8" class="font-14 ellipsis">
+                Color ID: {{ input.prevout.colorId | formatColorId }}
+              </ion-col>
+            </ion-row>
+            <ion-row class="table-border-bottom"></ion-row>
           </ng-container>
         </ion-col>
         <ion-col size="4">
@@ -142,7 +149,7 @@
                   *ngIf="!!output.colorId && output.colorId === colorId"
                 >
                   {{ output.value }}
-                  <span class="cursor-pointer">COIN</span>
+                  <span>COIN</span>
                 </ng-container>
                 <ng-container *ngIf="!output.colorId">
                   {{ output.value | asTpc }}
@@ -150,7 +157,7 @@
                 </ng-container>
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="!!output.colorId" class="table-border-bottom">
+            <ion-row *ngIf="!!output.colorId && output.colorId !== colorId">
               <ion-col
                 size="8"
                 class="link-color cursor-pointer font-14 ellipsis"
@@ -159,6 +166,12 @@
                 Color ID: {{ output.colorId | formatColorId }}
               </ion-col>
             </ion-row>
+            <ion-row *ngIf="!!output.colorId && output.colorId === colorId">
+              <ion-col size="8" class="font-14 ellipsis">
+                Color ID: {{ output.colorId | formatColorId }}
+              </ion-col>
+            </ion-row>
+            <ion-row class="table-border-bottom"></ion-row>
           </ng-container>
         </ion-col>
       </ion-row>
