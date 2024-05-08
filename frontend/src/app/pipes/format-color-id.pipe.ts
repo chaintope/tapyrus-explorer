@@ -8,7 +8,10 @@ import { Injectable } from '@angular/core';
 })
 export class FormatColorIdPipe implements PipeTransform {
   transform(colorId: any, ...args: any[]): any {
-    if (colorId === '000000000000000000000000000000000000000000000000000000000000000000') {
+    if (
+      colorId ===
+      '000000000000000000000000000000000000000000000000000000000000000000'
+    ) {
       return '(TPC)';
     } else {
       return colorId;

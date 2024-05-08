@@ -5,7 +5,12 @@ import { AsTpcPipe } from '../pipes/as-tpc.pipe';
 import { DateFormatPipe } from '../pipes/date-format.pipe';
 import { FormatColorIdPipe } from '../pipes/format-color-id.pipe';
 @NgModule({
-  declarations: [MomentFromNowPipe, AsTpcPipe, DateFormatPipe, FormatColorIdPipe],
+  declarations: [
+    MomentFromNowPipe,
+    AsTpcPipe,
+    DateFormatPipe,
+    FormatColorIdPipe
+  ],
   imports: [CommonModule],
   exports: [MomentFromNowPipe, AsTpcPipe, DateFormatPipe, FormatColorIdPipe]
 })

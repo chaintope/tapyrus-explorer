@@ -169,18 +169,19 @@
                       size="8"
                       class="ion-no-margin text-primary cursor-pointer"
                       (click)="goToAddress(input.prevout.scriptpubkey_uncolored_address)"
-                      >{{ input.prevout.scriptpubkey_uncolored_address }}</ion-col
+                      >{{ input.prevout.scriptpubkey_uncolored_address
+                      }}</ion-col
                     >
                     <ion-col
                       size="4"
                       class="ion-no-margin ion-text-right text-gray"
-                      >
+                    >
                       <ng-container *ngIf="!!input.prevout.colorId">
                         {{ input.prevout.value }}
                         <span
                           class="link-color cursor-pointer"
                           (click)="goToCoin(input.prevout.colorId)"
-                        >COIN
+                          >COIN
                         </span>
                       </ng-container>
                       <ng-container *ngIf="!input.prevout.colorId">
@@ -189,8 +190,13 @@
                       </ng-container>
                     </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="!!input.prevout.colorId"  class="table-border-bottom">
-                    <ion-col size="8" class="ion-margin-bottom link-color cursor-pointer font-14 ellipsis"
+                  <ion-row
+                    *ngIf="!!input.prevout.colorId"
+                    class="table-border-bottom"
+                  >
+                    <ion-col
+                      size="8"
+                      class="ion-margin-bottom link-color cursor-pointer font-14 ellipsis"
                       (click)="goToCoin(input.prevout.colorId)"
                     >
                       Color ID: {{ input.prevout.colorId | formatColorId }}
@@ -241,7 +247,9 @@
                   </ion-col>
                 </ion-row>
                 <ion-row *ngIf="!!vout.colorId" class="table-border-bottom">
-                  <ion-col size="8" class="ion-margin-bottom link-color cursor-pointer font-14 ellipsis"
+                  <ion-col
+                    size="8"
+                    class="ion-margin-bottom link-color cursor-pointer font-14 ellipsis"
                     (click)="goToCoin(vout.colorId)"
                   >
                     Color ID: {{ vout.colorId | formatColorId }}

@@ -99,7 +99,8 @@
                           size="8"
                           class="ion-no-margin link-color cursor-pointer"
                           (click)="goToAddress(vin.prevout.scriptpubkey_uncolored_address)"
-                          >{{ vin.prevout.scriptpubkey_uncolored_address }}</ion-col
+                          >{{ vin.prevout.scriptpubkey_uncolored_address
+                          }}</ion-col
                         >
                         <ion-col
                           size="4"
@@ -119,8 +120,13 @@
                           </ng-container>
                         </ion-col>
                       </ion-row>
-                      <ion-row *ngIf="!!vin.prevout.colorId" class="table-border-bottom">
-                        <ion-col size="8" class="link-color cursor-pointer font-14 ellipsis"
+                      <ion-row
+                        *ngIf="!!vin.prevout.colorId"
+                        class="table-border-bottom"
+                      >
+                        <ion-col
+                          size="8"
+                          class="link-color cursor-pointer font-14 ellipsis"
                           (click)="goToCoin(vin.prevout.colorId)"
                         >
                           Color ID: {{ vin.prevout.colorId | formatColorId }}
@@ -236,8 +242,13 @@
                           </ng-container>
                         </ion-col>
                       </ion-row>
-                      <ion-row *ngIf="!!vout.colorId" class="table-border-bottom">
-                        <ion-col size="8" class="link-color cursor-pointer font-14 ellipsis"
+                      <ion-row
+                        *ngIf="!!vout.colorId"
+                        class="table-border-bottom"
+                      >
+                        <ion-col
+                          size="8"
+                          class="link-color cursor-pointer font-14 ellipsis"
                           (click)="goToCoin(vout.colorId)"
                         >
                           Color ID: {{ vout.colorId | formatColorId }}

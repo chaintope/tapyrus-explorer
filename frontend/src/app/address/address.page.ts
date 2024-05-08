@@ -96,6 +96,9 @@ export class AddressPage implements OnInit {
   }
 
   isColored(colorId) {
-    return colorId !== '000000000000000000000000000000000000000000000000000000000000000000';
+    return (
+      colorId !==
+      '000000000000000000000000000000000000000000000000000000000000000000'
+    );
   }
 }
