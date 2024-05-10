@@ -38,8 +38,9 @@ app.get('/api/address/:address', async (req, res) => {
     txs = sortTxs(txs);
     txs.forEach(updateAddress);
     let balances = [];
-    for (let [, scriptStats] of Object.entries(stats.chain_stats)) {
+    for (let [colorId, scriptStats] of Object.entries(stats.chain_stats)) {
       balances.push({
+        colorId: colorId,
         count: scriptStats.tx_count,
         received: scriptStats.funded_txo_sum,
         sent: scriptStats.spent_txo_sum,

@@ -93,3 +93,19 @@ ion-toast {
   font-weight: bold;
   text-align: center !important;
 }
+
+.table-border-bottom {
+  border-bottom: 1px solid #f6f6f6;
+  padding: 10px 10px;
+}
+
+:last-child.table-border-bottom {
+  border-bottom: 0px;
+  padding: 10px 10px;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

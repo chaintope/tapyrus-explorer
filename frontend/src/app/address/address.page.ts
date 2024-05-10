@@ -16,9 +16,7 @@ export class AddressPage implements OnInit {
   block = {};
   qrcode = 'tapyrus:';
   address = '';
-  balanced: number;
-  received: number;
-  sent: number;
+  colors = [];
   transactions = [];
   txids = new Set();
   copied = false;
@@ -71,10 +69,7 @@ export class AddressPage implements OnInit {
       .getAddressInfo(this.address, this.lastSeenTxid)
       .subscribe(
         data => {
-          this.received = data['balances'][0]['received'] || 0;
-          this.sent = data['balances'][0]['sent'] || 0;
-          this.balanced = data['balances'][0]['balanced'] || 0;
-          this.txCount = data['balances'][0]['count'] || 0;
+          this.colors = data['balances'];
           data['tx']['txs']
             .filter(tx => !this.txids.has(tx.txid))
             .forEach(tx => {
@@ -98,5 +93,12 @@ export class AddressPage implements OnInit {
     this.statusCode = null;
     this.statusMsg = null;
     this.detailMsg = null;
+  }
+
+  isColored(colorId) {
+    return (
+      colorId !==
+      '000000000000000000000000000000000000000000000000000000000000000000'
+    );
   }
 }
