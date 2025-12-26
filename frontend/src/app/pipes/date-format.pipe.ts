@@ -17,6 +17,6 @@ export class DateFormatPipe implements PipeTransform {
     return moment
       .unix(time)
       .tz(timezone.tz.guess())
-      .format('X (MMM DD, yyyy hh:mm:ss z)');
+      .format('X (MMM DD, yyyy HH:mm:ss z)');
   }
 }
