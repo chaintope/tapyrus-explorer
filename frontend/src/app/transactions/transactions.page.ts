@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
 
 @Component({
-  selector: 'app-transactions',
-  templateUrl: './transactions.page.html',
-  styleUrls: ['./transactions.page.scss'],
-  providers: [BackendService]
+    selector: 'app-transactions',
+    templateUrl: './transactions.page.html',
+    styleUrls: ['./transactions.page.scss'],
+    standalone: false
 })
 export class TransactionsPage implements OnInit {
   perPage = AppConst.PER_PAGE_COUNT;
@@ -24,9 +23,9 @@ export class TransactionsPage implements OnInit {
   detailMsg: string;
 
   constructor(
-    private httpClient: HttpClient,
     private navCtrl: NavController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -41,6 +40,7 @@ export class TransactionsPage implements OnInit {
         this.transactions = resultData.results || [];
         this.txCount = resultData.txCount;
         this.calculatePagination();
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
@@ -48,6 +48,7 @@ export class TransactionsPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }

@@ -5,8 +5,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 @Pipe({
-  name: 'dateFormat',
-  pure: false
+    name: 'dateFormat',
+    pure: false,
+    standalone: false
 })
 export class DateFormatPipe implements PipeTransform {
   transform(time: any, ...args: any[]): any {

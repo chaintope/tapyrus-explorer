@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { TransactionsPage } from './transactions.page';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TransactionsPage', () => {
   let component: TransactionsPage;
@@ -11,13 +12,11 @@ describe('TransactionsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TransactionsPage],
-      imports: [
-        IonicModule.forRoot(),
-        HttpClientTestingModule,
-        NgxPaginationModule
-      ]
-    }).compileComponents();
+    declarations: [TransactionsPage],
+    imports: [IonicModule.forRoot(),
+        NgxPaginationModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
 
     fixture = TestBed.createComponent(TransactionsPage);
     component = fixture.componentInstance;

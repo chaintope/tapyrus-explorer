@@ -3,8 +3,9 @@ import { IonicModule } from '@ionic/angular';
 
 import { BlockPage } from './block.page';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SharedPipeModule } from '../modules/sharePipe.module';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BlockPage', () => {
   let component: BlockPage;
@@ -12,14 +13,12 @@ describe('BlockPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [BlockPage],
-      imports: [
-        IonicModule.forRoot(),
+    declarations: [BlockPage],
+    imports: [IonicModule.forRoot(),
         RouterTestingModule,
-        HttpClientTestingModule,
-        SharedPipeModule
-      ]
-    }).compileComponents();
+        SharedPipeModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+}).compileComponents();
 
     fixture = TestBed.createComponent(BlockPage);
     component = fixture.componentInstance;

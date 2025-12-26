@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ToastController } from '@ionic/angular';
 
@@ -7,10 +7,10 @@ import { AppConst } from '../app.const';
 import Helper from '../app.helper';
 
 @Component({
-  selector: 'app-address',
-  templateUrl: './address.page.html',
-  styleUrls: ['./address.page.scss'],
-  providers: [BackendService]
+    selector: 'app-address',
+    templateUrl: './address.page.html',
+    styleUrls: ['./address.page.scss'],
+    standalone: false
 })
 export class AddressPage implements OnInit {
   block = {};
@@ -34,7 +34,8 @@ export class AddressPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
     private toastController: ToastController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -77,6 +78,7 @@ export class AddressPage implements OnInit {
               this.transactions.push(tx);
             });
           this.lastSeenTxid = data['tx']['last_seen_txid'];
+          this.cdr.detectChanges();
         },
         err => {
           console.log(err);
@@ -84,6 +86,7 @@ export class AddressPage implements OnInit {
           this.statusCode = err.status;
           this.statusMsg = err.statusText;
           this.detailMsg = err.error;
+          this.cdr.detectChanges();
         }
       );
   }

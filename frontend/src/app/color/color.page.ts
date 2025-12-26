@@ -1,15 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { ModalController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { BackendService } from '../backend.service';
-import { AppConst } from '../app.const';
 
 @Component({
-  selector: 'app-color',
-  templateUrl: './color.page.html',
-  styleUrls: ['./color.page.scss'],
-  providers: [BackendService]
+    selector: 'app-color',
+    templateUrl: './color.page.html',
+    styleUrls: ['./color.page.scss'],
+    standalone: false
 })
 export class ColorPage implements OnInit {
   colorId: string;
@@ -25,10 +23,9 @@ export class ColorPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private httpClient: HttpClient,
-    private modalCtrl: ModalController,
     private navCtrl: NavController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -58,6 +55,7 @@ export class ColorPage implements OnInit {
             this.txs.push(tx);
           });
         this.lastSeenTxid = data['tx']['last_seen_txid'];
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
@@ -65,6 +63,7 @@ export class ColorPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }

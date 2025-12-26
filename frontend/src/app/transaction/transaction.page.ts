@@ -1,6 +1,5 @@
-import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import {
   ModalController,
   NavController,
@@ -12,10 +11,10 @@ import { BackendService } from '../backend.service';
 import Helper from '../app.helper';
 
 @Component({
-  selector: 'app-transaction',
-  templateUrl: './transaction.page.html',
-  styleUrls: ['./transaction.page.scss'],
-  providers: [BackendService]
+    selector: 'app-transaction',
+    templateUrl: './transaction.page.html',
+    styleUrls: ['./transaction.page.scss'],
+    standalone: false
 })
 export class TransactionPage implements OnInit, AfterViewChecked {
   txid: string;
@@ -33,11 +32,11 @@ export class TransactionPage implements OnInit, AfterViewChecked {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private httpClient: HttpClient,
     private modalCtrl: ModalController,
     private navCtrl: NavController,
     private backendService: BackendService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -59,6 +58,7 @@ export class TransactionPage implements OnInit, AfterViewChecked {
         this.transaction = data || {};
         this.calculateTotal();
         this.isMaterialTracking = data.isMaterialTracking;
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
@@ -66,6 +66,7 @@ export class TransactionPage implements OnInit, AfterViewChecked {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }
@@ -123,9 +124,11 @@ export class TransactionPage implements OnInit, AfterViewChecked {
       data => {
         this.hasMaterialTrackingCheckResult = true;
         this.isMaterialTrackingBalanced = data.balanced;
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
+        this.cdr.detectChanges();
       }
     );
   }

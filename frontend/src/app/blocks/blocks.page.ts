@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 import { BackendService } from '../backend.service';
@@ -7,10 +6,10 @@ import { AppConst } from '../app.const';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-blocks',
-  templateUrl: './blocks.page.html',
-  providers: [BackendService],
-  styleUrls: ['./blocks.page.scss']
+    selector: 'app-blocks',
+    templateUrl: './blocks.page.html',
+    styleUrls: ['./blocks.page.scss'],
+    standalone: false
 })
 export class BlocksPage implements OnInit {
   perPage = AppConst.PER_PAGE_COUNT;
@@ -25,10 +24,10 @@ export class BlocksPage implements OnInit {
   detailMsg: string;
 
   constructor(
-    private httpClient: HttpClient,
     private navCtrl: NavController,
     private backendService: BackendService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -47,6 +46,7 @@ export class BlocksPage implements OnInit {
         this.blocks = txnsData.sort(this.compareHeight);
         this.bestHeight = resultData.bestHeight;
         this.calculatePagination();
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
@@ -54,6 +54,7 @@ export class BlocksPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }

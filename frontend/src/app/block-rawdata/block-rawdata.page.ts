@@ -1,15 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { NavParams, ModalController, ToastController } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
 
 import { BackendService } from '../backend.service';
 import Helper from '../app.helper';
 
 @Component({
-  selector: 'app-block-rawdata',
-  templateUrl: './block-rawdata.page.html',
-  styleUrls: ['./block-rawdata.page.scss'],
-  providers: [BackendService]
+    selector: 'app-block-rawdata',
+    templateUrl: './block-rawdata.page.html',
+    styleUrls: ['./block-rawdata.page.scss'],
+    standalone: false
 })
 export class BlockRawdataPage implements OnInit {
   @Input() blockHash: string;
@@ -17,10 +16,10 @@ export class BlockRawdataPage implements OnInit {
 
   constructor(
     private navParams: NavParams,
-    private httpClient: HttpClient,
     private modalCtrl: ModalController,
     private toastController: ToastController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -33,9 +32,11 @@ export class BlockRawdataPage implements OnInit {
       data => {
         const result: any = data || '';
         this.blockRawData = result['hex'];
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
+        this.cdr.detectChanges();
       }
     );
   }
