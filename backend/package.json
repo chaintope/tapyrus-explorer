@@ -14,25 +14,22 @@
   "author": "chaintope, Inc.",
   "license": "ISC",
   "dependencies": {
-    "compression": "^1.7.4",
-    "express": "^4.19.2",
-    "jayson": "^3.4.4",
+    "@noble/curves": "1.1.0",
+    "compression": "^1.8.1",
+    "express": "^4.22.1",
+    "jayson": "^3.7.0",
+    "jsontokens": "4.0.1",
     "jssha": "^2.3.1",
-    "log4js": "^6.4.0",
+    "log4js": "^6.9.1",
     "node-fetch": "^2.6.7",
     "sinon": "^9.2.2",
-    "socket.io": "^2.5.0",
-    "tapyrusjs-lib": "^0.5.0",
-    "ws": "^7.5.10",
-    "wss": "^3.3.4",
-    "jsontokens": "4.0.1",
-    "@noble/curves": "1.1.0"
+    "tapyrusjs-lib": "^0.5.1"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-strongloop": "^2.1.0",
-    "mocha": "^10.2.0",
-    "nodemon": "^2.0.22",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.11",
     "prettier": "^2.2.1",
     "supertest": "^4.0.2"
   }

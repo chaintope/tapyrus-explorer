@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 @Pipe({
   name: 'dateFormat',
-  pure: false
+  pure: false,
+  standalone: false
 })
 export class DateFormatPipe implements PipeTransform {
   transform(time: any, ...args: any[]): any {
@@ -16,6 +17,6 @@ export class DateFormatPipe implements PipeTransform {
     return moment
       .unix(time)
       .tz(timezone.tz.guess())
-      .format('X (MMM DD, yyyy hh:mm:ss z)');
+      .format('X (MMM DD, yyyy HH:mm:ss z)');
   }
 }

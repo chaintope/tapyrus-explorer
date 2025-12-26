@@ -1,0 +1,12 @@
+# Build output
+www/
+dist/
+
+# Angular cache
+.angular/
+
+# Dependencies
+node_modules/
+
+# Coverage
+coverage/

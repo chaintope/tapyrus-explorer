@@ -8,13 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [22.x, 24.x]
     env:
       TZ: "Asia/Tokyo"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: Setup libraries for Frontend
@@ -27,20 +27,10 @@ jobs:
           npm ci
           npm run prettier-ci
           npm run test
-      - name: Setup Frontend 16.x
-        if: ${{ matrix.node-version == '16.x' }}
+      - name: Setup Frontend
         run: |
           cd frontend
           npm ci
-          npm run lint
-          npm run prettier-ci
-          npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
-          npm run build -- --configuration=production
-      - name: Setup Frontend ${{ matrix.node-version }}
-        if: ${{ matrix.node-version != '16.x' }}
-        run: |
-          cd frontend
-          NODE_OPTIONS=--openssl-legacy-provider npm ci
           npm run lint
           npm run prettier-ci
           npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI

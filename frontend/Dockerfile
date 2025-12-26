@@ -1,10 +1,10 @@
-FROM node:20
+FROM node:24-slim
 
 WORKDIR /app
 COPY . .
 
 RUN npm install && \
-    npm install -g @angular/cli@~16.1.0
+    npm install -g @angular/cli@~21.0.4
 
 EXPOSE 4200
 

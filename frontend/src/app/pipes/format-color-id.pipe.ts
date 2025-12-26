@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 @Pipe({
   name: 'formatColorId',
-  pure: false
+  pure: false,
+  standalone: false
 })
 export class FormatColorIdPipe implements PipeTransform {
   transform(colorId: any, ...args: any[]): any {

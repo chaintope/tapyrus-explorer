@@ -111,7 +111,7 @@ const splitColor = script => {
     } else {
       return [null, payment.address];
     }
-  } catch (error) {
+  } catch {
     return [null, null];
   }
 };

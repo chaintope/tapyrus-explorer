@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { Observable, throwError } from 'rxjs';
-import { catchError, mergeMap, retry } from 'rxjs/operators';
+import { Observable, throwError, firstValueFrom } from 'rxjs';
+import { catchError, retry, shareReplay, tap } from 'rxjs/operators';
 
 /***
  * Config service to supply configuration items from assets/config.json file.
@@ -21,17 +21,12 @@ export interface Config {
 export class ConfigService {
   configUrl = 'assets/config.json';
   config: Config;
-  observable: Observable<Config>;
+  private configObservable$: Observable<Config>;
 
   constructor(private http: HttpClient) {}
 
-  load() {
-    return this.getConfig().subscribe(
-      (config: Config) => {
-        this.config = config;
-      },
-      error => console.error(error)
-    );
+  load(): Promise<Config> {
+    return firstValueFrom(this.getConfig());
   }
 
   getConfig(): Observable<Config> {
@@ -42,18 +37,18 @@ export class ConfigService {
       });
     }
 
-    if (this.observable) {
-      return this.observable;
+    if (!this.configObservable$) {
+      this.configObservable$ = this.http.get<Config>(this.configUrl).pipe(
+        retry(3),
+        tap(config => {
+          this.config = config;
+        }),
+        shareReplay(1),
+        catchError(this.handleError)
+      );
     }
 
-    return (this.observable = this.loadConfig());
-  }
-
-  private loadConfig(): Observable<Config> {
-    return this.http.get<Config>(this.configUrl).pipe(
-      retry(3), // retry a failed request up to 3 times
-      catchError(this.handleError) // then handle the error
-    );
+    return this.configObservable$;
   }
 
   private handleError(error: HttpErrorResponse) {

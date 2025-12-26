@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { ModalController, NavController } from '@ionic/angular';
 import { BlockRawdataPage } from '../block-rawdata/block-rawdata.page';
 import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
+
 @Component({
   selector: 'app-block',
   templateUrl: './block.page.html',
   styleUrls: ['./block.page.scss'],
-  providers: [BackendService]
+  standalone: false
 })
 export class BlockPage implements OnInit {
   blockHash: string;
@@ -30,10 +30,10 @@ export class BlockPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private httpClient: HttpClient,
     private modalCtrl: ModalController,
     private navCtrl: NavController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -55,6 +55,7 @@ export class BlockPage implements OnInit {
       data => {
         this.block = data || {};
         this.calculatePagination();
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
@@ -62,6 +63,7 @@ export class BlockPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }
@@ -72,6 +74,7 @@ export class BlockPage implements OnInit {
         this.block = data || {};
         this.blockHash = this.block.blockHash;
         this.calculatePagination();
+        this.cdr.detectChanges();
       },
       err => {
         console.log(err);
@@ -79,6 +82,7 @@ export class BlockPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }
@@ -112,6 +116,7 @@ export class BlockPage implements OnInit {
           this.txTime = this.blockTxns.time;
           this.openTxns = true;
           this.calculateTotal();
+          this.cdr.detectChanges();
         },
         err => {
           console.log(err);
@@ -119,6 +124,7 @@ export class BlockPage implements OnInit {
           this.statusCode = err.status;
           this.statusMsg = err.statusText;
           this.detailMsg = err.error;
+          this.cdr.detectChanges();
         }
       );
   }
