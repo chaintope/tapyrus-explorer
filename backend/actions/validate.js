@@ -38,7 +38,7 @@ const isValidCommitment = payload => {
 const decode = jws => {
   try {
     return jsontokens.decodeToken(jws);
-  } catch (error) {
+  } catch {
     return null;
   }
 };
