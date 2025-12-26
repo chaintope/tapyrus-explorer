@@ -4,10 +4,10 @@ import { Platform, MenuController } from '@ionic/angular';
 import { Config, ConfigService } from './config.service';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    styleUrls: ['app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
+  standalone: false
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;

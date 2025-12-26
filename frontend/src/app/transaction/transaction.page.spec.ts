@@ -5,7 +5,10 @@ import { TransactionPage } from './transaction.page';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SharedPipeModule } from '../modules/sharePipe.module';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 
 describe('TransactionPage', () => {
   let component: TransactionPage;
@@ -13,12 +16,13 @@ describe('TransactionPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [TransactionPage],
-    imports: [IonicModule.forRoot(),
-        RouterTestingModule,
-        SharedPipeModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      declarations: [TransactionPage],
+      imports: [IonicModule.forRoot(), RouterTestingModule, SharedPipeModule],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionPage);
     component = fixture.componentInstance;

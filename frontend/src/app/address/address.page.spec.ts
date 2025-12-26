@@ -5,7 +5,10 @@ import { AddressPage } from './address.page';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SharedPipeModule } from '../modules/sharePipe.module';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 
 describe('AddressPage', () => {
   let component: AddressPage;
@@ -13,12 +16,13 @@ describe('AddressPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [AddressPage],
-    imports: [IonicModule.forRoot(),
-        RouterTestingModule,
-        SharedPipeModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      declarations: [AddressPage],
+      imports: [IonicModule.forRoot(), RouterTestingModule, SharedPipeModule],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddressPage);
     component = fixture.componentInstance;

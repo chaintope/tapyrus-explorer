@@ -7,10 +7,10 @@ import { AppConst } from '../app.const';
 import Helper from '../app.helper';
 
 @Component({
-    selector: 'app-address',
-    templateUrl: './address.page.html',
-    styleUrls: ['./address.page.scss'],
-    standalone: false
+  selector: 'app-address',
+  templateUrl: './address.page.html',
+  styleUrls: ['./address.page.scss'],
+  standalone: false
 })
 export class AddressPage implements OnInit {
   block = {};

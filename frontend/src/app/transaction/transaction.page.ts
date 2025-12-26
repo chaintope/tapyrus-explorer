@@ -1,4 +1,9 @@
-import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  OnInit,
+  ChangeDetectorRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   ModalController,
@@ -11,10 +16,10 @@ import { BackendService } from '../backend.service';
 import Helper from '../app.helper';
 
 @Component({
-    selector: 'app-transaction',
-    templateUrl: './transaction.page.html',
-    styleUrls: ['./transaction.page.scss'],
-    standalone: false
+  selector: 'app-transaction',
+  templateUrl: './transaction.page.html',
+  styleUrls: ['./transaction.page.scss'],
+  standalone: false
 })
 export class TransactionPage implements OnInit, AfterViewChecked {
   txid: string;

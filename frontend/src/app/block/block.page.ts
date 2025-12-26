@@ -6,10 +6,10 @@ import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
 
 @Component({
-    selector: 'app-block',
-    templateUrl: './block.page.html',
-    styleUrls: ['./block.page.scss'],
-    standalone: false
+  selector: 'app-block',
+  templateUrl: './block.page.html',
+  styleUrls: ['./block.page.scss'],
+  standalone: false
 })
 export class BlockPage implements OnInit {
   blockHash: string;

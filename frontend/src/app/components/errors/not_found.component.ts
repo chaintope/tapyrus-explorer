@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-not-found',
-    templateUrl: './not_found.component.html',
-    styleUrls: ['./not_found.component.scss'],
-    standalone: false
+  selector: 'app-not-found',
+  templateUrl: './not_found.component.html',
+  styleUrls: ['./not_found.component.scss'],
+  standalone: false
 })
 export class NotFoundComponent implements OnInit {
   statusCode: string;

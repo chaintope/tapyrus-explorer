@@ -4,9 +4,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 @Pipe({
-    name: 'momentFromNow',
-    pure: false,
-    standalone: false
+  name: 'momentFromNow',
+  pure: false,
+  standalone: false
 })
 export class MomentFromNowPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {

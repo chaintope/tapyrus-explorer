@@ -5,10 +5,10 @@ import { BackendService } from '../backend.service';
 import { AppConst } from '../app.const';
 
 @Component({
-    selector: 'app-transactions',
-    templateUrl: './transactions.page.html',
-    styleUrls: ['./transactions.page.scss'],
-    standalone: false
+  selector: 'app-transactions',
+  templateUrl: './transactions.page.html',
+  styleUrls: ['./transactions.page.scss'],
+  standalone: false
 })
 export class TransactionsPage implements OnInit {
   perPage = AppConst.PER_PAGE_COUNT;

@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Big } from 'big.js';
 
 @Pipe({
-    name: 'asTpc',
-    standalone: false
+  name: 'asTpc',
+  standalone: false
 })
 export class AsTpcPipe implements PipeTransform {
   transform(value: any, ...args: any[]): any {

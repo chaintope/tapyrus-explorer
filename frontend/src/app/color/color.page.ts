@@ -4,10 +4,10 @@ import { NavController } from '@ionic/angular';
 import { BackendService } from '../backend.service';
 
 @Component({
-    selector: 'app-color',
-    templateUrl: './color.page.html',
-    styleUrls: ['./color.page.scss'],
-    standalone: false
+  selector: 'app-color',
+  templateUrl: './color.page.html',
+  styleUrls: ['./color.page.scss'],
+  standalone: false
 })
 export class ColorPage implements OnInit {
   colorId: string;

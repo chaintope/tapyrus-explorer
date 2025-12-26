@@ -5,10 +5,10 @@ import { BackendService } from '../backend.service';
 import Helper from '../app.helper';
 
 @Component({
-    selector: 'app-block-rawdata',
-    templateUrl: './block-rawdata.page.html',
-    styleUrls: ['./block-rawdata.page.scss'],
-    standalone: false
+  selector: 'app-block-rawdata',
+  templateUrl: './block-rawdata.page.html',
+  styleUrls: ['./block-rawdata.page.scss'],
+  standalone: false
 })
 export class BlockRawdataPage implements OnInit {
   @Input() blockHash: string;

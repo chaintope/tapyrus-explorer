@@ -6,10 +6,10 @@ import { AppConst } from '../app.const';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-blocks',
-    templateUrl: './blocks.page.html',
-    styleUrls: ['./blocks.page.scss'],
-    standalone: false
+  selector: 'app-blocks',
+  templateUrl: './blocks.page.html',
+  styleUrls: ['./blocks.page.scss'],
+  standalone: false
 })
 export class BlocksPage implements OnInit {
   perPage = AppConst.PER_PAGE_COUNT;

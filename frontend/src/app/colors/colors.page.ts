@@ -4,10 +4,10 @@ import { NavController } from '@ionic/angular';
 import { BackendService } from '../backend.service';
 
 @Component({
-    selector: 'app-color',
-    templateUrl: './colors.page.html',
-    styleUrls: ['./colors.page.scss'],
-    standalone: false
+  selector: 'app-color',
+  templateUrl: './colors.page.html',
+  styleUrls: ['./colors.page.scss'],
+  standalone: false
 })
 export class ColorsPage implements OnInit {
   lastSeenColorId?: string;

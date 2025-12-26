@@ -4,10 +4,10 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 @Component({
-    selector: 'app-validation',
-    templateUrl: './material_tracking_validation.page.html',
-    styleUrls: ['./material_tracking_validation.page.scss'],
-    standalone: false
+  selector: 'app-validation',
+  templateUrl: './material_tracking_validation.page.html',
+  styleUrls: ['./material_tracking_validation.page.scss'],
+  standalone: false
 })
 export class MaterialTrackingValidationPage implements OnInit {
   openedValue: string;

@@ -5,10 +5,10 @@ import { BackendService } from '../backend.service';
 import Helper from '../app.helper';
 
 @Component({
-    selector: 'app-transaction-rawdata',
-    templateUrl: './transaction-rawdata.page.html',
-    styleUrls: ['./transaction-rawdata.page.scss'],
-    standalone: false
+  selector: 'app-transaction-rawdata',
+  templateUrl: './transaction-rawdata.page.html',
+  styleUrls: ['./transaction-rawdata.page.scss'],
+  standalone: false
 })
 export class TransactionRawdataPage implements OnInit {
   @Input() txid: string;
