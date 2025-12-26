@@ -10,9 +10,9 @@ module.exports = [
       globals: {
         ...globals.node,
         Atomics: 'readonly',
-        SharedArrayBuffer: 'readonly',
-      },
+        SharedArrayBuffer: 'readonly'
+      }
     },
-    rules: {},
-  },
+    rules: {}
+  }
 ];
