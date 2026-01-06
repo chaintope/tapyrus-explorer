@@ -1,13 +1,13 @@
 import { ActivatedRoute } from '@angular/router';
 import { BackendService } from '../backend.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-validation',
   templateUrl: './material_tracking_validation.page.html',
-  providers: [BackendService],
-  styleUrls: ['./material_tracking_validation.page.scss']
+  styleUrls: ['./material_tracking_validation.page.scss'],
+  standalone: false
 })
 export class MaterialTrackingValidationPage implements OnInit {
   openedValue: string;
@@ -20,7 +20,8 @@ export class MaterialTrackingValidationPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -42,6 +43,7 @@ export class MaterialTrackingValidationPage implements OnInit {
         this.valid = data.valid;
         this.hasError = !data.valid;
         this.errorMsg = data.error;
+        this.cdr.detectChanges();
       },
       err => {
         this.alg = null;
@@ -49,6 +51,7 @@ export class MaterialTrackingValidationPage implements OnInit {
         this.valid = false;
         this.hasError = true;
         this.errorMsg = err.error;
+        this.cdr.detectChanges();
       }
     );
   }

@@ -20,7 +20,7 @@ app.get('/api/address/:address', async (req, res) => {
 
   try {
     tapyrus.address.fromBase58Check(address);
-  } catch (e) {
+  } catch {
     logger.error(`Invalid address - /address/${address}`);
     res.status(400).send('Bad request');
     return;

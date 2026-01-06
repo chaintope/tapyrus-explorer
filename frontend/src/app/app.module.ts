@@ -3,42 +3,38 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import { SharedPipeModule } from './modules/sharePipe.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FooterComponent } from './components/footer/footer.component';
 import { ConfigService } from './config.service';
-import { BackendService } from './backend.service';
 import { NotFoundComponent } from './components/errors/not_found.component';
 
 @NgModule({
   declarations: [AppComponent, FooterComponent, NotFoundComponent],
+  bootstrap: [AppComponent],
   imports: [
-    BackendService,
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule,
     SharedPipeModule,
     NgxPaginationModule
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    ConfigService,
     {
       provide: APP_INITIALIZER,
       useFactory: (config: ConfigService) => () => config.load(),
       deps: [ConfigService],
       multi: true
-    }
-  ],
-  bootstrap: [AppComponent]
+    },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}
