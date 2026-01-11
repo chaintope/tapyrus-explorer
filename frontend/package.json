@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "author": "chaintope, Inc.",
   "homepage": "https://github.com/chaintope/tapyrus-explorer",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "ng": "ng",
     "build": "ng build",
