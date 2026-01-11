@@ -9,9 +9,9 @@ class Commitment {
 
   point() {
     const dst = 'Tapyrus-Tracking-material-with-secp256k1_XMD:SHA-256_SSWU_RO_';
-    let c = secp256k1.secp256k1.ProjectivePoint.fromHex(this.R);
+    let c = secp256k1.secp256k1.Point.fromHex(this.R);
     this.materials.forEach(material => {
-      const p = secp256k1.hashToCurve(
+      const p = secp256k1.secp256k1_hasher.hashToCurve(
         utils.utf8ToBytes(`${material.name}|${material.unit}`),
         { DST: dst }
       );

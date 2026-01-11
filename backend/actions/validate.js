@@ -88,9 +88,9 @@ const checkBalance = async tx => {
   const inputCommitment = inputs
     .filter(e => e != null)
     .reduce((commitment, payloads) => {
-      const point = secp256k1.secp256k1.ProjectivePoint.fromHex(payloads[1]);
+      const point = secp256k1.secp256k1.Point.fromHex(payloads[1]);
       return commitment.add(point);
-    }, secp256k1.secp256k1.ProjectivePoint.ZERO);
+    }, secp256k1.secp256k1.Point.ZERO);
   const outputs = trackingOutputs(tx);
   const outputCommitment = outputs
     .filter(output => {
@@ -98,9 +98,9 @@ const checkBalance = async tx => {
       return output[3] != '01';
     })
     .reduce((commitment, payloads) => {
-      const point = secp256k1.secp256k1.ProjectivePoint.fromHex(payloads[0]);
+      const point = secp256k1.secp256k1.Point.fromHex(payloads[0]);
       return commitment.add(point);
-    }, secp256k1.secp256k1.ProjectivePoint.ZERO);
+    }, secp256k1.secp256k1.Point.ZERO);
 
   return inputCommitment.toHex(true) == outputCommitment.toHex(true);
 };
