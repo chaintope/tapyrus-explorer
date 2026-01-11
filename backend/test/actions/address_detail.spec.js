@@ -13,11 +13,12 @@ describe('GET /api/address', () => {
       .withArgs('12FmjcAHuen1gptnZoSZ7MLWmNhZny6GmP')
       .resolves({
         chain_stats: {
-          '000000000000000000000000000000000000000000000000000000000000000000': {
-            tx_count: 10,
-            funded_txo_sum: 109988776,
-            spent_txo_sum: 100000000
-          }
+          '000000000000000000000000000000000000000000000000000000000000000000':
+            {
+              tx_count: 10,
+              funded_txo_sum: 109988776,
+              spent_txo_sum: 100000000
+            }
         }
       });
   });

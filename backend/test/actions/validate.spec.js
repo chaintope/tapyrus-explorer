@@ -14,10 +14,8 @@ describe('GET /api/validate/:opened_value', () => {
         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
       )
       .resolves({
-        txid:
-          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        hash:
-          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        txid: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        hash: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         size: 90,
         weight: 360,
         locktime: 0,
@@ -124,13 +122,11 @@ describe('/api/check_material_tracking_balance/:txid', () => {
         '8b4dea4de1b34f861bbbd47044eda3fac9349c7cab7e23186362e75474d2a788'
       )
       .resolves({
-        txid:
-          '8b4dea4de1b34f861bbbd47044eda3fac9349c7cab7e23186362e75474d2a788',
+        txid: '8b4dea4de1b34f861bbbd47044eda3fac9349c7cab7e23186362e75474d2a788',
         locktime: 0,
         vin: [
           {
-            txid:
-              'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082',
+            txid: 'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082',
             vout: 0,
             is_coinbase: false,
             sequence: 4294967295,
@@ -149,8 +145,7 @@ describe('/api/check_material_tracking_balance/:txid', () => {
               'OP_PUSHBYTES_65 a4e28f8dcfb2731675a58dc4343254b34e6acd7bde7f4c76df22b1eb7ef5843fcb6381c3a88c9caa39d87dd525ba1a1060a8e935b063e7d3d6c53951ff1bd5be01 OP_PUSHBYTES_33 023725e100cb1078ffdeb804399b998b0230aa3c252c744a4400f3e09c0b42ccfa'
           },
           {
-            txid:
-              'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879',
+            txid: 'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879',
             vout: 1,
             is_coinbase: false,
             sequence: 4294967295,
@@ -169,8 +164,7 @@ describe('/api/check_material_tracking_balance/:txid', () => {
               'OP_PUSHBYTES_65 0c5c2309011b09237819e7861b89e8089c5fdfb8f45f2b1ae0e1490e5a6449140074f2a7a52503073dfb058db0ec0d080b76bb8ba6a103808672dff4982560b001 OP_PUSHBYTES_33 023725e100cb1078ffdeb804399b998b0230aa3c252c744a4400f3e09c0b42ccfa'
           },
           {
-            txid:
-              'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
+            txid: 'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
             vout: 6,
             is_coinbase: false,
             sequence: 4294967295,
@@ -251,13 +245,11 @@ describe('/api/check_material_tracking_balance/:txid', () => {
         'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082'
       )
       .resolves({
-        txid:
-          'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082',
+        txid: 'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082',
         locktime: 0,
         vin: [
           {
-            txid:
-              'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
+            txid: 'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
             vout: 11,
             is_coinbase: false,
             sequence: 4294967295,
@@ -306,13 +298,11 @@ describe('/api/check_material_tracking_balance/:txid', () => {
         'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879'
       )
       .resolves({
-        txid:
-          'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879',
+        txid: 'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879',
         locktime: 0,
         vin: [
           {
-            txid:
-              'e9e4e4f46f3324cf316aa2f40df540e77cc151d3bfa73bc39dbec78c32cc7704',
+            txid: 'e9e4e4f46f3324cf316aa2f40df540e77cc151d3bfa73bc39dbec78c32cc7704',
             vout: 0,
             is_coinbase: false,
             sequence: 4294967295,
@@ -331,8 +321,7 @@ describe('/api/check_material_tracking_balance/:txid', () => {
               'OP_PUSHBYTES_65 a4e28f8dcfb2731675a58dc4343254b34e6acd7bde7f4c76df22b1eb7ef5843fcb6381c3a88c9caa39d87dd525ba1a1060a8e935b063e7d3d6c53951ff1bd5be01 OP_PUSHBYTES_33 023725e100cb1078ffdeb804399b998b0230aa3c252c744a4400f3e09c0b42ccfa'
           },
           {
-            txid:
-              'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
+            txid: 'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
             vout: 1,
             is_coinbase: false,
             sequence: 4294967295,
@@ -389,13 +378,11 @@ describe('/api/check_material_tracking_balance/:txid', () => {
         'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0'
       )
       .resolves({
-        txid:
-          'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
+        txid: 'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
         locktime: 0,
         vin: [
           {
-            txid:
-              '17a38ea0dbc4f243ba5ed19b7df4affc4964abcbc7bb742bc623fe4b386e0caf',
+            txid: '17a38ea0dbc4f243ba5ed19b7df4affc4964abcbc7bb742bc623fe4b386e0caf',
             vout: 0,
             is_coinbase: false,
             sequence: 4294967295,
@@ -492,13 +479,11 @@ describe('/api/check_material_tracking_balance/:txid', () => {
         'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' //invalid tracking transaction
       )
       .resolves({
-        txid:
-          'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        txid: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
         locktime: 0,
         vin: [
           {
-            txid:
-              'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082',
+            txid: 'a2f6c676c18409abfe7b90ec29e35926dad1f43b8be90daf9daeb46bd85c6082',
             vout: 0,
             is_coinbase: false,
             sequence: 4294967295,
@@ -517,8 +502,7 @@ describe('/api/check_material_tracking_balance/:txid', () => {
               'OP_PUSHBYTES_65 a4e28f8dcfb2731675a58dc4343254b34e6acd7bde7f4c76df22b1eb7ef5843fcb6381c3a88c9caa39d87dd525ba1a1060a8e935b063e7d3d6c53951ff1bd5be01 OP_PUSHBYTES_33 023725e100cb1078ffdeb804399b998b0230aa3c252c744a4400f3e09c0b42ccfa'
           },
           {
-            txid:
-              'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879',
+            txid: 'dda80933cb6850b8a52c40fef59c5fe44ab7efa6fc4c59128fee521dccc73879',
             vout: 1,
             is_coinbase: false,
             sequence: 4294967295,
@@ -537,8 +521,7 @@ describe('/api/check_material_tracking_balance/:txid', () => {
               'OP_PUSHBYTES_65 0c5c2309011b09237819e7861b89e8089c5fdfb8f45f2b1ae0e1490e5a6449140074f2a7a52503073dfb058db0ec0d080b76bb8ba6a103808672dff4982560b001 OP_PUSHBYTES_33 023725e100cb1078ffdeb804399b998b0230aa3c252c744a4400f3e09c0b42ccfa'
           },
           {
-            txid:
-              'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
+            txid: 'aba8c751d886cfdcd28b3f1912eb7cc7b1b8f225d0263cc6bf9a05eb98f373a0',
             vout: 6,
             is_coinbase: false,
             sequence: 4294967295,
