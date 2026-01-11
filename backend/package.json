@@ -21,7 +21,7 @@
     "jsontokens": "4.0.1",
     "jssha": "^3.3.1",
     "log4js": "^6.9.1",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "sinon": "^21.0.1",
     "tapyrusjs-lib": "^0.5.1"
   },
