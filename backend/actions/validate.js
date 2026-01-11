@@ -9,7 +9,7 @@ const {
   getMaterialTrackingPayload,
   getCommitment
 } = require('../libs/util');
-const secp256k1 = require('@noble/curves/secp256k1');
+const secp256k1 = require('@noble/curves/secp256k1.js');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
