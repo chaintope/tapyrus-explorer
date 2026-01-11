@@ -14,7 +14,7 @@
   "author": "chaintope, Inc.",
   "license": "ISC",
   "dependencies": {
-    "@noble/curves": "1.1.0",
+    "@noble/curves": "2.0.1",
     "compression": "^1.8.1",
     "express": "^5.2.1",
     "jayson": "^3.7.0",
