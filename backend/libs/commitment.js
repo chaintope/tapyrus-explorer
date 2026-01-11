@@ -1,5 +1,5 @@
 const utils = require('@noble/hashes/utils');
-const secp256k1 = require('@noble/curves/secp256k1');
+const secp256k1 = require('@noble/curves/secp256k1.js');
 
 class Commitment {
   constructor(materials, R) {
