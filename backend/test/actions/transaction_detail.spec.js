@@ -13,10 +13,8 @@ describe('GET /api/tx/:txid', () => {
         'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8'
       )
       .resolves({
-        txid:
-          'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
-        hash:
-          'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531',
+        txid: 'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
+        hash: 'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531',
         size: 90,
         weight: 360,
         locktime: 0,
@@ -172,10 +170,8 @@ describe('GET /api/tx/:txid/get', () => {
         'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8'
       )
       .resolves({
-        txid:
-          'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
-        hash:
-          'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531',
+        txid: 'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8',
+        hash: 'fa305c408bbedc3043658845b1605b0f02e89dc471b9c86d1b74a7b8b1b9d531',
         size: 90,
         weight: 360,
         locktime: 0,

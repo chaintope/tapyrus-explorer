@@ -14,8 +14,7 @@ describe('GET /api/transactions', () => {
         count: 1,
         txs: [
           {
-            txid:
-              '67de335bfd0d098ff415b26e30716b54cd54a6e310897980b25c37610344d46f',
+            txid: '67de335bfd0d098ff415b26e30716b54cd54a6e310897980b25c37610344d46f',
             fee: 0.1,
             vsize: 225,
             time: 1607586380,
