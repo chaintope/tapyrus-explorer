@@ -16,7 +16,7 @@
   "dependencies": {
     "@noble/curves": "1.1.0",
     "compression": "^1.8.1",
-    "express": "^4.22.1",
+    "express": "^5.2.1",
     "jayson": "^3.7.0",
     "jsontokens": "4.0.1",
     "jssha": "^2.3.1",
