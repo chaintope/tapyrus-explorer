@@ -10,6 +10,11 @@ updates:
           - "@angular/*"
           - "@angular-devkit/*"
           - "@angular-eslint/*"
+      eslint:
+        patterns:
+          - "eslint"
+          - "@typescript-eslint/*"
+          - "eslint-*"
 
   - package-ecosystem: "npm"
     directory: "/backend"
