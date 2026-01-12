@@ -57,10 +57,11 @@ export class MaterialTrackingValidationPage implements OnInit {
   }
   onValidate() {
     this.resetError();
-    if (this.openedValue == null || this.openedValue.length === 0) {
-    } else {
-      this.validate();
+    if (this.openedValue == null || this.openedValue.trim().length === 0) {
+      return;
     }
+    this.openedValue = this.openedValue.trim();
+    this.validate();
   }
   resetError() {
     this.valid = null;
