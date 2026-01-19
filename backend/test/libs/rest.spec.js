@@ -2,9 +2,9 @@ const assert = require('assert');
 
 describe('rest module', () => {
   describe('require', () => {
-    it('should be able to require rest module (checks node-fetch CommonJS compatibility)', () => {
+    it('should be able to require rest module', () => {
       // This test verifies that the rest module can be loaded.
-      // It will fail if node-fetch is ESM-only (v3.x+) because require() won't work.
+      // Uses Node.js built-in global fetch (no external dependencies).
       const rest = require('../../libs/rest');
 
       assert.ok(rest.address, 'address should be defined');
