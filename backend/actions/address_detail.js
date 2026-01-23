@@ -61,3 +61,25 @@ app.get('/api/address/:address', async (req, res) => {
     );
   }
 });
+
+app.get('/api/address/:address/utxo', async (req, res) => {
+  const address = req.params.address;
+
+  try {
+    tapyrus.address.fromBase58Check(address);
+  } catch {
+    logger.error(`Invalid address - /address/${address}/utxo`);
+    res.status(400).send('Bad request');
+    return;
+  }
+
+  try {
+    const utxos = await rest.address.utxo(address);
+    res.json(utxos);
+  } catch (error) {
+    logger.error(
+      `Error retrieving UTXOs for address - ${address}. Error Message - ${error.message}`
+    );
+    res.status(500).send('Internal server error');
+  }
+});

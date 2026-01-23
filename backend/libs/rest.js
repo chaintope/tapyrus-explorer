@@ -24,6 +24,15 @@ const address = {
     } else {
       throw new Error(`failed to fetch API ${url}`);
     }
+  },
+  utxo: async address => {
+    const url = `${baseUrl}/address/${address}/utxo`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(`failed to fetch API ${url}`);
+    }
   }
 };
 
