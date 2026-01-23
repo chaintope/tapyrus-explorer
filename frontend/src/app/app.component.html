@@ -58,38 +58,39 @@
           </ion-menu-toggle>
         </ion-list>
         <div class="display-none-min-lg ion-padding absolute-bottom">
-          <img
-            src="../assets/images/menu-tapyrus-logo.png"
-            id="menu-tapyrus-logo"
-          />
-          <p class="powered-text">Tapyrus powered by <u>Chaintope</u></p>
+          <div class="menu-logo-powered-container">
+            <img
+              src="../assets/images/menu-tapyrus-logo.png"
+              class="menu-tapyrus-logo"
+            />
+            <div class="menu-powered-text-container">
+              <p class="powered-text">Tapyrus powered by <u>Chaintope</u></p>
+              <p class="copyright-text">
+                Copyright © 2019-2026 Chaintope Inc. All rights reserved.
+              </p>
+            </div>
+          </div>
           <div class="border-white"></div>
           <div class="circle-container">
             <div
-              class="circle ion-margin-end"
+              class="circle-small ion-margin-end"
               (click)="goTo('https://github.com/chaintope')"
             >
-              <img src="../assets/images/footer-link-github.png" class="pt-5" />
+              <img src="../assets/images/footer-link-github.png" />
             </div>
             <div
-              class="circle ion-margin-end"
+              class="circle-small ion-margin-end"
               (click)="goTo('mailto:info@chaintope.com')"
             >
-              <img src="../assets/images/footer-link-mail.png" class="pt-6" />
+              <img src="../assets/images/footer-link-mail.png" />
             </div>
             <div
-              class="circle ion-margin-end"
+              class="circle-small ion-margin-end"
               (click)="goTo('https://www.chaintope.com/')"
             >
-              <img
-                src="../assets/images/footer-link-chaintope.png"
-                class="pt-8"
-              />
+              <img src="../assets/images/footer-link-chaintope.png" />
             </div>
           </div>
-          <p class="copyright-text">
-            Copyright © 2019-2021 Chaintope Inc. All rights reserved.
-          </p>
         </div>
       </ion-content>
     </ion-menu>
