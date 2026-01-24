@@ -90,3 +90,27 @@ app.get('/api/tx/:txid/get', async (req, res) => {
     res.status(503).send('Service Temporary Unavailable');
   }
 });
+
+app.post('/api/tx', async (req, res) => {
+  const rawTxHex = req.body;
+
+  if (
+    !rawTxHex ||
+    typeof rawTxHex !== 'string' ||
+    !/^[0-9a-fA-F]+$/.test(rawTxHex)
+  ) {
+    logger.error('Invalid raw transaction hex');
+    res.status(400).send('Bad request: invalid hex');
+    return;
+  }
+
+  try {
+    const txid = await rest.transaction.broadcast(rawTxHex);
+    res.send(txid);
+  } catch (error) {
+    logger.error(
+      `Error broadcasting transaction. Error Message - ${error.message}`
+    );
+    res.status(400).send(error.message);
+  }
+});
