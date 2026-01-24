@@ -46,7 +46,20 @@ const address = {
 
 const transaction = {
   get: async txid => fetchJsonOr404(`${baseUrl}/tx/${txid}`),
-  raw: async txid => fetchTextOr404(`${baseUrl}/tx/${txid}/hex`)
+  raw: async txid => fetchTextOr404(`${baseUrl}/tx/${txid}/hex`),
+  broadcast: async rawTxHex => {
+    const url = `${baseUrl}/tx`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: rawTxHex
+    });
+    if (response.ok) {
+      return response.text();
+    }
+    const errorText = await response.text();
+    throw new Error(errorText || `failed to broadcast transaction`);
+  }
 };
 
 const block = {
