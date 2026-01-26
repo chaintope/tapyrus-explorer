@@ -52,7 +52,7 @@
     "typescript-eslint": "^8.32.0",
     "eslint": "^9.27.0",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsdoc": "^62.1.0",
+    "eslint-plugin-jsdoc": "^62.4.1",
     "globals": "^16.1.0",
     "jasmine-core": "~5.13.0",
     "karma": "~6.4.2",
