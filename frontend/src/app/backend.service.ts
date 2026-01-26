@@ -7,7 +7,10 @@ import { Config, ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class BackendService {
-  constructor(private http: HttpClient, private configService: ConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {}
 
   getBlocks(page: number, perPage: number): Observable<any> {
     return this.request(

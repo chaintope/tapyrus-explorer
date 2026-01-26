@@ -57,16 +57,16 @@ const routes: Routes = [
   {
     path: 'material_tracking_validation',
     loadChildren: () =>
-      import(
-        './material_tracking_validation/material_tracking_validation.module'
-      ).then(m => m.MaterialTrackingValidationPageModule)
+      import('./material_tracking_validation/material_tracking_validation.module').then(
+        m => m.MaterialTrackingValidationPageModule
+      )
   },
   {
     path: 'material_tracking_validation/:openedValue',
     loadChildren: () =>
-      import(
-        './material_tracking_validation/material_tracking_validation.module'
-      ).then(m => m.MaterialTrackingValidationPageModule)
+      import('./material_tracking_validation/material_tracking_validation.module').then(
+        m => m.MaterialTrackingValidationPageModule
+      )
   },
   {
     path: 'transaction-rawdata',
