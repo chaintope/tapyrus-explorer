@@ -60,7 +60,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.3",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^3.8.1",
     "puppeteer": "^24.7.0",
     "ts-node": "~7.0.0",
     "typescript": "~5.9.3"
