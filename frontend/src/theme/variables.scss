@@ -226,6 +226,7 @@
 
 .bg-primary-gradient,
 ion-header[bg-primary-gradient] {
-  background: linear-gradient(180deg, #5398da 0%, #5398da 100%),
+  background:
+    linear-gradient(180deg, #5398da 0%, #5398da 100%),
     linear-gradient(180deg, #135ea8 0%, #135ea8 100%), #135ea8 !important;
 }
