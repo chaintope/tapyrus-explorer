@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   ci:
-    container: node:latest
     runs-on: ubuntu-latest
     strategy:
       matrix:
