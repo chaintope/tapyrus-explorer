@@ -12,6 +12,8 @@ import { BackendService } from '../backend.service';
 export class ColorsPage implements OnInit {
   lastSeenColorId?: string;
   colors = [];
+  hasMore = true;
+  isLoading = false;
   hasError: boolean;
   statusCode: string;
   statusMsg: string;
@@ -32,11 +34,16 @@ export class ColorsPage implements OnInit {
 
   getColorsInfo() {
     this.resetError();
+    this.isLoading = true;
     this.backendService.getColors(this.lastSeenColorId).subscribe(
       data => {
-        this.colors = this.colors.concat(data['colors']);
-        this.lastSeenColorId =
-          data['colors'][data['colors'].length - 1]['color_id'];
+        const newColors = data['colors'] || [];
+        this.colors = this.colors.concat(newColors);
+        this.lastSeenColorId = newColors.length > 0
+          ? newColors[newColors.length - 1]['color_id']
+          : undefined;
+        this.hasMore = newColors.length > 0 && !!this.lastSeenColorId;
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       err => {
@@ -45,6 +52,7 @@ export class ColorsPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.isLoading = false;
         this.cdr.detectChanges();
       }
     );
