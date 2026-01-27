@@ -146,9 +146,9 @@ export class BlockPage implements OnInit {
 
   calculateTotal() {
     this.blockTxns.forEach(tx => {
-      tx.totalVout = tx.vout.reduce((sum, output) => {
-        return sum + output.value;
-      }, 0);
+      tx.totalVout = tx.vout
+        .filter(output => !output.colorId)
+        .reduce((sum, output) => sum + output.value, 0);
     });
   }
 
