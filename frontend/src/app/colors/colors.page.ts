@@ -39,9 +39,10 @@ export class ColorsPage implements OnInit {
       data => {
         const newColors = data['colors'] || [];
         this.colors = this.colors.concat(newColors);
-        this.lastSeenColorId = newColors.length > 0
-          ? newColors[newColors.length - 1]['color_id']
-          : undefined;
+        this.lastSeenColorId =
+          newColors.length > 0
+            ? newColors[newColors.length - 1]['color_id']
+            : undefined;
         this.hasMore = newColors.length > 0 && !!this.lastSeenColorId;
         this.isLoading = false;
         this.cdr.detectChanges();
