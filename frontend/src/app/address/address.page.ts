@@ -74,7 +74,9 @@ export class AddressPage implements OnInit {
       .subscribe(
         data => {
           this.colors = data['balances'];
-          const newTxs = data['tx']['txs'].filter(tx => !this.txids.has(tx.txid));
+          const newTxs = data['tx']['txs'].filter(
+            tx => !this.txids.has(tx.txid)
+          );
           newTxs.forEach(tx => {
             this.txids.add(tx.txid);
             this.transactions.push(tx);
