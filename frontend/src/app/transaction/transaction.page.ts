@@ -122,6 +122,10 @@ export class TransactionPage implements OnInit, AfterViewChecked {
     this.navCtrl.navigateForward(`/color/${colorId}`);
   }
 
+  goToBlock(hash: string) {
+    this.navCtrl.navigateForward(`/block/${hash}`);
+  }
+
   checkBalance() {
     this.hasMaterialTrackingCheckResult = false;
     this.backendService.checkMaterialTrackingTransaction(this.txid).subscribe(

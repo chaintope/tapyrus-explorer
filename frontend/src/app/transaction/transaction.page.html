@@ -49,6 +49,15 @@
           <ion-col size="2" class="font-w500">Fee:</ion-col>
           <ion-col size="8">{{ transaction.fee | asTpc }} TPC</ion-col>
         </ion-row>
+        <ion-row class="table-content" *ngIf="transaction.status?.block_hash">
+          <ion-col size="2" class="font-w500">Block Hash:</ion-col>
+          <ion-col
+            size="8"
+            class="link-color cursor-pointer"
+            (click)="goToBlock(transaction.status.block_hash)"
+            >{{ transaction.status.block_hash }}</ion-col
+          >
+        </ion-row>
       </ion-grid>
     </div>
     <div class="ion-margin-bottom ion-margin-top">
