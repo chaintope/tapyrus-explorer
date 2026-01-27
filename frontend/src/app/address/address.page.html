@@ -206,7 +206,7 @@
       </ion-row>
     </div>
   </div>
-  <ion-grid *ngIf="!hasError">
+  <ion-grid *ngIf="!hasError && hasMore">
     <ion-row>
       <ion-col class="ion-text-center">
         <ion-button
@@ -214,8 +214,11 @@
           id="next"
           class="cursor-pointer"
           (click)="onNextPage()"
-          >Load More</ion-button
+          [disabled]="isLoading"
         >
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">Load More</span>
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

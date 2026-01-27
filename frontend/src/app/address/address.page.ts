@@ -25,6 +25,8 @@ export class AddressPage implements OnInit {
   pages = 1; // number of pages
   txCount = 0;
   lastSeenTxid?: string;
+  hasMore = true;
+  isLoading = false;
   hasError: boolean;
   statusCode: string;
   statusMsg: string;
@@ -66,18 +68,20 @@ export class AddressPage implements OnInit {
 
   getAddressInfo() {
     this.resetError();
+    this.isLoading = true;
     this.backendService
       .getAddressInfo(this.address, this.lastSeenTxid)
       .subscribe(
         data => {
           this.colors = data['balances'];
-          data['tx']['txs']
-            .filter(tx => !this.txids.has(tx.txid))
-            .forEach(tx => {
-              this.txids.add(tx.txid);
-              this.transactions.push(tx);
-            });
+          const newTxs = data['tx']['txs'].filter(tx => !this.txids.has(tx.txid));
+          newTxs.forEach(tx => {
+            this.txids.add(tx.txid);
+            this.transactions.push(tx);
+          });
           this.lastSeenTxid = data['tx']['last_seen_txid'];
+          this.hasMore = newTxs.length > 0 && !!this.lastSeenTxid;
+          this.isLoading = false;
           this.cdr.detectChanges();
         },
         err => {
@@ -86,6 +90,7 @@ export class AddressPage implements OnInit {
           this.statusCode = err.status;
           this.statusMsg = err.statusText;
           this.detailMsg = err.error;
+          this.isLoading = false;
           this.cdr.detectChanges();
         }
       );

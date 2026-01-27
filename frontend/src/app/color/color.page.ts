@@ -16,6 +16,8 @@ export class ColorPage implements OnInit {
   txids = new Set();
   txs: any = [];
   lastSeenTxid?: string;
+  hasMore = true;
+  isLoading = false;
   hasError: boolean;
   statusCode: string;
   statusMsg: string;
@@ -45,16 +47,18 @@ export class ColorPage implements OnInit {
 
   getColorInfo() {
     this.resetError();
+    this.isLoading = true;
     this.backendService.getColor(this.colorId, this.lastSeenTxid).subscribe(
       data => {
         this.stats = data['stats']['chain_stats'] || {};
-        data['tx']['txs']
-          .filter(tx => !this.txids.has(tx.txid))
-          .forEach(tx => {
-            this.txids.add(tx.txid);
-            this.txs.push(tx);
-          });
+        const newTxs = data['tx']['txs'].filter(tx => !this.txids.has(tx.txid));
+        newTxs.forEach(tx => {
+          this.txids.add(tx.txid);
+          this.txs.push(tx);
+        });
         this.lastSeenTxid = data['tx']['last_seen_txid'];
+        this.hasMore = newTxs.length > 0 && !!this.lastSeenTxid;
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       err => {
@@ -63,6 +67,7 @@ export class ColorPage implements OnInit {
         this.statusCode = err.status;
         this.statusMsg = err.statusText;
         this.detailMsg = err.error;
+        this.isLoading = false;
         this.cdr.detectChanges();
       }
     );
