@@ -101,10 +101,9 @@ export class TransactionPage implements OnInit, AfterViewChecked {
   }
 
   calculateTotal() {
-    this.transaction.totalVout = this.transaction.vout.reduce(
-      (sum, output) => sum + output.value,
-      0
-    );
+    this.transaction.totalVout = this.transaction.vout
+      .filter(output => !output.colorId)
+      .reduce((sum, output) => sum + output.value, 0);
   }
 
   goToTransactions() {
