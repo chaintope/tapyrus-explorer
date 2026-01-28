@@ -122,6 +122,13 @@ export class TransactionPage implements OnInit, AfterViewChecked {
     this.navCtrl.navigateForward(`/color/${colorId}`);
   }
 
+  isIssue(colorId: string): boolean {
+    // Issue if no input has the same colorId
+    return !this.transaction.vin?.some(
+      input => input.prevout?.colorId === colorId
+    );
+  }
+
   goToBlock(hash: string) {
     this.navCtrl.navigateForward(`/block/${hash}`);
   }
