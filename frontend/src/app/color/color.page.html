@@ -168,6 +168,9 @@
             </ion-row>
             <ion-row *ngIf="!!output.colorId && output.colorId === colorId">
               <ion-col size="8" class="font-14 ellipsis">
+                <ion-badge [color]="isIssue(tx) ? 'success' : 'tertiary'"
+                  >{{ isIssue(tx) ? "ISSUE" : "TRANSFER" }}</ion-badge
+                >
                 Color ID: {{ output.colorId | formatColorId }}
               </ion-col>
             </ion-row>

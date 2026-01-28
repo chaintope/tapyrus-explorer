@@ -77,6 +77,11 @@ export class ColorPage implements OnInit {
     this.navCtrl.navigateForward(`/color/${colorId}`);
   }
 
+  isIssue(tx): boolean {
+    // Issue if no input has the same colorId
+    return !tx.vin.some(input => input.prevout?.colorId === this.colorId);
+  }
+
   goToAddress(add = '') {
     this.navCtrl.navigateForward(`/addresses/${add}`);
   }
