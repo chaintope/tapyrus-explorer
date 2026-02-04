@@ -41,7 +41,7 @@ services:
     ports:
       - '2377:2377'
   esplora:
-    image: tapyrus/esplora-tapyrus:v0.5.3
+    image: tapyrus/esplora-tapyrus:v0.5.4
     user: root
     volumes:
       - electrs:/var/lib/electrs
