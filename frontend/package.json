@@ -48,7 +48,7 @@
     "@ionic/angular-toolkit": "^12.1.1",
     "@types/big.js": "^6.0.2",
     "@types/jasmine": "~6.0.0",
-    "@types/node": "~25.0.10",
+    "@types/node": "~25.2.1",
     "typescript-eslint": "^8.54.0",
     "eslint": "^9.27.0",
     "eslint-plugin-import": "^2.31.0",
