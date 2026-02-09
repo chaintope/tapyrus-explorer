@@ -98,6 +98,8 @@ ion-content {
 
 .text-wrap {
   word-break: break-all;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .display-none-min-lg {
