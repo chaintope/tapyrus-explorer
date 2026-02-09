@@ -13,6 +13,7 @@ export class ColorPage implements OnInit {
   colorId: string;
   tokenType: string;
   stats: any = {};
+  metadata: any = null;
   txids = new Set();
   txs: any = [];
   lastSeenTxid?: string;
@@ -43,6 +44,20 @@ export class ColorPage implements OnInit {
     }
 
     this.getColorInfo();
+    this.getMetadata();
+  }
+
+  getMetadata() {
+    this.backendService.getColorMetadata(this.colorId).subscribe(
+      data => {
+        this.metadata = data;
+        this.cdr.detectChanges();
+      },
+      () => {
+        // Metadata not found, ignore error
+        this.metadata = null;
+      }
+    );
   }
 
   getColorInfo() {

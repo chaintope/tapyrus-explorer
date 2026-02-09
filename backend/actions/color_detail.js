@@ -47,3 +47,27 @@ app.get('/api/color/:colorId', async (req, res) => {
     );
   }
 });
+
+app.get('/api/color/:colorId/metadata', async (req, res) => {
+  const colorId = req.params.colorId;
+
+  if (!isColorId(colorId)) {
+    logger.error(`Invalid colorId(${colorId}) - /color/${colorId}/metadata`);
+    res.status(400).send('Bad request');
+    return;
+  }
+
+  try {
+    const metadata = await rest.tokenRegistry.getMetadata(colorId);
+    if (metadata) {
+      res.json(metadata);
+    } else {
+      res.status(404).send('Metadata not found');
+    }
+  } catch (error) {
+    logger.error(
+      `Error retrieving token metadata - ${colorId}. Error Message - ${error.message}`
+    );
+    res.status(500).send('Internal server error');
+  }
+});

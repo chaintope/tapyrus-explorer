@@ -113,10 +113,27 @@ const mempool = {
   }
 };
 
+const tokenRegistry = {
+  getMetadata: async colorId => {
+    const registryBaseUrl = config.tokenRegistry.baseUrl;
+    const networkId = config.networkId;
+    const url = `${registryBaseUrl}/${networkId}/${colorId}.json`;
+    const response = await fetch(url);
+    if (response.ok) {
+      return response.json();
+    }
+    if (response.status === 404) {
+      return null;
+    }
+    throw new Error(`failed to fetch token metadata ${url}`);
+  }
+};
+
 module.exports = {
   address,
   transaction,
   block,
   color,
-  mempool
+  mempool,
+  tokenRegistry
 };

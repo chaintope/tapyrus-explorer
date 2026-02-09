@@ -30,3 +30,50 @@ ion-content {
   white-space: nowrap;
   overflow: hidden;
 }
+
+.token-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.token-icon-large {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+}
+
+.metadata-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.metadata-icon {
+  flex-shrink: 0;
+}
+
+.metadata-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-full-height {
+  height: 100%;
+}
+
+.sub-panel {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 12px;
+  height: 100%;
+}
+
+.sub-panel-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  color: #333;
+}
