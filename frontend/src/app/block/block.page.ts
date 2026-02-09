@@ -160,6 +160,10 @@ export class BlockPage implements OnInit {
     this.navCtrl.navigateForward(`/color/${colorId}`);
   }
 
+  isIssue(tx, colorId: string): boolean {
+    return !tx.vin?.some(input => input.prevout?.colorId === colorId);
+  }
+
   goToTransaction(txid = '') {
     this.navCtrl.navigateForward(`/tx/${txid}`);
   }
