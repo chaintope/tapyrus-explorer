@@ -250,6 +250,11 @@
                     class="ion-margin-bottom link-color cursor-pointer font-14 ellipsis"
                     (click)="goToCoin(vout.colorId)"
                   >
+                    <ion-badge
+                      [color]="isIssue(tx, vout.colorId) ? 'success' : 'tertiary'"
+                      >{{ isIssue(tx, vout.colorId) ? "ISSUE" : "TRANSFER"
+                      }}</ion-badge
+                    >
                     Color ID: {{ vout.colorId | formatColorId }}
                   </ion-col>
                 </ion-row>
