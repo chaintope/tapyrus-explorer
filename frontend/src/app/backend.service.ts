@@ -104,6 +104,16 @@ export class BackendService {
     );
   }
 
+  getColorMetadata(colorId: string): Observable<any> {
+    return this.getConfig().pipe(
+      mergeMap((config: Config) => {
+        return this.http.get(
+          `${config.backendUrl}/api/color/${colorId}/metadata`
+        );
+      })
+    );
+  }
+
   validateOpenedValue(opened_value: string): Observable<any> {
     return this.request(`/api/validate/${opened_value}`);
   }

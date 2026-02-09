@@ -7,22 +7,86 @@
         </h2>
       </div>
       <ion-item-divider></ion-item-divider>
-      <ion-grid class="text-color">
+      <ion-grid>
         <ion-row>
-          <ion-col size="2" class="font-w500">Type:</ion-col>
-          <ion-col size="10">{{ tokenType }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="2" class="font-w500">Total Issued:</ion-col>
-          <ion-col size="10">{{ stats.issued_sum }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="2" class="font-w500">Total Transferred:</ion-col>
-          <ion-col size="10">{{ stats.transferred_sum }}</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="2" class="font-w500">Total Burned:</ion-col>
-          <ion-col size="10">{{ stats.burned_sum }}</ion-col>
+          <ion-col size-xs="12" size-md="3">
+            <div class="sub-panel">
+              <h3 class="sub-panel-title">Basic Info</h3>
+              <ion-grid class="text-color">
+                <ion-row>
+                  <ion-col size="6" class="font-w500">Type:</ion-col>
+                  <ion-col size="6" class="ion-text-right"
+                    >{{ tokenType }}</ion-col
+                  >
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6" class="font-w500">Total Issued:</ion-col>
+                  <ion-col size="6" class="ion-text-right"
+                    >{{ stats.issued_sum }}</ion-col
+                  >
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6" class="font-w500"
+                    >Total Transferred:</ion-col
+                  >
+                  <ion-col size="6" class="ion-text-right"
+                    >{{ stats.transferred_sum }}</ion-col
+                  >
+                </ion-row>
+                <ion-row>
+                  <ion-col size="6" class="font-w500">Total Burned:</ion-col>
+                  <ion-col size="6" class="ion-text-right"
+                    >{{ stats.burned_sum }}</ion-col
+                  >
+                </ion-row>
+              </ion-grid>
+            </div>
+          </ion-col>
+          <ion-col size-xs="12" size-md="9" *ngIf="metadata">
+            <div class="sub-panel">
+              <h3 class="sub-panel-title">Token Metadata</h3>
+              <div class="metadata-content">
+                <div *ngIf="metadata.icon" class="metadata-icon">
+                  <img
+                    [src]="metadata.icon"
+                    alt="Token Icon"
+                    class="token-icon-large"
+                  />
+                </div>
+                <div class="metadata-info">
+                  <ion-grid class="text-color">
+                    <ion-row *ngIf="metadata.name">
+                      <ion-col size="4" class="font-w500">Name:</ion-col>
+                      <ion-col size="8">{{ metadata.name }}</ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="metadata.symbol">
+                      <ion-col size="4" class="font-w500">Symbol:</ion-col>
+                      <ion-col size="8">{{ metadata.symbol }}</ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="metadata.description">
+                      <ion-col size="4" class="font-w500">Description:</ion-col>
+                      <ion-col size="8">{{ metadata.description }}</ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="metadata.website">
+                      <ion-col size="4" class="font-w500">Website:</ion-col>
+                      <ion-col size="8">
+                        <a
+                          [href]="metadata.website"
+                          target="_blank"
+                          class="link-color"
+                          >{{ metadata.website }}</a
+                        >
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="metadata.issuer">
+                      <ion-col size="4" class="font-w500">Issuer:</ion-col>
+                      <ion-col size="8">{{ metadata.issuer }}</ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </div>
+              </div>
+            </div>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </div>
@@ -90,8 +154,8 @@
                 <ng-container
                   *ngIf="!input.is_coinbase && !!input.prevout.colorId && input.prevout.colorId === colorId"
                 >
-                  {{ input.prevout?.value }}
-                  <span>COIN</span>
+                  {{ input.prevout?.value | asToken:metadata?.decimals }}
+                  <span>{{ metadata?.symbol || "COIN" }}</span>
                 </ng-container>
                 <ng-container
                   *ngIf="!input.is_coinbase && !input.prevout.colorId"
@@ -148,8 +212,8 @@
                 <ng-container
                   *ngIf="!!output.colorId && output.colorId === colorId"
                 >
-                  {{ output.value }}
-                  <span>COIN</span>
+                  {{ output.value | asToken:metadata?.decimals }}
+                  <span>{{ metadata?.symbol || "COIN" }}</span>
                 </ng-container>
                 <ng-container *ngIf="!output.colorId">
                   {{ output.value | asTpc }}
