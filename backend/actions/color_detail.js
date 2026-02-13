@@ -34,11 +34,15 @@ app.get('/api/color/:colorId', async (req, res) => {
     txs = sortTxs(txs);
     txs.forEach(updateAddress);
 
+    // esplora returns 25 items per page, only set last_seen_txid if there might be more
+    const PAGE_SIZE = 25;
+    const hasMore = txs.length >= PAGE_SIZE;
+
     res.json({
       stats,
       tx: {
         txs,
-        last_seen_txid: (txs[txs.length - 1] || {}).txid
+        last_seen_txid: hasMore ? (txs[txs.length - 1] || {}).txid : null
       }
     });
   } catch (error) {

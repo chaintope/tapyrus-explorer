@@ -17,7 +17,7 @@ export class ColorPage implements OnInit {
   txids = new Set();
   txs: any = [];
   lastSeenTxid?: string;
-  hasMore = true;
+  hasMore = false;
   isLoading = false;
   hasError: boolean;
   statusCode: string;
