@@ -1,4 +1,5 @@
 const config = require('./config');
+const { Metadata } = require('tapyrusjs-lib');
 
 const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}`;
 
@@ -115,17 +116,15 @@ const mempool = {
 
 const tokenRegistry = {
   getMetadata: async colorId => {
-    const registryBaseUrl = config.tokenRegistry.baseUrl;
-    const networkId = config.networkId;
-    const url = `${registryBaseUrl}/${networkId}/${colorId}.json`;
-    const response = await fetch(url);
-    if (response.ok) {
-      return response.json();
+    try {
+      const metadata = await Metadata.fetch(colorId, config.networkId);
+      return metadata.toObject();
+    } catch (error) {
+      if (error.message?.includes('404')) {
+        return null;
+      }
+      throw error;
     }
-    if (response.status === 404) {
-      return null;
-    }
-    throw new Error(`failed to fetch token metadata ${url}`);
   }
 };
 
