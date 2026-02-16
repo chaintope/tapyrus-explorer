@@ -1,0 +1,85 @@
+name: Upload SBOM
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Target branch to build (e.g. main or release/1.2)'
+        required: true
+        default: 'master'
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+
+jobs:
+  upload_sbom_frontend:
+    if: ${{ github.repository == 'chaintope/tapyrus-explorer' }}
+    name: Upload SBOM (Frontend)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up
+        run: |
+          TAG=${{github.event.inputs.branch || github.ref_name}}
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.62.1
+
+      - name: Generate SBOM
+        run: trivy fs frontend/package-lock.json --format cyclonedx --output bom.json
+
+      - name: Upload SBOM
+        uses: DependencyTrack/gh-upload-sbom@v3
+        with:
+          serverHostname: ${{ secrets.DEPENDENCYTRACK_SERVER }}
+          apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+          project: ${{ secrets.DEPENDENCYTRACK_PROJECT_FRONTEND }}
+          bomFilename: "bom.json"
+          autoCreate: false
+
+      - name: Clean up
+        run: |
+          rm -f bom.json
+
+  upload_sbom_backend:
+    if: ${{ github.repository == 'chaintope/tapyrus-explorer' }}
+    name: Upload SBOM (Backend)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up
+        run: |
+          TAG=${{github.event.inputs.branch || github.ref_name}}
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin v0.62.1
+
+      - name: Generate SBOM
+        run: trivy fs backend/package-lock.json --format cyclonedx --output bom.json
+
+      - name: Upload SBOM
+        uses: DependencyTrack/gh-upload-sbom@v3
+        with:
+          serverHostname: ${{ secrets.DEPENDENCYTRACK_SERVER }}
+          apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+          project: ${{ secrets.DEPENDENCYTRACK_PROJECT_BACKEND }}
+          bomFilename: "bom.json"
+          autoCreate: false
+
+      - name: Clean up
+        run: |
+          rm -f bom.json
