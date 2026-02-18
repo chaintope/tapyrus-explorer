@@ -8,6 +8,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi
 } from '@angular/common/http';
+import { SharedPipeModule } from '../modules/sharePipe.module';
 
 describe('ColorPage', () => {
   let component: ColorPage;
@@ -16,7 +17,7 @@ describe('ColorPage', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ColorPage],
-      imports: [IonicModule.forRoot(), RouterTestingModule],
+      imports: [IonicModule.forRoot(), RouterTestingModule, SharedPipeModule],
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
