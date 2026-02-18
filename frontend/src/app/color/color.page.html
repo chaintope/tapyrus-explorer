@@ -42,7 +42,7 @@
               </ion-grid>
             </div>
           </ion-col>
-          <ion-col size-xs="12" size-md="9" *ngIf="metadata">
+          <ion-col size-xs="12" [sizeMd]="hasNftData() ? 5 : 9" *ngIf="metadata">
             <div class="sub-panel">
               <h3 class="sub-panel-title">Token Metadata</h3>
               <div class="metadata-content">
@@ -78,11 +78,51 @@
                         >
                       </ion-col>
                     </ion-row>
-                    <ion-row *ngIf="metadata.issuer">
+                    <ion-row *ngIf="metadata.issuer?.name">
                       <ion-col size="4" class="font-w500">Issuer:</ion-col>
-                      <ion-col size="8">{{ metadata.issuer }}</ion-col>
+                      <ion-col size="8">
+                        <a
+                          *ngIf="metadata.issuer.url; else issuerName"
+                          [href]="metadata.issuer.url"
+                          target="_blank"
+                          class="link-color"
+                          >{{ metadata.issuer.name }}</a
+                        >
+                        <ng-template #issuerName>{{ metadata.issuer.name }}</ng-template>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="metadata.external_url">
+                      <ion-col size="4" class="font-w500">External URL:</ion-col>
+                      <ion-col size="8">
+                        <a
+                          [href]="metadata.external_url"
+                          target="_blank"
+                          class="link-color"
+                          >{{ metadata.external_url }}</a
+                        >
+                      </ion-col>
                     </ion-row>
                   </ion-grid>
+                </div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col size-xs="12" size-md="4" *ngIf="metadata && hasNftData()">
+            <div class="sub-panel">
+              <h3 class="sub-panel-title">NFT</h3>
+              <div *ngIf="metadata.image" class="nft-image">
+                <img [src]="metadata.image" alt="NFT Image" />
+              </div>
+              <div *ngIf="metadata.animation_url" class="nft-animation">
+                <video [src]="metadata.animation_url" controls></video>
+              </div>
+              <div *ngIf="metadata.attributes?.length" class="nft-attributes">
+                <h4 class="sub-panel-title">Attributes</h4>
+                <div class="attributes-grid">
+                  <div *ngFor="let attr of metadata.attributes" class="attribute-card">
+                    <div class="attribute-type">{{ attr.trait_type }}</div>
+                    <div class="attribute-value">{{ attr.value }}</div>
+                  </div>
                 </div>
               </div>
             </div>

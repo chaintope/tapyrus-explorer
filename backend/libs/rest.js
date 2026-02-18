@@ -117,8 +117,8 @@ const mempool = {
 const tokenRegistry = {
   getMetadata: async colorId => {
     try {
-      const metadata = await Metadata.fetch(colorId, config.networkId);
-      return metadata.toObject();
+      const entry = await Metadata.fetch(colorId, config.networkId);
+      return entry.metadata.toObject();
     } catch (error) {
       if (error.message?.includes('404')) {
         return null;

@@ -7,3 +7,5 @@ configurations
 
 ## For log files
 *.log
+
+*.local.json

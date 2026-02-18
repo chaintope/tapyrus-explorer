@@ -105,6 +105,10 @@ export class ColorPage implements OnInit {
     this.navCtrl.navigateForward(`/tx/${txid}`);
   }
 
+  hasNftData(): boolean {
+    return !!(this.metadata?.image || this.metadata?.animation_url || this.metadata?.attributes?.length);
+  }
+
   onNextPage() {
     this.getColorInfo();
   }
