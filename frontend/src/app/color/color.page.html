@@ -42,7 +42,11 @@
               </ion-grid>
             </div>
           </ion-col>
-          <ion-col size-xs="12" [sizeMd]="hasNftData() ? 5 : 9" *ngIf="metadata">
+          <ion-col
+            size-xs="12"
+            [sizeMd]="hasNftData() ? 5 : 9"
+            *ngIf="metadata"
+          >
             <div class="sub-panel">
               <h3 class="sub-panel-title">Token Metadata</h3>
               <div class="metadata-content">
@@ -88,11 +92,15 @@
                           class="link-color"
                           >{{ metadata.issuer.name }}</a
                         >
-                        <ng-template #issuerName>{{ metadata.issuer.name }}</ng-template>
+                        <ng-template #issuerName
+                          >{{ metadata.issuer.name }}</ng-template
+                        >
                       </ion-col>
                     </ion-row>
                     <ion-row *ngIf="metadata.external_url">
-                      <ion-col size="4" class="font-w500">External URL:</ion-col>
+                      <ion-col size="4" class="font-w500"
+                        >External URL:</ion-col
+                      >
                       <ion-col size="8">
                         <a
                           [href]="metadata.external_url"
@@ -119,7 +127,10 @@
               <div *ngIf="metadata.attributes?.length" class="nft-attributes">
                 <h4 class="sub-panel-title">Attributes</h4>
                 <div class="attributes-grid">
-                  <div *ngFor="let attr of metadata.attributes" class="attribute-card">
+                  <div
+                    *ngFor="let attr of metadata.attributes"
+                    class="attribute-card"
+                  >
                     <div class="attribute-type">{{ attr.trait_type }}</div>
                     <div class="attribute-value">{{ attr.value }}</div>
                   </div>

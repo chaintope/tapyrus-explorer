@@ -106,7 +106,11 @@ export class ColorPage implements OnInit {
   }
 
   hasNftData(): boolean {
-    return !!(this.metadata?.image || this.metadata?.animation_url || this.metadata?.attributes?.length);
+    return !!(
+      this.metadata?.image ||
+      this.metadata?.animation_url ||
+      this.metadata?.attributes?.length
+    );
   }
 
   onNextPage() {
