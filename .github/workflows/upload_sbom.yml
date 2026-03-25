@@ -14,72 +14,22 @@ on:
 jobs:
   upload_sbom_frontend:
     if: ${{ github.repository == 'chaintope/tapyrus-explorer' }}
-    name: Upload SBOM (Frontend)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.branch }}
-
-      - name: Set up
-        run: |
-          TAG=${{github.event.inputs.branch || github.ref_name}}
-          echo "TAG=${TAG}" >> $GITHUB_ENV
-
-      - name: Generate SBOM
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: 'frontend/package-lock.json'
-          format: 'cyclonedx'
-          output: 'bom.json'
-
-      - name: Upload SBOM
-        uses: DependencyTrack/gh-upload-sbom@v3
-        with:
-          serverHostname: ${{ secrets.DEPENDENCYTRACK_SERVER }}
-          apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
-          project: ${{ secrets.DEPENDENCYTRACK_PROJECT_FRONTEND }}
-          bomFilename: "bom.json"
-          autoCreate: false
-
-      - name: Clean up
-        run: |
-          rm -f bom.json
+    uses: chaintope/.github/.github/workflows/trivy-sbom.yml@main
+    with:
+      scan-target: "frontend/package-lock.json"
+      ref: ${{ github.event.inputs.branch || github.ref_name }}
+    secrets:
+      dependencytrack-server: ${{ secrets.DEPENDENCYTRACK_SERVER }}
+      dependencytrack-apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+      dependencytrack-project: ${{ secrets.DEPENDENCYTRACK_PROJECT_FRONTEND }}
 
   upload_sbom_backend:
     if: ${{ github.repository == 'chaintope/tapyrus-explorer' }}
-    name: Upload SBOM (Backend)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.branch }}
-
-      - name: Set up
-        run: |
-          TAG=${{github.event.inputs.branch || github.ref_name}}
-          echo "TAG=${TAG}" >> $GITHUB_ENV
-
-      - name: Generate SBOM
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: 'backend/package-lock.json'
-          format: 'cyclonedx'
-          output: 'bom.json'
-
-      - name: Upload SBOM
-        uses: DependencyTrack/gh-upload-sbom@v3
-        with:
-          serverHostname: ${{ secrets.DEPENDENCYTRACK_SERVER }}
-          apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
-          project: ${{ secrets.DEPENDENCYTRACK_PROJECT_BACKEND }}
-          bomFilename: "bom.json"
-          autoCreate: false
-
-      - name: Clean up
-        run: |
-          rm -f bom.json
+    uses: chaintope/.github/.github/workflows/trivy-sbom.yml@main
+    with:
+      scan-target: "backend/package-lock.json"
+      ref: ${{ github.event.inputs.branch || github.ref_name }}
+    secrets:
+      dependencytrack-server: ${{ secrets.DEPENDENCYTRACK_SERVER }}
+      dependencytrack-apikey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+      dependencytrack-project: ${{ secrets.DEPENDENCYTRACK_PROJECT_BACKEND }}
