@@ -9,3 +9,6 @@ configurations
 *.log
 
 *.local.json
+
+## Claude Code
+.claude/
