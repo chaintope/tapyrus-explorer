@@ -26,10 +26,28 @@ jobs:
           npm install
           npm run prettier-ci
           npm run test
+      - name: Diagnose Puppeteer Chrome
+        working-directory: frontend
+        run: |
+          echo "== versions =="
+          node -v; npm -v
+          echo "== expected executablePath =="
+          PUPPETEER_SKIP_DOWNLOAD=true npm install --silent
+          node -e "console.log('expected:', require('puppeteer').executablePath())"
+          echo "== connectivity to storage.googleapis.com =="
+          curl -sI -o /dev/null -w "zip HTTP %{http_code} size=%header{content-length}\n" \
+            "https://storage.googleapis.com/chrome-for-testing-public/146.0.7680.76/linux64/chrome-linux64.zip" || echo "curl FAILED"
+          echo "== cache before =="
+          ls -alR ~/.cache/puppeteer || echo "(no cache dir)"
+          echo "== explicit install (debug) =="
+          DEBUG=puppeteer:*,browsers:* npx puppeteer browsers install chrome \
+            --format "{{browser}} {{buildId}} {{path}}"; echo "install exit=$?"
+          echo "== cache after =="
+          ls -alR ~/.cache/puppeteer || true
       - name: Setup Frontend
         run: |
           cd frontend
-          npm install
+          npm install --foreground-scripts --loglevel verbose
           npm run lint
           npm run prettier-ci
           npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
