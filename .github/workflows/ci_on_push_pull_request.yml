@@ -30,7 +30,8 @@ jobs:
         run: |
           cd frontend
           PUPPETEER_SKIP_DOWNLOAD=true npm install
-          npx puppeteer browsers install chrome
+          export CHROME_BIN=$(npx puppeteer browsers install chrome | awk '{print $NF}')
+          echo "Installed Chrome at: $CHROME_BIN"
           npm run lint
           npm run prettier-ci
           npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
