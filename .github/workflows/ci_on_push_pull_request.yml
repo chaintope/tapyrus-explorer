@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22.x, 24.x]
+        # Node 24.16.0 は extract-zip の不具合で Puppeteer の Chrome 展開に失敗するため 24.15.0 に固定する (puppeteer/puppeteer#15071)
+        node-version: [22.x, 24.15.0]
     env:
       TZ: "Asia/Tokyo"
     steps:
