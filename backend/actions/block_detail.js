@@ -1,7 +1,7 @@
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { isHash, updateAddress } = require('../libs/util');
+const { isHash, isBlockHeight, updateAddress } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -14,6 +14,12 @@ app.use((req, res, next) => {
 
 app.get('/api/block/height/:height', async (req, res) => {
   const height = req.params.height;
+
+  if (!isBlockHeight(height)) {
+    logger.error(`Invalid block height(${height}) - /block/height/${height}`);
+    res.status(400).send('Invalid block height.');
+    return;
+  }
 
   try {
     const blockHash = await rest.block.height(height);

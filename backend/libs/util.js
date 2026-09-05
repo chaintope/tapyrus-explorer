@@ -9,6 +9,10 @@ const isColorId = colorId => {
   return /^(c|C)[1-3]{1}[0-9a-fA-F]{64}$/.test(colorId);
 };
 
+const isBlockHeight = height => {
+  return /^\d+$/.test(height);
+};
+
 const isMaterialTrackingTransaction = tx => {
   return trackingOutputs(tx).length > 0;
 };
@@ -127,6 +131,7 @@ const sortTxs = txs => {
 module.exports = {
   isHash,
   isColorId,
+  isBlockHeight,
   isMaterialTrackingTransaction,
   trackingOutputs,
   getMaterialTrackingPayload,

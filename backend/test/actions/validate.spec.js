@@ -663,3 +663,63 @@ describe('/api/check_material_tracking_balance/:txid', () => {
       .catch(done);
   });
 });
+
+describe('GET /api/validate/:opened_value with an untrusted payload', () => {
+  const encode = payload =>
+    [
+      Buffer.from(JSON.stringify({ typ: 'JWT', alg: 'ES256K' })).toString(
+        'base64url'
+      ),
+      Buffer.from(JSON.stringify(payload)).toString('base64url'),
+      'c2lnbmF0dXJl'
+    ].join('.');
+
+  beforeEach(() => {
+    sinon.stub(rest.transaction, 'get').resolves(null);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should return 400 without calling esplora for a traversing txid', done => {
+    const openedValue = encode({
+      txid: '../../blocks/tip/height',
+      index: 0
+    });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a txid that is not a hash', done => {
+    const openedValue = encode({ txid: 'abc', index: 0 });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for an index that is not a non-negative integer', done => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const openedValue = encode({ txid: txid, index: -1 });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+});

@@ -40,6 +40,26 @@ describe('util', () => {
     });
   });
 
+  describe('isBlockHeight', () => {
+    it('should return true for a decimal number', () => {
+      assert.strictEqual(util.isBlockHeight('0'), true);
+      assert.strictEqual(util.isBlockHeight('1236'), true);
+      assert.strictEqual(util.isBlockHeight(1236), true);
+    });
+
+    it('should return false for a value that is not a decimal number', () => {
+      assert.strictEqual(util.isBlockHeight('abc'), false);
+      assert.strictEqual(util.isBlockHeight('-1'), false);
+      assert.strictEqual(util.isBlockHeight('1.5'), false);
+      assert.strictEqual(util.isBlockHeight(''), false);
+      assert.strictEqual(util.isBlockHeight(undefined), false);
+    });
+
+    it('should return false for a value that traverses the path', () => {
+      assert.strictEqual(util.isBlockHeight('../../blocks/tip/height'), false);
+    });
+  });
+
   describe('splitColor', () => {
     it('should return same address for uncolored address', () => {
       const output = '76a914305e993346ffe2480c3e507bd73773eb932790db88ac';

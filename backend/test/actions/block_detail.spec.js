@@ -234,3 +234,54 @@ describe('GET /api/block/:blockHash/txns', function () {
       .catch(done);
   });
 });
+
+describe('GET /api/block/height/:height', function () {
+  const blockHash =
+    '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6';
+
+  beforeEach(() => {
+    sinon.stub(rest.block, 'height').resolves(blockHash);
+    sinon.stub(rest.block, 'get').resolves({ id: blockHash, height: 1236 });
+    sinon.stub(rest.block, 'status').resolves({ next_best: null });
+    sinon.stub(rest.block.tip, 'height').resolves(1236);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should return block information for a valid height', function (done) {
+    supertest(app)
+      .get('/api/block/height/1236')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then(res => {
+        assert.strictEqual(res.body.blockHash, blockHash);
+        assert.strictEqual(rest.block.height.calledOnceWith('1236'), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a height that is not a decimal number', function (done) {
+    supertest(app)
+      .get('/api/block/height/abc')
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.block.height.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 without calling esplora for a traversing height', function (done) {
+    supertest(app)
+      .get('/api/block/height/..%2F..%2Fblocks%2Ftip%2Fheight')
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.block.height.called, false);
+        done();
+      })
+      .catch(done);
+  });
+});

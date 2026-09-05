@@ -114,8 +114,15 @@ app.get('/api/validate/:openedValue', async (req, res) => {
       res.status(400).send('Invalid JWS format.');
       return;
     }
-    const txid = decoded.payload.txid;
-    const index = decoded.payload.index;
+    const { txid, index } = decoded.payload || {};
+    if (!isHash(txid) || !Number.isInteger(index) || index < 0) {
+      logger.error(
+        `Invalid JWS payload - txid(${txid}), index(${index}) - /validate`
+      );
+      res.status(400).send('Invalid JWS payload.');
+      return;
+    }
+
     const tx = await rest.transaction.get(txid);
     if (!tx) {
       res.status(404).send(`Tx not found(${txid})`);

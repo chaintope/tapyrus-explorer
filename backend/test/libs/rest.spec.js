@@ -1,4 +1,5 @@
 const assert = require('assert');
+const sinon = require('sinon');
 
 describe('rest module', () => {
   describe('require', () => {
@@ -22,6 +23,58 @@ describe('rest module', () => {
       assert.strictEqual(typeof rest.block.list, 'function');
       assert.strictEqual(typeof rest.block.height, 'function');
       assert.strictEqual(typeof rest.block.tip.height, 'function');
+    });
+  });
+
+  describe('path segments', () => {
+    const rest = require('../../libs/rest');
+    let fetched;
+
+    beforeEach(() => {
+      fetched = [];
+      sinon.stub(global, 'fetch').callsFake(url => {
+        fetched.push(url);
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({}),
+          text: () => Promise.resolve('')
+        });
+      });
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should keep a valid value as it is', async () => {
+      const colorId =
+        'c1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+      await rest.color.list(colorId);
+      assert.ok(fetched[0].endsWith(`/colors/${colorId}`), fetched[0]);
+    });
+
+    it('should not let a value add path segments', async () => {
+      await rest.color.list('../../blocks/tip/height');
+      assert.ok(
+        fetched[0].endsWith('/colors/..%2F..%2Fblocks%2Ftip%2Fheight'),
+        fetched[0]
+      );
+    });
+
+    it('should not let a value add path segments to a block height', async () => {
+      await rest.block.height('../../blocks/tip/height');
+      assert.ok(
+        fetched[0].endsWith('/block-height/..%2F..%2Fblocks%2Ftip%2Fheight'),
+        fetched[0]
+      );
+    });
+
+    it('should not let a value add path segments to a transaction', async () => {
+      await rest.transaction.get('../../blocks/tip/height');
+      assert.ok(
+        fetched[0].endsWith('/tx/..%2F..%2Fblocks%2Ftip%2Fheight'),
+        fetched[0]
+      );
     });
   });
 });
