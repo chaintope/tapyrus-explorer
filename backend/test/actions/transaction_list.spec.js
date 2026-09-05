@@ -48,3 +48,48 @@ describe('GET /api/transactions', () => {
       .catch(done);
   });
 });
+
+describe('GET /api/transactions pagination', () => {
+  beforeEach(() => {
+    sinon.stub(rest.mempool, 'list').resolves({ count: 0, txs: [] });
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should use the defaults when no parameter is given', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.calledOnceWith(0), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a perPage above the limit', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ perPage: '101', page: 1 })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a page that is not a positive integer', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ perPage: '25', page: 'abc' })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.called, false);
+        done();
+      })
+      .catch(done);
+  });
+});

@@ -122,6 +122,48 @@ describe('util', () => {
     });
   });
 
+  describe('parsePagination', () => {
+    it('should use the defaults when a value is not given', () => {
+      assert.deepStrictEqual(util.parsePagination(undefined, undefined), {
+        perPage: 25,
+        page: 1
+      });
+      assert.deepStrictEqual(util.parsePagination('', ''), {
+        perPage: 25,
+        page: 1
+      });
+    });
+
+    it('should accept a value within the range', () => {
+      assert.deepStrictEqual(util.parsePagination('1', '1'), {
+        perPage: 1,
+        page: 1
+      });
+      assert.deepStrictEqual(util.parsePagination('100', '9999'), {
+        perPage: 100,
+        page: 9999
+      });
+    });
+
+    it('should return null for a perPage above the limit', () => {
+      assert.strictEqual(util.parsePagination('101', '1'), null);
+      assert.strictEqual(util.parsePagination('100000000', '1'), null);
+    });
+
+    it('should return null for a value that is not a positive integer', () => {
+      assert.strictEqual(util.parsePagination('0', '1'), null);
+      assert.strictEqual(util.parsePagination('-1', '1'), null);
+      assert.strictEqual(util.parsePagination('25.5', '1'), null);
+      assert.strictEqual(util.parsePagination('abc', '1'), null);
+      assert.strictEqual(util.parsePagination('25', '0'), null);
+      assert.strictEqual(util.parsePagination('25', 'abc'), null);
+    });
+
+    it('should return null when the same parameter is given more than once', () => {
+      assert.strictEqual(util.parsePagination(['25', '30'], '1'), null);
+    });
+  });
+
   describe('splitColor', () => {
     it('should return same address for uncolored address', () => {
       const output = '76a914305e993346ffe2480c3e507bd73773eb932790db88ac';
