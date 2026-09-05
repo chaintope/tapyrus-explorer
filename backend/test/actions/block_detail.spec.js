@@ -285,3 +285,51 @@ describe('GET /api/block/height/:height', function () {
       .catch(done);
   });
 });
+
+describe('GET /api/block/:blockHash/txns pagination', function () {
+  const blockHash =
+    '5c6fd3ae9a05a6db255525bd6b1e5e4cb9cfbda876ee39cc809129a9ade420e6';
+
+  beforeEach(() => {
+    sinon.stub(rest.block, 'txs').resolves([]);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should use the defaults when no parameter is given', function (done) {
+    supertest(app)
+      .get(`/api/block/${blockHash}/txns`)
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.block.txs.calledOnceWith(blockHash, 0), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a perPage above the limit', function (done) {
+    supertest(app)
+      .get(`/api/block/${blockHash}/txns`)
+      .query({ perPage: '101', page: 1 })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.block.txs.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a page below 1', function (done) {
+    supertest(app)
+      .get(`/api/block/${blockHash}/txns`)
+      .query({ perPage: '25', page: '0' })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.block.txs.called, false);
+        done();
+      })
+      .catch(done);
+  });
+});

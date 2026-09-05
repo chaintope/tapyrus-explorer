@@ -33,6 +33,35 @@ const forLog = value => {
   return JSON.stringify(String(value).slice(0, MAX_LOGGED_LENGTH));
 };
 
+const DEFAULT_PER_PAGE = 25;
+const DEFAULT_PAGE = 1;
+const MAX_PER_PAGE = 100;
+
+// A parameter that is absent or empty falls back to the default. Clients
+// serialize an unset query parameter either way.
+const isBlank = value => value === undefined || value === '';
+
+const toPositiveInteger = value => {
+  return /^[1-9][0-9]*$/.test(value) ? Number(value) : null;
+};
+
+// The number of esplora calls one request makes grows with perPage, so it is
+// capped. Returns null when a value is outside what the API accepts.
+const parsePagination = (perPageParam, pageParam) => {
+  const perPage = isBlank(perPageParam)
+    ? DEFAULT_PER_PAGE
+    : toPositiveInteger(perPageParam);
+  const page = isBlank(pageParam) ? DEFAULT_PAGE : toPositiveInteger(pageParam);
+
+  if (perPage === null || perPage > MAX_PER_PAGE) {
+    return null;
+  }
+  if (page === null) {
+    return null;
+  }
+  return { perPage, page };
+};
+
 const isMaterialTrackingTransaction = tx => {
   return trackingOutputs(tx).length > 0;
 };
@@ -154,6 +183,7 @@ module.exports = {
   isBlockHeight,
   toOutputIndex,
   forLog,
+  parsePagination,
   isMaterialTrackingTransaction,
   trackingOutputs,
   getMaterialTrackingPayload,

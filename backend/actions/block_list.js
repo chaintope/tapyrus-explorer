@@ -1,6 +1,7 @@
 const app = require('../app.js');
 const rest = require('../libs/rest');
 const logger = require('../libs/logger');
+const { parsePagination } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -12,8 +13,15 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/blocks', async (req, res) => {
-  let perPage = Number(req.query.perPage);
-  const page = Number(req.query.page);
+  const pagination = parsePagination(req.query.perPage, req.query.page);
+  if (!pagination) {
+    logger.error(
+      `Invalid pagination(perPage=${req.query.perPage}, page=${req.query.page}) - /blocks`
+    );
+    res.status(400).send('Bad request');
+    return;
+  }
+  const { perPage, page } = pagination;
 
   try {
     const bestBlockHeight = await rest.block.tip.height();
