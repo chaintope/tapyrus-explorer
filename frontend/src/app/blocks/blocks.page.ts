@@ -32,7 +32,10 @@ export class BlocksPage implements OnInit {
 
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe(params => {
-      this.page = Math.max(Number(params.get('page')), 1);
+      // A query value that is not a number becomes NaN, which the backend
+      // rejects. Fall back to the first page instead.
+      const page = Number(params.get('page'));
+      this.page = Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1;
     });
     this.getBlockLists();
   }

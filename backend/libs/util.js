@@ -37,12 +37,29 @@ const DEFAULT_PER_PAGE = 25;
 const DEFAULT_PAGE = 1;
 const MAX_PER_PAGE = 100;
 
+// Esplora returns a fixed number of records per call, so an endpoint that
+// hands the offset straight to esplora cannot honour an arbitrary page size.
+// Those endpoints take the page number alone and use this size.
+const FIXED_PER_PAGE = 25;
+
 // A parameter that is absent or empty falls back to the default. Clients
 // serialize an unset query parameter either way.
 const isBlank = value => value === undefined || value === '';
 
+// A digit string of any length matches the pattern, so the result is checked
+// against the safe integer range as well. Beyond that range Number() rounds
+// the value or turns it into Infinity, and the offset built from it is no
+// longer a whole number.
 const toPositiveInteger = value => {
-  return /^[1-9][0-9]*$/.test(value) ? Number(value) : null;
+  if (!/^[1-9][0-9]*$/.test(value)) {
+    return null;
+  }
+  const number = Number(value);
+  return Number.isSafeInteger(number) ? number : null;
+};
+
+const toPage = pageParam => {
+  return isBlank(pageParam) ? DEFAULT_PAGE : toPositiveInteger(pageParam);
 };
 
 // The number of esplora calls one request makes grows with perPage, so it is
@@ -51,7 +68,7 @@ const parsePagination = (perPageParam, pageParam) => {
   const perPage = isBlank(perPageParam)
     ? DEFAULT_PER_PAGE
     : toPositiveInteger(perPageParam);
-  const page = isBlank(pageParam) ? DEFAULT_PAGE : toPositiveInteger(pageParam);
+  const page = toPage(pageParam);
 
   if (perPage === null || perPage > MAX_PER_PAGE) {
     return null;
@@ -59,7 +76,22 @@ const parsePagination = (perPageParam, pageParam) => {
   if (page === null) {
     return null;
   }
+  if (!Number.isSafeInteger(perPage * page)) {
+    return null;
+  }
   return { perPage, page };
+};
+
+// Offset of the first record of the given page, for the endpoints whose page
+// size is fixed. Returns null when the page number is outside what the API
+// accepts.
+const parseStartIndex = pageParam => {
+  const page = toPage(pageParam);
+  if (page === null) {
+    return null;
+  }
+  const startIndex = (page - 1) * FIXED_PER_PAGE;
+  return Number.isSafeInteger(startIndex) ? { page, startIndex } : null;
 };
 
 const isMaterialTrackingTransaction = tx => {
@@ -184,6 +216,7 @@ module.exports = {
   toOutputIndex,
   forLog,
   parsePagination,
+  parseStartIndex,
   isMaterialTrackingTransaction,
   trackingOutputs,
   getMaterialTrackingPayload,

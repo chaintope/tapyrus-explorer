@@ -74,21 +74,6 @@ describe('GET /api/blocks pagination', () => {
       .catch(done);
   });
 
-  it('should bound the number of esplora calls at the perPage limit', done => {
-    supertest(app)
-      .get('/api/blocks')
-      .query({ perPage: '100', page: 1 })
-      .expect(200)
-      .then(() => {
-        assert.ok(
-          rest.block.list.callCount <= 10,
-          `called ${rest.block.list.callCount} times`
-        );
-        done();
-      })
-      .catch(done);
-  });
-
   it('should return 400 for a perPage above the limit', done => {
     supertest(app)
       .get('/api/blocks')
@@ -118,6 +103,45 @@ describe('GET /api/blocks pagination', () => {
     supertest(app)
       .get('/api/blocks')
       .query({ perPage: '25', page: '0' })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.block.list.called, false);
+        done();
+      })
+      .catch(done);
+  });
+});
+
+describe('GET /api/blocks esplora call count', () => {
+  beforeEach(() => {
+    // A tip far above perPage, so the loop is bounded by perPage rather than
+    // by reaching the genesis block.
+    sinon.stub(rest.block.tip, 'height').resolves(1000);
+    sinon.stub(rest.block, 'list').resolves([]);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should make one call per ten blocks of the page', done => {
+    supertest(app)
+      .get('/api/blocks')
+      .query({ perPage: '100', page: 1 })
+      .expect(200)
+      .then(() => {
+        // Blocks 1000 down to 901, and esplora returns ten per call.
+        assert.strictEqual(rest.block.list.callCount, 10);
+        assert.strictEqual(rest.block.list.firstCall.args[0], 1000);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should not grow the number of calls beyond the perPage limit', done => {
+    supertest(app)
+      .get('/api/blocks')
+      .query({ perPage: '101', page: 1 })
       .expect(400)
       .then(() => {
         assert.strictEqual(rest.block.list.called, false);

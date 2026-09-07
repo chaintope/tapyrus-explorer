@@ -69,13 +69,25 @@ describe('GET /api/transactions pagination', () => {
       .catch(done);
   });
 
-  it('should return 400 for a perPage above the limit', done => {
+  it('should offset by the fixed page size', done => {
     supertest(app)
       .get('/api/transactions')
-      .query({ perPage: '101', page: 1 })
-      .expect(400)
+      .query({ page: '3' })
+      .expect(200)
       .then(() => {
-        assert.strictEqual(rest.mempool.list.called, false);
+        assert.strictEqual(rest.mempool.list.calledOnceWith(50), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should ignore perPage because the page size is fixed', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ perPage: '101', page: '2' })
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.calledOnceWith(25), true);
         done();
       })
       .catch(done);
@@ -85,6 +97,18 @@ describe('GET /api/transactions pagination', () => {
     supertest(app)
       .get('/api/transactions')
       .query({ perPage: '25', page: 'abc' })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a page beyond the safe integer range', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ page: '1'.repeat(400) })
       .expect(400)
       .then(() => {
         assert.strictEqual(rest.mempool.list.called, false);

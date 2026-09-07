@@ -309,13 +309,25 @@ describe('GET /api/block/:blockHash/txns pagination', function () {
       .catch(done);
   });
 
-  it('should return 400 for a perPage above the limit', function (done) {
+  it('should offset by the fixed page size', function (done) {
     supertest(app)
       .get(`/api/block/${blockHash}/txns`)
-      .query({ perPage: '101', page: 1 })
-      .expect(400)
+      .query({ page: '3' })
+      .expect(200)
       .then(() => {
-        assert.strictEqual(rest.block.txs.called, false);
+        assert.strictEqual(rest.block.txs.calledOnceWith(blockHash, 50), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should ignore perPage because the page size is fixed', function (done) {
+    supertest(app)
+      .get(`/api/block/${blockHash}/txns`)
+      .query({ perPage: '101', page: '2' })
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.block.txs.calledOnceWith(blockHash, 25), true);
         done();
       })
       .catch(done);
@@ -325,6 +337,18 @@ describe('GET /api/block/:blockHash/txns pagination', function () {
     supertest(app)
       .get(`/api/block/${blockHash}/txns`)
       .query({ perPage: '25', page: '0' })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.block.txs.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a page beyond the safe integer range', function (done) {
+    supertest(app)
+      .get(`/api/block/${blockHash}/txns`)
+      .query({ page: '1'.repeat(400) })
       .expect(400)
       .then(() => {
         assert.strictEqual(rest.block.txs.called, false);
