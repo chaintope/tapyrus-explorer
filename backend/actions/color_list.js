@@ -1,7 +1,7 @@
 const app = require('../app.js');
 const rest = require('../libs/rest');
 const logger = require('../libs/logger');
-const { isColorId } = require('../libs/util');
+const { isColorId, forLog } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -16,7 +16,9 @@ app.get('/api/colors', async (req, res) => {
   const lastSeenColorId = req.query.lastSeenColorId;
 
   if (lastSeenColorId && !isColorId(lastSeenColorId)) {
-    logger.error(`Invalid lastSeenColorId(${lastSeenColorId}) - /colors`);
+    logger.error(
+      `Invalid lastSeenColorId(${forLog(lastSeenColorId)}) - /colors`
+    );
     res.status(400).send('Bad request');
     return;
   }

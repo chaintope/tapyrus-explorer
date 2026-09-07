@@ -60,6 +60,68 @@ describe('util', () => {
     });
   });
 
+  describe('toOutputIndex', () => {
+    it('should accept a non negative integer', () => {
+      assert.strictEqual(util.toOutputIndex(0), 0);
+      assert.strictEqual(util.toOutputIndex(3), 3);
+    });
+
+    it('should accept a decimal string', () => {
+      assert.strictEqual(util.toOutputIndex('0'), 0);
+      assert.strictEqual(util.toOutputIndex('3'), 3);
+      assert.strictEqual(util.toOutputIndex('03'), 3);
+    });
+
+    it('should return null for a negative value', () => {
+      assert.strictEqual(util.toOutputIndex(-1), null);
+      assert.strictEqual(util.toOutputIndex('-1'), null);
+    });
+
+    it('should return null for a value that is not an integer', () => {
+      assert.strictEqual(util.toOutputIndex(1.5), null);
+      assert.strictEqual(util.toOutputIndex('1.5'), null);
+      assert.strictEqual(util.toOutputIndex('abc'), null);
+      assert.strictEqual(util.toOutputIndex('0x1'), null);
+    });
+
+    it('should return null for a value that coerces to zero', () => {
+      assert.strictEqual(util.toOutputIndex(''), null);
+      assert.strictEqual(util.toOutputIndex(null), null);
+      assert.strictEqual(util.toOutputIndex(undefined), null);
+      assert.strictEqual(util.toOutputIndex([]), null);
+      assert.strictEqual(util.toOutputIndex({}), null);
+      assert.strictEqual(util.toOutputIndex(true), null);
+    });
+
+    it('should return null beyond the safe integer range', () => {
+      assert.strictEqual(util.toOutputIndex('9007199254740993'), null);
+      assert.strictEqual(util.toOutputIndex('1'.repeat(400)), null);
+    });
+  });
+
+  describe('forLog', () => {
+    it('should quote the value', () => {
+      assert.strictEqual(util.forLog('abc'), '"abc"');
+    });
+
+    it('should escape a newline so that a log line cannot be forged', () => {
+      assert.strictEqual(
+        util.forLog('a\nERROR fake line'),
+        '"a\\nERROR fake line"'
+      );
+    });
+
+    it('should cap the length at 64 characters', () => {
+      assert.strictEqual(util.forLog('a'.repeat(100)), `"${'a'.repeat(64)}"`);
+    });
+
+    it('should accept a value that is not a string', () => {
+      assert.strictEqual(util.forLog(undefined), '"undefined"');
+      assert.strictEqual(util.forLog(12), '"12"');
+      assert.strictEqual(util.forLog(['a', 'b']), '"a,b"');
+    });
+  });
+
   describe('splitColor', () => {
     it('should return same address for uncolored address', () => {
       const output = '76a914305e993346ffe2480c3e507bd73773eb932790db88ac';

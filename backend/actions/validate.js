@@ -5,6 +5,8 @@ const jsontokens = require('jsontokens');
 const Commitment = require('../libs/commitment');
 const {
   isHash,
+  toOutputIndex,
+  forLog,
   trackingOutputs,
   getMaterialTrackingPayload,
   getCommitment
@@ -115,9 +117,10 @@ app.get('/api/validate/:openedValue', async (req, res) => {
       return;
     }
     const { txid, index } = decoded.payload || {};
-    if (!isHash(txid) || !Number.isInteger(index) || index < 0) {
+    const outputIndex = toOutputIndex(index);
+    if (!isHash(txid) || outputIndex === null) {
       logger.error(
-        `Invalid JWS payload - txid(${txid}), index(${index}) - /validate`
+        `Invalid JWS payload - txid(${forLog(txid)}), index(${forLog(index)}) - /validate`
       );
       res.status(400).send('Invalid JWS payload.');
       return;
@@ -129,7 +132,7 @@ app.get('/api/validate/:openedValue', async (req, res) => {
       return;
     }
 
-    const script = tx.vout[index].scriptpubkey;
+    const script = tx.vout[outputIndex].scriptpubkey;
     const [valid, error] = isValid(openedValue, script, decoded.payload);
 
     res.json({ ...decoded, valid: valid, error: error });

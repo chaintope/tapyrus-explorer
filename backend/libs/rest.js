@@ -4,8 +4,16 @@ const { Metadata } = require('tapyrusjs-lib');
 const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}`;
 
 // Path segments are built from HTTP request values. Percent-encode them so that
-// a value containing "/" or ".." cannot change which esplora endpoint is called.
-const encodeSegment = value => encodeURIComponent(value);
+// a value containing "/" cannot change which esplora endpoint is called.
+// encodeURIComponent leaves "." untouched, so a value of exactly "." or ".."
+// would still be resolved as a relative segment by the URL parser. Encode the
+// dots in that case only, which keeps the URL of every other value unchanged.
+const encodeSegment = value => {
+  const encoded = encodeURIComponent(value);
+  return encoded === '.' || encoded === '..'
+    ? encoded.replace(/\./g, '%2E')
+    : encoded;
+};
 
 // Helper functions
 const fetchJson = async url => {

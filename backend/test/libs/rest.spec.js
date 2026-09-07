@@ -76,5 +76,20 @@ describe('rest module', () => {
         fetched[0]
       );
     });
+
+    it('should not let a value of ".." climb a path segment', async () => {
+      await rest.transaction.raw('..');
+      assert.ok(fetched[0].endsWith('/tx/%2E%2E/hex'), fetched[0]);
+    });
+
+    it('should not let a value of "." drop a path segment', async () => {
+      await rest.transaction.raw('.');
+      assert.ok(fetched[0].endsWith('/tx/%2E/hex'), fetched[0]);
+    });
+
+    it('should not let a value of ".." drop the last path segment', async () => {
+      await rest.color.list('..');
+      assert.ok(fetched[0].endsWith('/colors/%2E%2E'), fetched[0]);
+    });
   });
 });

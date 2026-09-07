@@ -13,6 +13,26 @@ const isBlockHeight = height => {
   return /^\d+$/.test(height);
 };
 
+// The output index is used as an array subscript, so a decimal string is as
+// valid as a number. Returns null when the value is neither.
+const toOutputIndex = value => {
+  if (Number.isSafeInteger(value) && value >= 0) {
+    return value;
+  }
+  if (typeof value === 'string' && /^\d+$/.test(value)) {
+    const index = Number(value);
+    return Number.isSafeInteger(index) ? index : null;
+  }
+  return null;
+};
+
+// Request values reach the log verbatim, so a newline in one of them can forge
+// a log line. Quote the value and cap its length before logging it.
+const MAX_LOGGED_LENGTH = 64;
+const forLog = value => {
+  return JSON.stringify(String(value).slice(0, MAX_LOGGED_LENGTH));
+};
+
 const isMaterialTrackingTransaction = tx => {
   return trackingOutputs(tx).length > 0;
 };
@@ -132,6 +152,8 @@ module.exports = {
   isHash,
   isColorId,
   isBlockHeight,
+  toOutputIndex,
+  forLog,
   isMaterialTrackingTransaction,
   trackingOutputs,
   getMaterialTrackingPayload,
