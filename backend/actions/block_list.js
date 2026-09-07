@@ -1,7 +1,7 @@
 const app = require('../app.js');
 const rest = require('../libs/rest');
 const logger = require('../libs/logger');
-const { parsePagination } = require('../libs/util');
+const { forLog, parsePagination } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -16,7 +16,7 @@ app.get('/api/blocks', async (req, res) => {
   const pagination = parsePagination(req.query.perPage, req.query.page);
   if (!pagination) {
     logger.error(
-      `Invalid pagination(perPage=${req.query.perPage}, page=${req.query.page}) - /blocks`
+      `Invalid pagination(perPage=${forLog(req.query.perPage)}, page=${forLog(req.query.page)}) - /blocks`
     );
     res.status(400).send('Bad request');
     return;

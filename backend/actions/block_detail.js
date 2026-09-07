@@ -5,7 +5,7 @@ const {
   isHash,
   isBlockHeight,
   forLog,
-  parsePagination,
+  parseStartIndex,
   updateAddress
 } = require('../libs/util');
 
@@ -129,18 +129,17 @@ app.get('/api/block/:blockHash/txns', async (req, res) => {
     return;
   }
 
-  const pagination = parsePagination(req.query.perPage, req.query.page);
+  const pagination = parseStartIndex(req.query.page);
   if (!pagination) {
     logger.error(
-      `Invalid pagination(perPage=${req.query.perPage}, page=${req.query.page}) - /block/${blockHash}/txns`
+      `Invalid page(${forLog(req.query.page)}) - /block/${blockHash}/txns`
     );
     res.status(400).send('Bad request');
     return;
   }
-  const { perPage, page } = pagination;
+  const { startIndex } = pagination;
 
   try {
-    const startIndex = (page - 1) * perPage;
     const txs = await rest.block.txs(blockHash, startIndex);
     txs.forEach(updateAddress);
     res.json(txs);

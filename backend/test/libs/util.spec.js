@@ -162,6 +162,60 @@ describe('util', () => {
     it('should return null when the same parameter is given more than once', () => {
       assert.strictEqual(util.parsePagination(['25', '30'], '1'), null);
     });
+
+    it('should return null beyond the safe integer range', () => {
+      assert.strictEqual(util.parsePagination('25', '1'.repeat(400)), null);
+      assert.strictEqual(
+        util.parsePagination('25', '1000000000000000000000'),
+        null
+      );
+      assert.strictEqual(util.parsePagination('25', '9007199254740993'), null);
+    });
+
+    it('should return null when the offset would leave the safe integer range', () => {
+      // Both values are safe integers on their own, but their product is not.
+      assert.strictEqual(util.parsePagination('100', '9007199254740991'), null);
+    });
+  });
+
+  describe('parseStartIndex', () => {
+    it('should use the first page when a value is not given', () => {
+      assert.deepStrictEqual(util.parseStartIndex(undefined), {
+        page: 1,
+        startIndex: 0
+      });
+      assert.deepStrictEqual(util.parseStartIndex(''), {
+        page: 1,
+        startIndex: 0
+      });
+    });
+
+    it('should offset by the fixed page size', () => {
+      assert.deepStrictEqual(util.parseStartIndex('2'), {
+        page: 2,
+        startIndex: 25
+      });
+      assert.deepStrictEqual(util.parseStartIndex('4'), {
+        page: 4,
+        startIndex: 75
+      });
+    });
+
+    it('should return null for a value that is not a positive integer', () => {
+      assert.strictEqual(util.parseStartIndex('0'), null);
+      assert.strictEqual(util.parseStartIndex('-1'), null);
+      assert.strictEqual(util.parseStartIndex('1.5'), null);
+      assert.strictEqual(util.parseStartIndex('abc'), null);
+    });
+
+    it('should return null when the same parameter is given more than once', () => {
+      assert.strictEqual(util.parseStartIndex(['1', '2']), null);
+    });
+
+    it('should return null when the offset would leave the safe integer range', () => {
+      assert.strictEqual(util.parseStartIndex('1'.repeat(400)), null);
+      assert.strictEqual(util.parseStartIndex('9007199254740991'), null);
+    });
   });
 
   describe('splitColor', () => {
