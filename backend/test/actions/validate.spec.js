@@ -764,4 +764,43 @@ describe('GET /api/validate/:opened_value with an untrusted payload', () => {
       })
       .catch(done);
   });
+
+  describe('with a transaction that exists', () => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+    beforeEach(() => {
+      rest.transaction.get.resolves({
+        txid: txid,
+        vin: [],
+        vout: [
+          {
+            value: 600,
+            scriptpubkey: '76a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac'
+          }
+        ]
+      });
+    });
+
+    it('should return 400 for an index past the last output', done => {
+      const openedValue = encode({ txid: txid, index: 5 });
+      supertest(app)
+        .get(`/api/validate/${openedValue}`)
+        .expect(400)
+        .then(() => {
+          assert.strictEqual(rest.transaction.get.calledOnceWith(txid), true);
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should return 400 for an index past the last output given as a string', done => {
+      const openedValue = encode({ txid: txid, index: '5' });
+      supertest(app)
+        .get(`/api/validate/${openedValue}`)
+        .expect(400)
+        .then(() => done())
+        .catch(done);
+    });
+  });
 });

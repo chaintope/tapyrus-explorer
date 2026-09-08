@@ -2,7 +2,7 @@ const tapyrus = require('tapyrusjs-lib');
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { isHash, updateAddress, sortTxs } = require('../libs/util');
+const { isHash, forLog, updateAddress, sortTxs } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -21,13 +21,15 @@ app.get('/api/address/:address', async (req, res) => {
   try {
     tapyrus.address.fromBase58Check(address);
   } catch {
-    logger.error(`Invalid address - /address/${address}`);
+    logger.error(`Invalid address(${forLog(address)}) - /address`);
     res.status(400).send('Bad request');
     return;
   }
 
   if (lastSeenTxid && !isHash(lastSeenTxid)) {
-    logger.error(`Invalid lastSeenTxid(${lastSeenTxid}) - /address/${address}`);
+    logger.error(
+      `Invalid lastSeenTxid(${forLog(lastSeenTxid)}) - /address/${forLog(address)}`
+    );
     res.status(400).send('Bad request');
     return;
   }
@@ -57,7 +59,7 @@ app.get('/api/address/:address', async (req, res) => {
     });
   } catch (error) {
     logger.error(
-      `Error retrieving information for addresss - ${address}. Error Message - ${error.message}`
+      `Error retrieving information for addresss - ${forLog(address)}. Error Message - ${error.message}`
     );
   }
 });
@@ -68,7 +70,7 @@ app.get('/api/address/:address/utxo', async (req, res) => {
   try {
     tapyrus.address.fromBase58Check(address);
   } catch {
-    logger.error(`Invalid address - /address/${address}/utxo`);
+    logger.error(`Invalid address(${forLog(address)}) - /address/utxo`);
     res.status(400).send('Bad request');
     return;
   }
@@ -78,7 +80,7 @@ app.get('/api/address/:address/utxo', async (req, res) => {
     res.json(utxos);
   } catch (error) {
     logger.error(
-      `Error retrieving UTXOs for address - ${address}. Error Message - ${error.message}`
+      `Error retrieving UTXOs for address - ${forLog(address)}. Error Message - ${error.message}`
     );
     res.status(500).send('Internal server error');
   }

@@ -54,7 +54,7 @@ app.get('/api/block/height/:height', async (req, res) => {
     });
   } catch (err) {
     logger.error(
-      `Error retrieving information for block  - height = ${height}. Error Message - ${err.message}`
+      `Error retrieving information for block  - height = ${forLog(height)}. Error Message - ${err.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }
@@ -64,7 +64,7 @@ app.get('/api/block/:blockHash', async (req, res) => {
   const blockHash = req.params.blockHash;
 
   if (!isHash(blockHash)) {
-    logger.error(`Invalid block hash(${blockHash}) - /block/${blockHash}`);
+    logger.error(`Invalid block hash(${forLog(blockHash)}) - /block`);
     res.status(400).send('Invalid block hash.');
     return;
   }
@@ -93,7 +93,7 @@ app.get('/api/block/:blockHash', async (req, res) => {
     });
   } catch (err) {
     logger.error(
-      `Error retrieving information for block  - ${blockHash}. Error Message - ${err.message}`
+      `Error retrieving information for block  - ${forLog(blockHash)}. Error Message - ${err.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }
@@ -104,7 +104,7 @@ app.get('/api/block/:blockHash/raw', async (req, res) => {
   const blockHash = req.params.blockHash;
 
   if (!isHash(blockHash)) {
-    logger.error(`Invalid block hash(${blockHash}) - /block/${blockHash}/raw`);
+    logger.error(`Invalid block hash(${forLog(blockHash)}) - /block/raw`);
     res.status(400).send('Bad request');
     return;
   }
@@ -114,7 +114,7 @@ app.get('/api/block/:blockHash/raw', async (req, res) => {
     res.json({ hex: block });
   } catch (error) {
     logger.error(
-      `Error retrieving raw data for block  - ${blockHash}. Error Message - ${error.message}`
+      `Error retrieving raw data for block  - ${forLog(blockHash)}. Error Message - ${error.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }
@@ -124,7 +124,7 @@ app.get('/api/block/:blockHash/txns', async (req, res) => {
   const blockHash = req.params.blockHash;
 
   if (!isHash(blockHash)) {
-    logger.error(`Invalid block hash(${blockHash}) - /block/${blockHash}/txns`);
+    logger.error(`Invalid block hash(${forLog(blockHash)}) - /block/txns`);
     res.status(400).send('Bad request');
     return;
   }
@@ -132,7 +132,7 @@ app.get('/api/block/:blockHash/txns', async (req, res) => {
   const pagination = parseStartIndex(req.query.page);
   if (!pagination) {
     logger.error(
-      `Invalid page(${forLog(req.query.page)}) - /block/${blockHash}/txns`
+      `Invalid page(${forLog(req.query.page)}) - /block/${forLog(blockHash)}/txns`
     );
     res.status(400).send('Bad request');
     return;
@@ -145,7 +145,7 @@ app.get('/api/block/:blockHash/txns', async (req, res) => {
     res.json(txs);
   } catch (error) {
     logger.error(
-      `Error retrieving txns for block  - ${blockHash}. Error Message - ${error.message}`
+      `Error retrieving txns for block  - ${forLog(blockHash)}. Error Message - ${error.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }

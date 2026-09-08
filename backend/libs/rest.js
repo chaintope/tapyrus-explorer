@@ -5,14 +5,23 @@ const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}
 
 // Path segments are built from HTTP request values. Percent-encode them so that
 // a value containing "/" cannot change which esplora endpoint is called.
-// encodeURIComponent leaves "." untouched, so a value of exactly "." or ".."
-// would still be resolved as a relative segment by the URL parser. Encode the
-// dots in that case only, which keeps the URL of every other value unchanged.
+//
+// "." and ".." cannot be dealt with by encoding. The URL parser reads a segment
+// as a relative one when it matches "." or ".." with the dots written either
+// literally or as %2e (WHATWG URL, single-dot and double-dot path segment), so
+// every encoding of them resolves the same way the bare value does. They are
+// refused instead.
+//
+// Every entry point validates its values before they reach here, so this is the
+// layer that still holds if one of them stops doing so. Throwing surfaces that
+// as a fault of the backend, which is what it would be; each caller runs inside
+// a handler that answers 500.
 const encodeSegment = value => {
-  const encoded = encodeURIComponent(value);
-  return encoded === '.' || encoded === '..'
-    ? encoded.replace(/\./g, '%2E')
-    : encoded;
+  const segment = String(value);
+  if (segment === '.' || segment === '..') {
+    throw new Error(`invalid path segment (${segment})`);
+  }
+  return encodeURIComponent(segment);
 };
 
 // Helper functions

@@ -46,50 +46,70 @@ describe('rest module', () => {
       sinon.restore();
     });
 
+    // The URL parser resolves relative segments, so what esplora receives is
+    // the path of the parsed URL, not the string the module put together. A
+    // test that reads the string before parsing passes while the request still
+    // lands somewhere else.
+    const pathOf = url => new URL(url).pathname;
+
     it('should keep a valid value as it is', async () => {
       const colorId =
         'c1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       await rest.color.list(colorId);
-      assert.ok(fetched[0].endsWith(`/colors/${colorId}`), fetched[0]);
+      assert.strictEqual(pathOf(fetched[0]), `/colors/${colorId}`);
     });
 
     it('should not let a value add path segments', async () => {
       await rest.color.list('../../blocks/tip/height');
-      assert.ok(
-        fetched[0].endsWith('/colors/..%2F..%2Fblocks%2Ftip%2Fheight'),
-        fetched[0]
+      assert.strictEqual(
+        pathOf(fetched[0]),
+        '/colors/..%2F..%2Fblocks%2Ftip%2Fheight'
       );
     });
 
     it('should not let a value add path segments to a block height', async () => {
       await rest.block.height('../../blocks/tip/height');
-      assert.ok(
-        fetched[0].endsWith('/block-height/..%2F..%2Fblocks%2Ftip%2Fheight'),
-        fetched[0]
+      assert.strictEqual(
+        pathOf(fetched[0]),
+        '/block-height/..%2F..%2Fblocks%2Ftip%2Fheight'
       );
     });
 
     it('should not let a value add path segments to a transaction', async () => {
       await rest.transaction.get('../../blocks/tip/height');
-      assert.ok(
-        fetched[0].endsWith('/tx/..%2F..%2Fblocks%2Ftip%2Fheight'),
-        fetched[0]
+      assert.strictEqual(
+        pathOf(fetched[0]),
+        '/tx/..%2F..%2Fblocks%2Ftip%2Fheight'
       );
     });
 
-    it('should not let a value of ".." climb a path segment', async () => {
-      await rest.transaction.raw('..');
-      assert.ok(fetched[0].endsWith('/tx/%2E%2E/hex'), fetched[0]);
+    it('should refuse a value of ".." rather than request another endpoint', async () => {
+      await assert.rejects(
+        () => rest.transaction.raw('..'),
+        /invalid path segment/
+      );
+      assert.deepStrictEqual(fetched, []);
     });
 
-    it('should not let a value of "." drop a path segment', async () => {
-      await rest.transaction.raw('.');
-      assert.ok(fetched[0].endsWith('/tx/%2E/hex'), fetched[0]);
+    it('should refuse a value of "." rather than request another endpoint', async () => {
+      await assert.rejects(
+        () => rest.transaction.raw('.'),
+        /invalid path segment/
+      );
+      assert.deepStrictEqual(fetched, []);
     });
 
-    it('should not let a value of ".." drop the last path segment', async () => {
-      await rest.color.list('..');
-      assert.ok(fetched[0].endsWith('/colors/%2E%2E'), fetched[0]);
+    it('should refuse a value of ".." on the last path segment', async () => {
+      await assert.rejects(() => rest.color.list('..'), /invalid path segment/);
+      assert.deepStrictEqual(fetched, []);
+    });
+
+    // Encoding a value that spells out the dots is not the same thing: the
+    // parser reads the segment before percent-decoding it, so "%2e%2e" arrives
+    // as "%252e%252e" and stays a segment of its own.
+    it('should keep an encoded ".." as a segment of its own', async () => {
+      await rest.color.list('%2e%2e');
+      assert.strictEqual(pathOf(fetched[0]), '/colors/%252e%252e');
     });
   });
 });
