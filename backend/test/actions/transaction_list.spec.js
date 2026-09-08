@@ -48,3 +48,72 @@ describe('GET /api/transactions', () => {
       .catch(done);
   });
 });
+
+describe('GET /api/transactions pagination', () => {
+  beforeEach(() => {
+    sinon.stub(rest.mempool, 'list').resolves({ count: 0, txs: [] });
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should use the defaults when no parameter is given', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.calledOnceWith(0), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should offset by the fixed page size', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ page: '3' })
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.calledOnceWith(50), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should ignore perPage because the page size is fixed', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ perPage: '101', page: '2' })
+      .expect(200)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.calledOnceWith(25), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a page that is not a positive integer', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ perPage: '25', page: 'abc' })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a page beyond the safe integer range', done => {
+    supertest(app)
+      .get('/api/transactions')
+      .query({ page: '1'.repeat(400) })
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.mempool.list.called, false);
+        done();
+      })
+      .catch(done);
+  });
+});

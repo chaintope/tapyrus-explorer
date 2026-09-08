@@ -3,6 +3,7 @@ const logger = require('../libs/logger');
 const rest = require('../libs/rest');
 const {
   isHash,
+  forLog,
   updateAddress,
   isMaterialTrackingTransaction
 } = require('../libs/util');
@@ -20,7 +21,7 @@ app.get('/api/tx/:txid', async (req, res) => {
   const txid = req.params.txid;
 
   if (!isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /tx/${txid}`);
+    logger.error(`Invalid txid(${forLog(txid)}) -- /tx`);
     res.status(400).send('Bad request');
     return;
   }
@@ -38,7 +39,7 @@ app.get('/api/tx/:txid', async (req, res) => {
     res.json(tx);
   } catch (error) {
     logger.error(
-      `Error retrieving information for transaction - ${txid}. Error Message - ${error.message}`
+      `Error retrieving information for transaction - ${forLog(txid)}. Error Message - ${error.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }
@@ -48,7 +49,7 @@ app.get('/api/tx/:txid/rawData', async (req, res) => {
   const txid = req.params.txid;
 
   if (!isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /tx/${txid}/rawData`);
+    logger.error(`Invalid txid(${forLog(txid)}) -- /tx/rawData`);
     res.status(400).send('Bad request');
     return;
   }
@@ -62,7 +63,7 @@ app.get('/api/tx/:txid/rawData', async (req, res) => {
     res.json({ hex: tx });
   } catch (error) {
     logger.error(
-      `Error retrieving rawdata for transaction - ${txid}. Error Message - ${error.message}`
+      `Error retrieving rawdata for transaction - ${forLog(txid)}. Error Message - ${error.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }
@@ -71,7 +72,7 @@ app.get('/api/tx/:txid/rawData', async (req, res) => {
 app.get('/api/tx/:txid/get', async (req, res) => {
   const txid = req.params.txid;
   if (!isHash(txid)) {
-    console.error(`Invalid txid(${txid}) -- /tx/${txid}/get`);
+    logger.error(`Invalid txid(${forLog(txid)}) -- /tx/get`);
     res.status(400).send('Bad request');
     return;
   }
@@ -85,7 +86,7 @@ app.get('/api/tx/:txid/get', async (req, res) => {
     res.json(tx);
   } catch (error) {
     logger.error(
-      `Error calling the method gettransaction for transaction - ${txid}. Error Message - ${error.message}`
+      `Error calling the method gettransaction for transaction - ${forLog(txid)}. Error Message - ${error.message}`
     );
     res.status(503).send('Service Temporary Unavailable');
   }

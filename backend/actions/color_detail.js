@@ -1,7 +1,13 @@
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
-const { isHash, isColorId, updateAddress, sortTxs } = require('../libs/util');
+const {
+  isHash,
+  isColorId,
+  forLog,
+  updateAddress,
+  sortTxs
+} = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -18,13 +24,15 @@ app.get('/api/color/:colorId', async (req, res) => {
 
   try {
     if (!isColorId(colorId)) {
-      logger.error(`Invalid colorId(${colorId}) - /color/${colorId}`);
+      logger.error(`Invalid colorId(${forLog(colorId)}) - /color`);
       res.status(400).send('Bad request');
       return;
     }
 
     if (lastSeenTxid && !isHash(lastSeenTxid)) {
-      logger.error(`Invalid lastSeenTxid(${lastSeenTxid}) - /color/${colorId}`);
+      logger.error(
+        `Invalid lastSeenTxid(${forLog(lastSeenTxid)}) - /color/${forLog(colorId)}`
+      );
       res.status(400).send('Bad request');
       return;
     }
@@ -47,7 +55,7 @@ app.get('/api/color/:colorId', async (req, res) => {
     });
   } catch (error) {
     logger.error(
-      `Error retrieving color stats  - ${colorId}. Error Message - ${error.message}`
+      `Error retrieving color stats  - ${forLog(colorId)}. Error Message - ${error.message}`
     );
   }
 });
@@ -56,7 +64,7 @@ app.get('/api/color/:colorId/metadata', async (req, res) => {
   const colorId = req.params.colorId;
 
   if (!isColorId(colorId)) {
-    logger.error(`Invalid colorId(${colorId}) - /color/${colorId}/metadata`);
+    logger.error(`Invalid colorId(${forLog(colorId)}) - /color/metadata`);
     res.status(400).send('Bad request');
     return;
   }
@@ -70,7 +78,7 @@ app.get('/api/color/:colorId/metadata', async (req, res) => {
     }
   } catch (error) {
     logger.error(
-      `Error retrieving token metadata - ${colorId}. Error Message - ${error.message}`
+      `Error retrieving token metadata - ${forLog(colorId)}. Error Message - ${error.message}`
     );
     res.status(500).send('Internal server error');
   }

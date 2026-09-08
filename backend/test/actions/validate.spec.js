@@ -663,3 +663,144 @@ describe('/api/check_material_tracking_balance/:txid', () => {
       .catch(done);
   });
 });
+
+describe('GET /api/validate/:opened_value with an untrusted payload', () => {
+  const encode = payload =>
+    [
+      Buffer.from(JSON.stringify({ typ: 'JWT', alg: 'ES256K' })).toString(
+        'base64url'
+      ),
+      Buffer.from(JSON.stringify(payload)).toString('base64url'),
+      'c2lnbmF0dXJl'
+    ].join('.');
+
+  beforeEach(() => {
+    sinon.stub(rest.transaction, 'get').resolves(null);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should return 400 without calling esplora for a traversing txid', done => {
+    const openedValue = encode({
+      txid: '../../blocks/tip/height',
+      index: 0
+    });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a txid that is not a hash', done => {
+    const openedValue = encode({ txid: 'abc', index: 0 });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for an index that is not a non-negative integer', done => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const openedValue = encode({ txid: txid, index: -1 });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should accept an index serialized as a decimal string', done => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const openedValue = encode({ txid: txid, index: '0' });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(404)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.calledOnceWith(txid), true);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a negative index serialized as a string', done => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const openedValue = encode({ txid: txid, index: '-1' });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should return 400 for a missing index', done => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const openedValue = encode({ txid: txid });
+    supertest(app)
+      .get(`/api/validate/${openedValue}`)
+      .expect(400)
+      .then(() => {
+        assert.strictEqual(rest.transaction.get.called, false);
+        done();
+      })
+      .catch(done);
+  });
+
+  describe('with a transaction that exists', () => {
+    const txid =
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+    beforeEach(() => {
+      rest.transaction.get.resolves({
+        txid: txid,
+        vin: [],
+        vout: [
+          {
+            value: 600,
+            scriptpubkey: '76a9146713b478d99432aac667b7d8e87f9d06edca03bb88ac'
+          }
+        ]
+      });
+    });
+
+    it('should return 400 for an index past the last output', done => {
+      const openedValue = encode({ txid: txid, index: 5 });
+      supertest(app)
+        .get(`/api/validate/${openedValue}`)
+        .expect(400)
+        .then(() => {
+          assert.strictEqual(rest.transaction.get.calledOnceWith(txid), true);
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should return 400 for an index past the last output given as a string', done => {
+      const openedValue = encode({ txid: txid, index: '5' });
+      supertest(app)
+        .get(`/api/validate/${openedValue}`)
+        .expect(400)
+        .then(() => done())
+        .catch(done);
+    });
+  });
+});

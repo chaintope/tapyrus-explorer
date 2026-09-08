@@ -1,6 +1,7 @@
 const app = require('../app.js');
 const logger = require('../libs/logger');
 const rest = require('../libs/rest');
+const { forLog, parseStartIndex } = require('../libs/util');
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -13,11 +14,15 @@ app.use((req, res, next) => {
 
 //Return a List of transactions
 app.get('/api/transactions', async (req, res) => {
-  let perPage = Number(req.query.perPage);
-  const page = Number(req.query.page);
+  const pagination = parseStartIndex(req.query.page);
+  if (!pagination) {
+    logger.error(`Invalid page(${forLog(req.query.page)}) - /transactions`);
+    res.status(400).send('Bad request');
+    return;
+  }
+  const { page, startIndex } = pagination;
 
   try {
-    const startIndex = (page - 1) * perPage;
     const result = await rest.mempool.list(startIndex);
     res.json({
       results: result.txs,
@@ -25,7 +30,7 @@ app.get('/api/transactions', async (req, res) => {
     });
   } catch (error) {
     logger.error(
-      `Error retrieving ${perPage} transactions for page#${page}. Error Message - ${error.message}`
+      `Error retrieving transactions for page#${page}. Error Message - ${error.message}`
     );
     res.status(500).send('Error Retrieving transactions');
   }

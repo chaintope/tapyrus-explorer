@@ -5,6 +5,8 @@ const jsontokens = require('jsontokens');
 const Commitment = require('../libs/commitment');
 const {
   isHash,
+  toOutputIndex,
+  forLog,
   trackingOutputs,
   getMaterialTrackingPayload,
   getCommitment
@@ -114,15 +116,35 @@ app.get('/api/validate/:openedValue', async (req, res) => {
       res.status(400).send('Invalid JWS format.');
       return;
     }
-    const txid = decoded.payload.txid;
-    const index = decoded.payload.index;
+    const { txid, index } = decoded.payload || {};
+    const outputIndex = toOutputIndex(index);
+    if (!isHash(txid) || outputIndex === null) {
+      logger.error(
+        `Invalid JWS payload - txid(${forLog(txid)}), index(${forLog(index)}) - /validate`
+      );
+      res.status(400).send('Invalid JWS payload.');
+      return;
+    }
+
     const tx = await rest.transaction.get(txid);
     if (!tx) {
       res.status(404).send(`Tx not found(${txid})`);
       return;
     }
 
-    const script = tx.vout[index].scriptpubkey;
+    // The index is bounded by the transaction, not by the payload alone: a value
+    // past the last output asks for something that does not exist, which is a
+    // bad request rather than a fault of this backend.
+    const output = tx.vout[outputIndex];
+    if (!output) {
+      logger.error(
+        `JWS payload index out of range - txid(${forLog(txid)}), index(${forLog(index)}) - /validate`
+      );
+      res.status(400).send('Invalid JWS payload.');
+      return;
+    }
+
+    const script = output.scriptpubkey;
     const [valid, error] = isValid(openedValue, script, decoded.payload);
 
     res.json({ ...decoded, valid: valid, error: error });
@@ -138,8 +160,8 @@ app.get('/api/validate/:openedValue', async (req, res) => {
 app.get('/api/check_material_tracking_balance/:txid', async (req, res) => {
   const txid = req.params.txid;
   if (!isHash(txid)) {
-    console.error(
-      `Invalid txid(${txid}) -- /api/check_material_tracking_balance/${txid}`
+    logger.error(
+      `Invalid txid(${forLog(txid)}) -- /api/check_material_tracking_balance`
     );
     res.status(400).send('Bad request');
     return;
@@ -155,7 +177,7 @@ app.get('/api/check_material_tracking_balance/:txid', async (req, res) => {
     res.json({ balanced: balanced });
   } catch (error) {
     logger.error(
-      `Error calling the method gettransaction for transaction - ${txid}. Error Message - ${error.message}`
+      `Error calling the method gettransaction for transaction - ${forLog(txid)}. Error Message - ${error.message}`
     );
     res.status(503).send('Service Temporary Unavailabled');
   }

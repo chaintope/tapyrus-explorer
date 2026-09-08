@@ -3,6 +3,27 @@ const { Metadata } = require('tapyrusjs-lib');
 
 const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}`;
 
+// Path segments are built from HTTP request values. Percent-encode them so that
+// a value containing "/" cannot change which esplora endpoint is called.
+//
+// "." and ".." cannot be dealt with by encoding. The URL parser reads a segment
+// as a relative one when it matches "." or ".." with the dots written either
+// literally or as %2e (WHATWG URL, single-dot and double-dot path segment), so
+// every encoding of them resolves the same way the bare value does. They are
+// refused instead.
+//
+// Every entry point validates its values before they reach here, so this is the
+// layer that still holds if one of them stops doing so. Throwing surfaces that
+// as a fault of the backend, which is what it would be; each caller runs inside
+// a handler that answers 500.
+const encodeSegment = value => {
+  const segment = String(value);
+  if (segment === '.' || segment === '..') {
+    throw new Error(`invalid path segment (${segment})`);
+  }
+  return encodeURIComponent(segment);
+};
+
 // Helper functions
 const fetchJson = async url => {
   const response = await fetch(url);
@@ -35,19 +56,21 @@ const fetchTextOr404 = async url => {
 };
 
 const address = {
-  stats: async address => fetchJson(`${baseUrl}/address/${address}`),
+  stats: async address =>
+    fetchJson(`${baseUrl}/address/${encodeSegment(address)}`),
   txs: async (address, lastSeenTxid) => {
     const url = lastSeenTxid
-      ? `${baseUrl}/address/${address}/txs/chain/${lastSeenTxid}`
-      : `${baseUrl}/address/${address}/txs`;
+      ? `${baseUrl}/address/${encodeSegment(address)}/txs/chain/${encodeSegment(lastSeenTxid)}`
+      : `${baseUrl}/address/${encodeSegment(address)}/txs`;
     return fetchJson(url);
   },
-  utxo: async address => fetchJson(`${baseUrl}/address/${address}/utxo`)
+  utxo: async address =>
+    fetchJson(`${baseUrl}/address/${encodeSegment(address)}/utxo`)
 };
 
 const transaction = {
-  get: async txid => fetchJsonOr404(`${baseUrl}/tx/${txid}`),
-  raw: async txid => fetchTextOr404(`${baseUrl}/tx/${txid}/hex`),
+  get: async txid => fetchJsonOr404(`${baseUrl}/tx/${encodeSegment(txid)}`),
+  raw: async txid => fetchTextOr404(`${baseUrl}/tx/${encodeSegment(txid)}/hex`),
   broadcast: async rawTxHex => {
     const url = `${baseUrl}/tx`;
     const response = await fetch(url, {
@@ -64,20 +87,23 @@ const transaction = {
 };
 
 const block = {
-  get: async blockHash => fetchJsonOr404(`${baseUrl}/block/${blockHash}`),
-  list: async startIndex => fetchJson(`${baseUrl}/blocks/${startIndex}`),
-  height: async height => fetchTextOr404(`${baseUrl}/block-height/${height}`),
+  get: async blockHash =>
+    fetchJsonOr404(`${baseUrl}/block/${encodeSegment(blockHash)}`),
+  list: async startIndex =>
+    fetchJson(`${baseUrl}/blocks/${encodeSegment(startIndex)}`),
+  height: async height =>
+    fetchTextOr404(`${baseUrl}/block-height/${encodeSegment(height)}`),
   raw: async blockHash =>
-    fetchTextOr404(`${baseUrl}/block/${blockHash}/header`),
+    fetchTextOr404(`${baseUrl}/block/${encodeSegment(blockHash)}/header`),
   status: async blockHash =>
-    fetchJsonOr404(`${baseUrl}/block/${blockHash}/status`),
+    fetchJsonOr404(`${baseUrl}/block/${encodeSegment(blockHash)}/status`),
   tip: {
     height: async () => fetchJson(`${baseUrl}/blocks/tip/height`)
   },
   txs: async (blockHash, startIndex) => {
     const url = startIndex
-      ? `${baseUrl}/block/${blockHash}/txs/${startIndex}`
-      : `${baseUrl}/block/${blockHash}/txs`;
+      ? `${baseUrl}/block/${encodeSegment(blockHash)}/txs/${encodeSegment(startIndex)}`
+      : `${baseUrl}/block/${encodeSegment(blockHash)}/txs`;
     return fetchJson(url);
   }
 };
@@ -85,15 +111,15 @@ const block = {
 const color = {
   list: async lastSeenColorId => {
     const url = lastSeenColorId
-      ? `${baseUrl}/colors/${lastSeenColorId}`
+      ? `${baseUrl}/colors/${encodeSegment(lastSeenColorId)}`
       : `${baseUrl}/colors`;
     return fetchJson(url);
   },
-  get: async colorId => fetchJson(`${baseUrl}/color/${colorId}`),
+  get: async colorId => fetchJson(`${baseUrl}/color/${encodeSegment(colorId)}`),
   txs: async (colorId, lastSeenTxid) => {
     const url = lastSeenTxid
-      ? `${baseUrl}/color/${colorId}/txs/chain/${lastSeenTxid}`
-      : `${baseUrl}/color/${colorId}/txs`;
+      ? `${baseUrl}/color/${encodeSegment(colorId)}/txs/chain/${encodeSegment(lastSeenTxid)}`
+      : `${baseUrl}/color/${encodeSegment(colorId)}/txs`;
     return fetchJson(url);
   }
 };
@@ -101,7 +127,7 @@ const color = {
 const mempool = {
   list: async startIndex => {
     const url = startIndex
-      ? `${baseUrl}/mempool/txs/${startIndex}`
+      ? `${baseUrl}/mempool/txs/${encodeSegment(startIndex)}`
       : `${baseUrl}/mempool/txs`;
     const response = await fetch(url);
     if (response.ok) {
