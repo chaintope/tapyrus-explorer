@@ -27,7 +27,7 @@
     "@ionic/angular": "^8.4.1",
     "angularx-qrcode": "~21.0.0",
     "big.js": "^7.0.1",
-    "moment": "^2.29.4",
+    "moment": "^2.31.0",
     "moment-timezone": "0.6.0",
     "ngx-pagination": "^6.0.3",
     "rxjs": "~7.8.1",
