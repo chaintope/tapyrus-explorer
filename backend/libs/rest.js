@@ -1,4 +1,5 @@
 const config = require('./config');
+const logger = require('./logger');
 const { Metadata } = require('tapyrusjs-lib');
 
 const baseUrl = `${config.rest.schema}://${config.rest.host}:${config.rest.port}`;
@@ -22,6 +23,74 @@ const encodeSegment = value => {
     throw new Error(`invalid path segment (${segment})`);
   }
   return encodeURIComponent(segment);
+};
+
+const BROADCAST_TIMEOUT_MS = 10000;
+
+// Posts a transaction to one esplora. Never throws: `rejected` separates a
+// node that refused the transaction (a 4xx answer) from one that could not
+// judge it (timeout, connection failure, a 5xx answer), since only the former
+// says something about the transaction itself.
+const postTx = async (url, rawTxHex) => {
+  try {
+    const response = await fetch(`${url}/tx`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: rawTxHex,
+      signal: AbortSignal.timeout(BROADCAST_TIMEOUT_MS)
+    });
+    const text = await response.text();
+    if (response.ok) {
+      return { ok: true, txid: text };
+    }
+    return {
+      ok: false,
+      rejected: response.status >= 400 && response.status < 500,
+      message: text || 'failed to broadcast transaction'
+    };
+  } catch (error) {
+    return { ok: false, rejected: false, message: error.message };
+  }
+};
+
+// Posts a transaction to every node and answers with the first success, so a
+// node that is down only delays the answer when no node accepts it. The posts
+// that are still running carry on in the background so that every node gets
+// the transaction. A transaction spending it may still reach a node before
+// that post does and be refused there, but the node that accepted first
+// accepts it, which is enough for the broadcast to succeed.
+//
+// When every node fails, a refusal is reported over a failure to judge the
+// transaction, the first one in the configured order. The message is passed to
+// the client as it is, so the node URLs, which are internal addresses, stay in
+// the log.
+const broadcastToAll = (urls, rawTxHex) => {
+  const posts = urls.map(url => postTx(url, rawTxHex));
+
+  return new Promise((resolve, reject) => {
+    posts.forEach(post =>
+      post.then(result => {
+        if (result.ok) {
+          resolve(result.txid);
+        }
+      })
+    );
+
+    Promise.all(posts).then(results => {
+      results.forEach((result, i) => {
+        if (!result.ok) {
+          logger.warn(
+            `Failed to broadcast transaction to ${urls[i]}. Error Message - ${result.message}`
+          );
+        }
+      });
+      if (results.some(result => result.ok)) {
+        return;
+      }
+      const reported = results.find(result => result.rejected) || results[0];
+      reject(new Error(reported.message));
+    });
+  });
 };
 
 // Helper functions
@@ -72,6 +141,9 @@ const transaction = {
   get: async txid => fetchJsonOr404(`${baseUrl}/tx/${encodeSegment(txid)}`),
   raw: async txid => fetchTextOr404(`${baseUrl}/tx/${encodeSegment(txid)}/hex`),
   broadcast: async rawTxHex => {
+    if (config.broadcastUrls.length > 0) {
+      return broadcastToAll(config.broadcastUrls, rawTxHex);
+    }
     const url = `${baseUrl}/tx`;
     const response = await fetch(url, {
       method: 'POST',

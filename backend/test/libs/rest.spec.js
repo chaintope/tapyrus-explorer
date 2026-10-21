@@ -1,5 +1,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
+const config = require('../../libs/config');
+const logger = require('../../libs/logger');
 
 describe('rest module', () => {
   describe('require', () => {
@@ -110,6 +112,210 @@ describe('rest module', () => {
     it('should keep an encoded ".." as a segment of its own', async () => {
       await rest.color.list('%2e%2e');
       assert.strictEqual(pathOf(fetched[0]), '/colors/%252e%252e');
+    });
+  });
+
+  describe('transaction.broadcast', () => {
+    const rest = require('../../libs/rest');
+    const RAW_TX = '0100000001';
+    const TXID =
+      'a82d9931eece4f2504691810db4a11d406a6eb2345b739fc35bb4f993d85e7c8';
+    const MISSING_INPUTS =
+      'sendrawtransaction RPC error: {"code":-25,"message":"Missing inputs"}';
+    const NODE_A = 'http://10.0.0.1:5001';
+    const NODE_B = 'http://10.0.0.2:5001';
+
+    const accepted = txid => ({
+      ok: true,
+      status: 200,
+      text: () => Promise.resolve(txid)
+    });
+    const refused = message => ({
+      ok: false,
+      status: 400,
+      text: () => Promise.resolve(message)
+    });
+    const timeout = () =>
+      Promise.reject(
+        new DOMException(
+          'The operation was aborted due to timeout',
+          'TimeoutError'
+        )
+      );
+
+    // Answers each node URL with the given function of the request.
+    const stubNodes = answers =>
+      sinon.stub(global, 'fetch').callsFake((url, options) => {
+        const node = Object.keys(answers).find(base => url === `${base}/tx`);
+        return answers[node](options);
+      });
+
+    let originalBroadcastUrls;
+    let warn;
+
+    beforeEach(() => {
+      originalBroadcastUrls = config.broadcastUrls;
+      warn = sinon.stub(logger, 'warn');
+    });
+
+    afterEach(() => {
+      config.broadcastUrls = originalBroadcastUrls;
+      sinon.restore();
+    });
+
+    it('should post only to the REST host when no broadcast URL is set', async () => {
+      config.broadcastUrls = [];
+      const fetch = sinon.stub(global, 'fetch').resolves(accepted(TXID));
+
+      assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
+      assert.strictEqual(fetch.callCount, 1);
+      assert.strictEqual(
+        fetch.firstCall.args[0],
+        `${config.rest.schema}://${config.rest.host}:${config.rest.port}/tx`
+      );
+    });
+
+    it('should post the same transaction to every node', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      const fetch = stubNodes({
+        [NODE_A]: () => Promise.resolve(accepted(TXID)),
+        [NODE_B]: () => Promise.resolve(accepted(TXID))
+      });
+
+      await rest.transaction.broadcast(RAW_TX);
+
+      assert.deepStrictEqual(
+        fetch.getCalls().map(call => call.args[0]),
+        [`${NODE_A}/tx`, `${NODE_B}/tx`]
+      );
+      fetch.getCalls().forEach(call => {
+        assert.strictEqual(call.args[1].method, 'POST');
+        assert.strictEqual(call.args[1].body, RAW_TX);
+        assert.ok(call.args[1].signal instanceof AbortSignal);
+      });
+    });
+
+    it('should succeed when one node accepts and another reports missing inputs', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: () => Promise.resolve(refused(MISSING_INPUTS)),
+        [NODE_B]: () => Promise.resolve(accepted(TXID))
+      });
+
+      assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
+    });
+
+    it('should answer with the first success without waiting for the other nodes', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      let answerB;
+      stubNodes({
+        [NODE_A]: () => Promise.resolve(accepted(TXID)),
+        [NODE_B]: () =>
+          new Promise((_, reject) => {
+            answerB = reject;
+          })
+      });
+
+      assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
+
+      // The post still running fails afterwards without surfacing anywhere.
+      answerB(new TypeError('fetch failed'));
+      await new Promise(resolve => setImmediate(resolve));
+      assert.ok(warn.calledOnce);
+      assert.match(warn.firstCall.args[0], /10\.0\.0\.2:5001.*fetch failed/);
+    });
+
+    it('should report the refusal of the first node in order when every node refuses', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: () => Promise.resolve(refused(MISSING_INPUTS)),
+        [NODE_B]: () => Promise.resolve(refused('other reason'))
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        error => error.message === MISSING_INPUTS
+      );
+    });
+
+    it('should report a refusal over a connection failure', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: () => Promise.reject(new TypeError('fetch failed')),
+        [NODE_B]: () => Promise.resolve(refused(MISSING_INPUTS))
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        error => error.message === MISSING_INPUTS
+      );
+    });
+
+    it('should report a refusal over a server error', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: () =>
+          Promise.resolve({
+            ok: false,
+            status: 503,
+            text: () => Promise.resolve('daemon unavailable')
+          }),
+        [NODE_B]: () => Promise.resolve(refused(MISSING_INPUTS))
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        error => error.message === MISSING_INPUTS
+      );
+    });
+
+    it('should report a refusal over a timeout', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: timeout,
+        [NODE_B]: () => Promise.resolve(refused(MISSING_INPUTS))
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        error => error.message === MISSING_INPUTS
+      );
+    });
+
+    it('should report the first failure when no node could be asked', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: timeout,
+        [NODE_B]: () => Promise.reject(new TypeError('fetch failed'))
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        error => error.message === 'The operation was aborted due to timeout'
+      );
+    });
+
+    it('should succeed when one node accepts and another cannot be reached', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: () => Promise.reject(new TypeError('fetch failed')),
+        [NODE_B]: () => Promise.resolve(accepted(TXID))
+      });
+
+      assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
+    });
+
+    it('should not put the node URLs in the error passed to the client', async () => {
+      config.broadcastUrls = [NODE_A, NODE_B];
+      stubNodes({
+        [NODE_A]: () => Promise.reject(new TypeError('fetch failed')),
+        [NODE_B]: () => Promise.reject(new TypeError('fetch failed'))
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        error => !error.message.includes('10.0.0.')
+      );
     });
   });
 });
