@@ -1,6 +1,8 @@
-// A malformed URL would otherwise make every broadcast fail at request time,
-// with the URL itself in the message returned to the client. Refusing it here
-// stops the backend at startup instead.
+// A malformed URL would otherwise make every broadcast fail at request time.
+// Refusing it here stops the backend at startup instead.
+//
+// The request path is made by appending "/tx", so a query or a fragment would
+// end up in front of it ("http://host?x/tx") and is refused too.
 const parseBroadcastUrls = value =>
   (value || '')
     .split(',')
@@ -16,6 +18,11 @@ const parseBroadcastUrls = value =>
       if (protocol !== 'http:' && protocol !== 'https:') {
         throw new Error(
           `ELECTRS_BROADCAST_URLS must be http or https URLs (${url})`
+        );
+      }
+      if (/[?#]/.test(url)) {
+        throw new Error(
+          `ELECTRS_BROADCAST_URLS must not have a query or a fragment (${url})`
         );
       }
       return url;

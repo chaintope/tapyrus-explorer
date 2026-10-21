@@ -27,31 +27,50 @@ const encodeSegment = value => {
 
 const BROADCAST_TIMEOUT_MS = 10000;
 
-// Posts a transaction to one esplora. Never throws: `rejected` separates a
-// node that refused the transaction (a 4xx answer) from one that could not
-// judge it (timeout, connection failure, a 5xx answer), since only the former
-// says something about the transaction itself.
+// How a node failed to take a transaction. Only "rejected" says something
+// about the transaction itself.
+//
+// - rejected: the node refused it. esplora answers 400 for that.
+// - unknown: the post was cut off by the time limit. esplora may already have
+//   handed the transaction to the node, so it may have been accepted.
+// - unavailable: the node could not be asked (connection failure, a 5xx
+//   answer, or a status esplora does not use for a refusal, such as a 404
+//   from a proxy in front of a misconfigured URL).
+const broadcastFailure = (kind, message) =>
+  Object.assign(new Error(message), { kind });
+
 const postTx = async (url, rawTxHex) => {
+  let response;
+  let text;
   try {
-    const response = await fetch(`${url}/tx`, {
+    response = await fetch(`${url}/tx`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: rawTxHex,
       signal: AbortSignal.timeout(BROADCAST_TIMEOUT_MS)
     });
-    const text = await response.text();
-    if (response.ok) {
-      return { ok: true, txid: text };
-    }
-    return {
-      ok: false,
-      rejected: response.status >= 400 && response.status < 500,
-      message: text || 'failed to broadcast transaction'
-    };
+    text = await response.text();
   } catch (error) {
-    return { ok: false, rejected: false, message: error.message };
+    throw broadcastFailure(
+      error.name === 'TimeoutError' ? 'unknown' : 'unavailable',
+      error.message
+    );
   }
+  if (response.ok) {
+    return text;
+  }
+  throw broadcastFailure(
+    response.status === 400 ? 'rejected' : 'unavailable',
+    text || `failed to broadcast transaction (HTTP ${response.status})`
+  );
 };
+
+// When every node fails, the failure reported is the first of these kinds
+// found, in the configured order of the nodes. "unknown" comes before
+// "rejected": the second of two transactions sent one after the other can be
+// refused as "Missing inputs" by a node that has not yet received the first,
+// while the node that timed out may have accepted it.
+const REPORTED_KINDS = ['unknown', 'rejected', 'unavailable'];
 
 // Posts a transaction to every node and answers with the first success, so a
 // node that is down only delays the answer when no node accepts it. The posts
@@ -60,36 +79,34 @@ const postTx = async (url, rawTxHex) => {
 // that post does and be refused there, but the node that accepted first
 // accepts it, which is enough for the broadcast to succeed.
 //
-// When every node fails, a refusal is reported over a failure to judge the
-// transaction, the first one in the configured order. The message is passed to
-// the client as it is, so the node URLs, which are internal addresses, stay in
-// the log.
+// A node failing while another accepts is expected for that reason, so it is
+// logged below the default level. The node URLs, which are internal
+// addresses, stay in the log.
 const broadcastToAll = (urls, rawTxHex) => {
   const posts = urls.map(url => postTx(url, rawTxHex));
 
-  return new Promise((resolve, reject) => {
-    posts.forEach(post =>
-      post.then(result => {
-        if (result.ok) {
-          resolve(result.txid);
-        }
-      })
-    );
-
-    Promise.all(posts).then(results => {
-      results.forEach((result, i) => {
-        if (!result.ok) {
-          logger.warn(
-            `Failed to broadcast transaction to ${urls[i]}. Error Message - ${result.message}`
-          );
-        }
-      });
-      if (results.some(result => result.ok)) {
+  Promise.allSettled(posts).then(results => {
+    const accepted = results.some(result => result.status === 'fulfilled');
+    results.forEach((result, i) => {
+      if (result.status === 'fulfilled') {
         return;
       }
-      const reported = results.find(result => result.rejected) || results[0];
-      reject(new Error(reported.message));
+      if (accepted) {
+        logger.info(
+          `Broadcast to ${urls[i]} failed while another node accepted it. Error Message - ${result.reason.message}`
+        );
+      } else {
+        logger.warn(
+          `Failed to broadcast transaction to ${urls[i]}. Error Message - ${result.reason.message}`
+        );
+      }
     });
+  });
+
+  return Promise.any(posts).catch(aggregate => {
+    throw REPORTED_KINDS.map(kind =>
+      aggregate.errors.find(error => error.kind === kind)
+    ).find(Boolean);
   });
 };
 
@@ -140,22 +157,11 @@ const address = {
 const transaction = {
   get: async txid => fetchJsonOr404(`${baseUrl}/tx/${encodeSegment(txid)}`),
   raw: async txid => fetchTextOr404(`${baseUrl}/tx/${encodeSegment(txid)}/hex`),
-  broadcast: async rawTxHex => {
-    if (config.broadcastUrls.length > 0) {
-      return broadcastToAll(config.broadcastUrls, rawTxHex);
-    }
-    const url = `${baseUrl}/tx`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: rawTxHex
-    });
-    if (response.ok) {
-      return response.text();
-    }
-    const errorText = await response.text();
-    throw new Error(errorText || `failed to broadcast transaction`);
-  }
+  broadcast: async rawTxHex =>
+    broadcastToAll(
+      config.broadcastUrls.length > 0 ? config.broadcastUrls : [baseUrl],
+      rawTxHex
+    )
 };
 
 const block = {

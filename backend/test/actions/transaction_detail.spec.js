@@ -281,18 +281,48 @@ describe('POST /api/tx', () => {
     assert.ok(broadcast.calledOnceWith(RAW_TX));
   });
 
-  it('should return 400 with the reason when the broadcast fails', async () => {
-    const reason =
-      'sendrawtransaction RPC error: {"code":-25,"message":"Missing inputs"}';
-    sinon.stub(rest.transaction, 'broadcast').rejects(new Error(reason));
+  const failure = (kind, message) =>
+    Object.assign(new Error(message), { kind });
 
-    const res = await supertest(app)
+  const post = () =>
+    supertest(app)
       .post('/api/tx')
       .set('Content-Type', 'text/plain')
       .send(RAW_TX);
 
+  it('should return 400 with the reason when the node rejects the transaction', async () => {
+    const reason =
+      'sendrawtransaction RPC error: {"code":-25,"message":"Missing inputs"}';
+    sinon
+      .stub(rest.transaction, 'broadcast')
+      .rejects(failure('rejected', reason));
+
+    const res = await post();
+
     assert.strictEqual(res.status, 400);
     assert.strictEqual(res.text, reason);
+  });
+
+  it('should return 504 saying the result is unknown when the node did not answer in time', async () => {
+    sinon
+      .stub(rest.transaction, 'broadcast')
+      .rejects(failure('unknown', 'The operation was aborted due to timeout'));
+
+    const res = await post();
+
+    assert.strictEqual(res.status, 504);
+    assert.match(res.text, /^Broadcast result unknown/);
+  });
+
+  it('should return 503 without the reason when no node could be asked', async () => {
+    sinon
+      .stub(rest.transaction, 'broadcast')
+      .rejects(failure('unavailable', 'fetch failed'));
+
+    const res = await post();
+
+    assert.strictEqual(res.status, 503);
+    assert.strictEqual(res.text, 'Service Temporary Unavailable');
   });
 
   it('should refuse a body that is not hex without broadcasting', async () => {

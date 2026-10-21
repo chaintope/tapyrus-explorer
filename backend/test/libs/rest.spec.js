@@ -125,16 +125,14 @@ describe('rest module', () => {
     const NODE_A = 'http://10.0.0.1:5001';
     const NODE_B = 'http://10.0.0.2:5001';
 
-    const accepted = txid => ({
-      ok: true,
-      status: 200,
-      text: () => Promise.resolve(txid)
-    });
-    const refused = message => ({
-      ok: false,
-      status: 400,
-      text: () => Promise.resolve(message)
-    });
+    const answer = (status, text) => () =>
+      Promise.resolve({
+        ok: status >= 200 && status < 300,
+        status,
+        text: () => Promise.resolve(text)
+      });
+    const accepted = answer(200, TXID);
+    const refused = answer(400, MISSING_INPUTS);
     const timeout = () =>
       Promise.reject(
         new DOMException(
@@ -142,6 +140,7 @@ describe('rest module', () => {
           'TimeoutError'
         )
       );
+    const unreachable = () => Promise.reject(new TypeError('fetch failed'));
 
     // Answers each node URL with the given function of the request.
     const stubNodes = answers =>
@@ -150,11 +149,22 @@ describe('rest module', () => {
         return answers[node](options);
       });
 
+    const failsWith = (kind, message) => error =>
+      error.kind === kind &&
+      (message === undefined || error.message === message);
+
+    // The log is written once every post has settled, which is after the
+    // broadcast has answered.
+    const settled = () => new Promise(resolve => setImmediate(resolve));
+
     let originalBroadcastUrls;
+    let info;
     let warn;
 
     beforeEach(() => {
       originalBroadcastUrls = config.broadcastUrls;
+      config.broadcastUrls = [NODE_A, NODE_B];
+      info = sinon.stub(logger, 'info');
       warn = sinon.stub(logger, 'warn');
     });
 
@@ -163,9 +173,9 @@ describe('rest module', () => {
       sinon.restore();
     });
 
-    it('should post only to the REST host when no broadcast URL is set', async () => {
+    it('should post only to the REST host, with the time limit, when no broadcast URL is set', async () => {
       config.broadcastUrls = [];
-      const fetch = sinon.stub(global, 'fetch').resolves(accepted(TXID));
+      const fetch = sinon.stub(global, 'fetch').callsFake(accepted);
 
       assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
       assert.strictEqual(fetch.callCount, 1);
@@ -173,14 +183,11 @@ describe('rest module', () => {
         fetch.firstCall.args[0],
         `${config.rest.schema}://${config.rest.host}:${config.rest.port}/tx`
       );
+      assert.ok(fetch.firstCall.args[1].signal instanceof AbortSignal);
     });
 
     it('should post the same transaction to every node', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      const fetch = stubNodes({
-        [NODE_A]: () => Promise.resolve(accepted(TXID)),
-        [NODE_B]: () => Promise.resolve(accepted(TXID))
-      });
+      const fetch = stubNodes({ [NODE_A]: accepted, [NODE_B]: accepted });
 
       await rest.transaction.broadcast(RAW_TX);
 
@@ -195,126 +202,126 @@ describe('rest module', () => {
       });
     });
 
-    it('should succeed when one node accepts and another reports missing inputs', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: () => Promise.resolve(refused(MISSING_INPUTS)),
-        [NODE_B]: () => Promise.resolve(accepted(TXID))
-      });
+    it('should succeed when one node accepts and another reports missing inputs, logging below warn', async () => {
+      stubNodes({ [NODE_A]: refused, [NODE_B]: accepted });
 
       assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
+
+      await settled();
+      assert.ok(warn.notCalled);
+      assert.ok(info.calledOnce);
+      assert.match(info.firstCall.args[0], /10\.0\.0\.1:5001.*Missing inputs/);
     });
 
     it('should answer with the first success without waiting for the other nodes', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      let answerB;
+      let failB;
       stubNodes({
-        [NODE_A]: () => Promise.resolve(accepted(TXID)),
+        [NODE_A]: accepted,
         [NODE_B]: () =>
           new Promise((_, reject) => {
-            answerB = reject;
+            failB = reject;
           })
       });
 
       assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
 
       // The post still running fails afterwards without surfacing anywhere.
-      answerB(new TypeError('fetch failed'));
-      await new Promise(resolve => setImmediate(resolve));
-      assert.ok(warn.calledOnce);
-      assert.match(warn.firstCall.args[0], /10\.0\.0\.2:5001.*fetch failed/);
-    });
-
-    it('should report the refusal of the first node in order when every node refuses', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: () => Promise.resolve(refused(MISSING_INPUTS)),
-        [NODE_B]: () => Promise.resolve(refused('other reason'))
-      });
-
-      await assert.rejects(
-        () => rest.transaction.broadcast(RAW_TX),
-        error => error.message === MISSING_INPUTS
-      );
-    });
-
-    it('should report a refusal over a connection failure', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: () => Promise.reject(new TypeError('fetch failed')),
-        [NODE_B]: () => Promise.resolve(refused(MISSING_INPUTS))
-      });
-
-      await assert.rejects(
-        () => rest.transaction.broadcast(RAW_TX),
-        error => error.message === MISSING_INPUTS
-      );
-    });
-
-    it('should report a refusal over a server error', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: () =>
-          Promise.resolve({
-            ok: false,
-            status: 503,
-            text: () => Promise.resolve('daemon unavailable')
-          }),
-        [NODE_B]: () => Promise.resolve(refused(MISSING_INPUTS))
-      });
-
-      await assert.rejects(
-        () => rest.transaction.broadcast(RAW_TX),
-        error => error.message === MISSING_INPUTS
-      );
-    });
-
-    it('should report a refusal over a timeout', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: timeout,
-        [NODE_B]: () => Promise.resolve(refused(MISSING_INPUTS))
-      });
-
-      await assert.rejects(
-        () => rest.transaction.broadcast(RAW_TX),
-        error => error.message === MISSING_INPUTS
-      );
-    });
-
-    it('should report the first failure when no node could be asked', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: timeout,
-        [NODE_B]: () => Promise.reject(new TypeError('fetch failed'))
-      });
-
-      await assert.rejects(
-        () => rest.transaction.broadcast(RAW_TX),
-        error => error.message === 'The operation was aborted due to timeout'
-      );
+      failB(new TypeError('fetch failed'));
+      await settled();
+      assert.ok(warn.notCalled);
+      assert.ok(info.calledOnce);
+      assert.match(info.firstCall.args[0], /10\.0\.0\.2:5001.*fetch failed/);
     });
 
     it('should succeed when one node accepts and another cannot be reached', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
-      stubNodes({
-        [NODE_A]: () => Promise.reject(new TypeError('fetch failed')),
-        [NODE_B]: () => Promise.resolve(accepted(TXID))
-      });
+      stubNodes({ [NODE_A]: unreachable, [NODE_B]: accepted });
 
       assert.strictEqual(await rest.transaction.broadcast(RAW_TX), TXID);
     });
 
-    it('should not put the node URLs in the error passed to the client', async () => {
-      config.broadcastUrls = [NODE_A, NODE_B];
+    it('should report the refusal of the first node in order when every node refuses', async () => {
+      stubNodes({ [NODE_A]: refused, [NODE_B]: answer(400, 'other reason') });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        failsWith('rejected', MISSING_INPUTS)
+      );
+    });
+
+    it('should log every failure at warn when no node accepts', async () => {
+      stubNodes({ [NODE_A]: refused, [NODE_B]: unreachable });
+
+      await assert.rejects(() => rest.transaction.broadcast(RAW_TX));
+
+      await settled();
+      assert.strictEqual(warn.callCount, 2);
+      assert.ok(info.notCalled);
+    });
+
+    it('should report a refusal over a connection failure', async () => {
+      stubNodes({ [NODE_A]: unreachable, [NODE_B]: refused });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        failsWith('rejected', MISSING_INPUTS)
+      );
+    });
+
+    it('should report a refusal over a server error', async () => {
       stubNodes({
-        [NODE_A]: () => Promise.reject(new TypeError('fetch failed')),
-        [NODE_B]: () => Promise.reject(new TypeError('fetch failed'))
+        [NODE_A]: answer(503, 'daemon unavailable'),
+        [NODE_B]: refused
       });
 
       await assert.rejects(
         () => rest.transaction.broadcast(RAW_TX),
-        error => !error.message.includes('10.0.0.')
+        failsWith('rejected', MISSING_INPUTS)
+      );
+    });
+
+    // A proxy in front of a misconfigured URL answers 404 with its own page.
+    it('should not take a status other than 400 for a refusal', async () => {
+      stubNodes({
+        [NODE_A]: answer(404, '<html>Not Found</html>'),
+        [NODE_B]: refused
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        failsWith('rejected', MISSING_INPUTS)
+      );
+    });
+
+    it('should report a node that could not be asked when no node refuses', async () => {
+      stubNodes({
+        [NODE_A]: answer(404, '<html>Not Found</html>'),
+        [NODE_B]: unreachable
+      });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        failsWith('unavailable')
+      );
+    });
+
+    // The node that timed out may have accepted the transaction, so whether
+    // it went through is not known.
+    it('should report an unknown result over a refusal when a node timed out', async () => {
+      stubNodes({ [NODE_A]: refused, [NODE_B]: timeout });
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        failsWith('unknown')
+      );
+    });
+
+    it('should report an unknown result when the only node timed out', async () => {
+      config.broadcastUrls = [];
+      sinon.stub(global, 'fetch').callsFake(timeout);
+
+      await assert.rejects(
+        () => rest.transaction.broadcast(RAW_TX),
+        failsWith('unknown')
       );
     });
   });
