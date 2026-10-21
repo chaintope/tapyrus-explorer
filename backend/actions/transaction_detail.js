@@ -92,6 +92,13 @@ app.get('/api/tx/:txid/get', async (req, res) => {
   }
 });
 
+// A node that did not answer in time may still have accepted the
+// transaction. Building and sending it again would then spend the same inputs
+// twice, so the client is told the result is not known rather than that it
+// failed.
+const BROADCAST_RESULT_UNKNOWN =
+  'Broadcast result unknown: the node did not answer in time. The transaction may have been accepted; check whether it is in the mempool before sending it again.';
+
 app.post('/api/tx', async (req, res) => {
   const rawTxHex = req.body;
 
@@ -112,6 +119,12 @@ app.post('/api/tx', async (req, res) => {
     logger.error(
       `Error broadcasting transaction. Error Message - ${error.message}`
     );
-    res.status(400).send(error.message);
+    if (error.kind === 'rejected') {
+      res.status(400).send(error.message);
+    } else if (error.kind === 'unknown') {
+      res.status(504).send(BROADCAST_RESULT_UNKNOWN);
+    } else {
+      res.status(503).send('Service Temporary Unavailable');
+    }
   }
 });
